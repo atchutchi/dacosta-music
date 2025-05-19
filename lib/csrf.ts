@@ -10,7 +10,7 @@ const TOKEN_EXPIRATION = 60 * 60 * 1000
 /**
  * Generate a CSRF token and store it in a cookie
  */
-export function generateCsrfToken(): string {
+export async function generateCsrfToken(): Promise<string> {
   if (!CSRF_SECRET) {
     console.error("CSRF_SECRET environment variable is not defined")
     throw new Error("CSRF configuration error")
@@ -31,7 +31,8 @@ export function generateCsrfToken(): string {
     const csrfToken = `${payload}|${hash}`
 
     // Store in a cookie (HTTP only for security)
-    cookies().set("csrf_token", csrfToken, {
+    const cookieStore = cookies()
+    await cookieStore.set("csrf_token", csrfToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
@@ -49,7 +50,7 @@ export function generateCsrfToken(): string {
 /**
  * Validate a CSRF token against the one stored in cookies
  */
-export function validateCsrfToken(token: string): boolean {
+export async function validateCsrfToken(token: string): Promise<boolean> {
   if (!CSRF_SECRET) {
     console.error("CSRF_SECRET environment variable is not defined")
     return false
@@ -57,7 +58,8 @@ export function validateCsrfToken(token: string): boolean {
 
   try {
     // Get the stored token from cookies
-    const storedToken = cookies().get("csrf_token")?.value
+    const cookieStore = cookies()
+    const storedToken = await cookieStore.get("csrf_token")?.value
 
     if (!storedToken || !token) {
       console.error("CSRF token missing from cookie or request")
