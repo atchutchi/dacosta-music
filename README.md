@@ -255,8 +255,20 @@ NEXT_PUBLIC_RECAPTCHA_SITE_KEY=your_recaptcha_public_key
 RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key
 
 # CSRF Protection
-CSRF_SECRET=your_csrf_secret
+CSRF_SECRET=your_csrf_secret_a_random_string_min_32_chars
+
+# EmailJS for contact form
+NEXT_PUBLIC_EMAILJS_SERVICE_ID=your_emailjs_service_id
+NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=your_emailjs_template_id
+NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=your_emailjs_public_key
+
+# Admin contact emails
+ADMIN_EMAIL=admin@yourdomain.com
+EMAIL_FROM=no-reply@yourdomain.com
+CONTACT_EMAIL=contact@yourdomain.com
 \`\`\`
+
+> **Important Security Note:** Never commit your `.env.local` file or any file containing sensitive credentials to your repository. Make sure `setup-env.js` and all environment files are included in your `.gitignore` file.
 
 ## Security Considerations
 
