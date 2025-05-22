@@ -74,13 +74,6 @@ interface Artist {
     title: string
     duration: string
   }[]
-  events: {
-    id: string
-    name: string
-    date: string
-    location: string
-    ticketLink: string
-  }[]
   gallery: string[]
 }
 
@@ -147,29 +140,6 @@ export default function ArtistPage() {
             { id: "track4", title: "Ndisize ft. Amu Fati", duration: "6:52" },
             { id: "track5", title: "Pyramids", duration: "8:10" },
           ],
-          events: [
-            {
-              id: "event1",
-              name: "Afro House Experience",
-              date: "June 15, 2023",
-              location: "London, UK",
-              ticketLink: "#",
-            },
-            {
-              id: "event2",
-              name: "Summer Vibes Festival",
-              date: "July 22, 2023",
-              location: "Berlin, Germany",
-              ticketLink: "#",
-            },
-            {
-              id: "event3",
-              name: "Club Night Special",
-              date: "August 5, 2023",
-              location: "Johannesburg, SA",
-              ticketLink: "#",
-            },
-          ],
           gallery: [
             "/images/caiiro-photo-profile.png",
             "/images/Caiiro-VIII.jpg",
@@ -228,29 +198,6 @@ export default function ArtistPage() {
             { id: "track9", title: "Secret ID ft. Moojo", duration: "7:05" },
             { id: "track10", title: "Indigo Child", duration: "6:18" },
           ],
-          events: [
-            {
-              id: "event4",
-              name: "Deep House Sessions",
-              date: "May 28, 2023",
-              location: "Amsterdam, Netherlands",
-              ticketLink: "#",
-            },
-            {
-              id: "event5",
-              name: "Electronic Nights",
-              date: "June 10, 2023",
-              location: "Barcelona, Spain",
-              ticketLink: "#",
-            },
-            {
-              id: "event6",
-              name: "African Beats Festival",
-              date: "July 15, 2023",
-              location: "Cape Town, SA",
-              ticketLink: "#",
-            },
-          ],
           gallery: [
             "/images/Da-Capo-IX.jpg",
             "/images/dj-white-shirt.png",
@@ -306,29 +253,6 @@ export default function ArtistPage() {
             { id: "track14", title: "Mind Control", duration: "6:55" },
             { id: "track15", title: "Two Zulu Men In Ibiza", duration: "6:40" },
           ],
-          events: [
-            {
-              id: "event7",
-              name: "Tech House Night",
-              date: "June 3, 2023",
-              location: "Paris, France",
-              ticketLink: "#",
-            },
-            {
-              id: "event8",
-              name: "Progressive Sessions",
-              date: "July 8, 2023",
-              location: "Miami, USA",
-              ticketLink: "#",
-            },
-            {
-              id: "event9",
-              name: "Tribal Gathering",
-              date: "August 19, 2023",
-              location: "Lagos, Nigeria",
-              ticketLink: "#",
-            },
-          ],
           gallery: [
             "/images/enoo-napa-photo-profile.png",
             "/images/enoo-napa-photo.jpg",
@@ -341,20 +265,23 @@ export default function ArtistPage() {
       const foundArtist = artists.find((a) => a.id === artistSlug)
       setArtist(foundArtist || null)
       
-      // Try to get events from localStorage
-      const savedEvents = localStorage.getItem("dacosta-events");
-      if (savedEvents) {
-        const allEvents = JSON.parse(savedEvents);
-        // Filter events for this artist
-        const filteredEvents = allEvents.filter((event: Event) => event.artistId === artistSlug);
-        setArtistEvents(filteredEvents);
-      } else if (foundArtist) {
-        // If no events in localStorage, use the default events
-        setArtistEvents(foundArtist.events.map(event => ({
-          ...event,
-          artistId: foundArtist.id,
-          image: foundArtist.gallery[0] // Use first gallery image as event image
-        })));
+      // Try to get events from localStorage or API
+      try {
+        // Try to get events from localStorage first
+        const savedEvents = localStorage.getItem("dacosta-events");
+        
+        if (savedEvents) {
+          const allEvents = JSON.parse(savedEvents);
+          // Filter events for this artist
+          const filteredEvents = allEvents.filter((event: Event) => event.artistId === artistSlug);
+          setArtistEvents(filteredEvents);
+        } else {
+          // Se não houver eventos no localStorage, definir como array vazio
+          setArtistEvents([]);
+        }
+      } catch (error) {
+        console.error("Error fetching artist events:", error);
+        setArtistEvents([]);
       }
       
       setIsLoading(false)

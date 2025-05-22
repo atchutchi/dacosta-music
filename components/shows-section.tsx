@@ -66,96 +66,9 @@ export function ShowsSection() {
             localStorage.setItem("dacosta-events", JSON.stringify(transformedEvents));
           }
         } catch (apiError) {
-          console.error("Error fetching from API, using sample data:", apiError);
-          
-          // Fallback to sample data if API fails
-          const sampleEvents = [
-            {
-              id: "event1",
-              name: "Afro House Experience",
-              date: "June 15, 2023",
-              location: "London, UK",
-              ticketLink: "#",
-              artistId: "caiiro",
-              image: "/images/crowd-lights.png"
-            },
-            {
-              id: "event2",
-              name: "Summer Vibes Festival",
-              date: "July 22, 2023",
-              location: "Berlin, Germany",
-              ticketLink: "#",
-              artistId: "caiiro",
-              image: "/images/dj-performance-1.png"
-            },
-            {
-              id: "event3",
-              name: "Club Night Special",
-              date: "August 5, 2023",
-              location: "Johannesburg, SA",
-              ticketLink: "#",
-              artistId: "caiiro",
-              image: "/images/club-view.png"
-            },
-            {
-              id: "event4",
-              name: "Deep House Sessions",
-              date: "May 28, 2023",
-              location: "Amsterdam, Netherlands",
-              ticketLink: "#",
-              artistId: "dacapo",
-              image: "/images/dj-white-shirt.png"
-            },
-            {
-              id: "event5",
-              name: "Electronic Nights",
-              date: "June 10, 2023",
-              location: "Barcelona, Spain",
-              ticketLink: "#",
-              artistId: "dacapo",
-              image: "/images/dj-closeup.png"
-            },
-            {
-              id: "event6",
-              name: "African Beats Festival",
-              date: "July 15, 2023",
-              location: "Cape Town, SA",
-              ticketLink: "#",
-              artistId: "dacapo",
-              image: "/images/crowd-pattern.png"
-            },
-            {
-              id: "event7",
-              name: "Tech House Night",
-              date: "June 3, 2023",
-              location: "Paris, France",
-              ticketLink: "#",
-              artistId: "enoonapa",
-              image: "/images/dj-red-light.png"
-            },
-            {
-              id: "event8",
-              name: "Progressive Sessions",
-              date: "July 8, 2023",
-              location: "Miami, USA",
-              ticketLink: "#",
-              artistId: "enoonapa",
-              image: "/images/dj-performance-2.png"
-            },
-            {
-              id: "event9",
-              name: "Tribal Gathering",
-              date: "August 19, 2023",
-              location: "Lagos, Nigeria",
-              ticketLink: "#",
-              artistId: "enoonapa",
-              image: "/images/dj-duo.png"
-            },
-          ];
-          
-          // Save sample events to localStorage
-          localStorage.setItem("dacosta-events", JSON.stringify(sampleEvents));
-          setEvents(sampleEvents);
+          console.error("Error fetching from API:", apiError);
+          // Não usamos dados de exemplo como fallback
+          setEvents([]); // Array vazio - sem eventos
         }
       } catch (error) {
         console.error("Error fetching events:", error);
@@ -190,6 +103,24 @@ export function ShowsSection() {
         <Button variant="outline" asChild>
           <Link href="/">Return Home</Link>
         </Button>
+      </div>
+    );
+  }
+
+  // Se não houver eventos, mostrar mensagem
+  if (events.length === 0) {
+    return (
+      <div className="container mx-auto my-12 text-center">
+        <h2 className="text-3xl font-bold mb-8">Upcoming Shows</h2>
+        <div className="bg-white/5 rounded-lg p-12 mb-8">
+          <h3 className="text-2xl font-semibold mb-4">Nenhum evento disponível no momento</h3>
+          <p className="text-white/80 max-w-2xl mx-auto mb-6">
+            Fique atento para novos eventos que serão adicionados em breve.
+          </p>
+          <Link href="/#contact">
+            <Button className="bg-white text-black hover:bg-white/90">Entre em Contato</Button>
+          </Link>
+        </div>
       </div>
     );
   }
