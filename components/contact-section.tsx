@@ -2,49 +2,37 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Mail, Instagram, Youtube, Facebook } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { motion } from "framer-motion"
-import { getCsrfToken } from "@/app/actions/csrf-actions"
-import { debugCsrfEnvironment } from "@/lib/debug-csrf"
+import emailjs from '@emailjs/browser'
 
 export default function ContactSection() {
+  const formRef = useRef<HTMLFormElement>(null)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    subject: "",
+    title: "",
     message: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
-  const [csrfToken, setCsrfToken] = useState<string>("")
-  const [debugInfo, setDebugInfo] = useState<any>(null)
 
-  // Fetch CSRF token on component mount
+  // Log de depuração para as variáveis de ambiente no cliente (apenas em desenvolvimento)
   useEffect(() => {
-    const fetchCsrfToken = async () => {
-      try {
-        // In development, fetch debug info
-        if (process.env.NODE_ENV === "development") {
-          const debug = await debugCsrfEnvironment()
-          setDebugInfo(debug)
-        }
-
-        const token = await getCsrfToken()
-        setCsrfToken(token)
-      } catch (error) {
-        console.error("Failed to fetch CSRF token:", error)
-        setErrors({ form: "Failed to fetch security token. Please refresh the page." })
-      }
+    if (process.env.NODE_ENV === "development") {
+      console.log("EmailJS Environment Variables (dev only):", {
+        serviceId: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+        templateId: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+        publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY ? "Definido" : "Não definido",
+      });
     }
-
-    fetchCsrfToken()
-  }, [])
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -61,13 +49,13 @@ export default function ContactSection() {
   }
 
   const handleSelectChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, subject: value }))
+    setFormData((prev) => ({ ...prev, title: value }))
 
     // Clear error when user selects
-    if (errors.subject) {
+    if (errors.title) {
       setErrors((prev) => {
         const newErrors = { ...prev }
-        delete newErrors.subject
+        delete newErrors.title
         return newErrors
       })
     }
@@ -86,8 +74,8 @@ export default function ContactSection() {
       newErrors.email = "Email is invalid"
     }
 
-    if (!formData.subject) {
-      newErrors.subject = "Please select a subject"
+    if (!formData.title) {
+      newErrors.title = "Please select a subject"
     }
 
     if (!formData.message.trim()) {
@@ -101,39 +89,79 @@ export default function ContactSection() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    // Verificação explícita para o formRef
+    if (!formRef.current) {
+      console.error("Form reference is null");
+      setErrors({ form: "An error occurred with the form. Please refresh the page." });
+      return;
+    }
+    
     if (!validateForm()) {
-      return
+      return;
     }
 
     setIsSubmitting(true)
 
-    try {
-      // Submit the form data to the API endpoint
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          csrf_token: csrfToken
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to submit form")
-      }
-
-      // Show success message
-      setIsSubmitted(true)
-      setFormData({ name: "", email: "", subject: "", message: "" })
-    } catch (error) {
-      console.error("Error submitting form:", error)
+    // Verificar se as variáveis de ambiente estão definidas
+    if (!process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 
+        !process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 
+        !process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY) {
+      console.error("EmailJS environment variables are not properly set");
       setErrors({
-        form: error instanceof Error ? error.message : "An error occurred while submitting the form. Please try again.",
-      })
+        form: "Configuration error. Please contact the administrator."
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      console.log("Enviando formulário com EmailJS...");
+      
+      // Log do conteúdo do formulário
+      if (process.env.NODE_ENV === "development") {
+        const formData = new FormData(formRef.current);
+        console.log("Form data:", Object.fromEntries(formData.entries()));
+      }
+      
+      // Send email directly using EmailJS on the client side
+      const result = await emailjs.sendForm(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+        formRef.current,
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+      )
+
+      console.log("EmailJS result:", result);
+
+      if (result.status === 200) {
+        // Show success message
+        setIsSubmitted(true)
+        setFormData({ name: "", email: "", title: "", message: "" })
+      } else {
+        console.error("EmailJS returned non-200 status:", result);
+        throw new Error(`Failed to send email: Status ${result.status} - ${result.text}`)
+      }
+    } catch (error: any) {
+      console.error("Error submitting form:", error);
+      
+      // Verificar especificamente o erro de reCAPTCHA
+      if (error.text && error.text.includes("g-recaptcha-response")) {
+        console.error("reCAPTCHA error detected - You need to disable reCAPTCHA in EmailJS dashboard");
+        setErrors({
+          form: "Error: reCAPTCHA validation failed. Please contact the administrator to disable reCAPTCHA in the EmailJS dashboard."
+        });
+      } else if (error.text) {
+        console.error("EmailJS error details:", error.text);
+        setErrors({
+          form: `Error: ${error.text}`
+        });
+      } else {
+        setErrors({
+          form: error instanceof Error 
+            ? `Error: ${error.message}` 
+            : "An error occurred while submitting the form. Please try again."
+        });
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -227,15 +255,6 @@ export default function ContactSection() {
                 </motion.a>
               </div>
             </div>
-
-            {/* Debug information - only shown in development */}
-            {process.env.NODE_ENV === "development" && debugInfo && (
-              <div className="mt-8 p-4 bg-gray-800 rounded-md">
-                <h4 className="text-sm font-semibold mb-2">Debug Info (Development Only)</h4>
-                <pre className="text-xs overflow-auto">{JSON.stringify(debugInfo, null, 2)}</pre>
-                <p className="text-xs mt-2">CSRF Token Length: {csrfToken?.length || 0}</p>
-              </div>
-            )}
           </motion.div>
 
           <motion.div
@@ -276,15 +295,12 @@ export default function ContactSection() {
                 </Button>
               </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
                 {errors.form && (
                   <div className="bg-red-900/50 border border-red-500 text-red-100 px-4 py-3 rounded-md">
                     {errors.form}
                   </div>
                 )}
-
-                {/* Hidden CSRF token field */}
-                <input type="hidden" name="csrf_token" value={csrfToken} />
 
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -316,11 +332,11 @@ export default function ContactSection() {
                   {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
                 </div>
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium mb-2">
+                  <label htmlFor="title" className="block text-sm font-medium mb-2">
                     Subject
                   </label>
                   <Select onValueChange={handleSelectChange}>
-                    <SelectTrigger className={`bg-white/5 border-white/10 ${errors.subject ? "border-red-500" : ""}`}>
+                    <SelectTrigger className={`bg-white/5 border-white/10 ${errors.title ? "border-red-500" : ""}`}>
                       <SelectValue placeholder="Select a subject" />
                     </SelectTrigger>
                     <SelectContent>
@@ -330,7 +346,8 @@ export default function ContactSection() {
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
-                  {errors.subject && <p className="mt-1 text-sm text-red-500">{errors.subject}</p>}
+                  <input type="hidden" name="title" value={formData.title} />
+                  {errors.title && <p className="mt-1 text-sm text-red-500">{errors.title}</p>}
                 </div>
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium mb-2">

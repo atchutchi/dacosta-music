@@ -8,9 +8,10 @@ const CSRF_SECRET = process.env.CSRF_SECRET
 const TOKEN_EXPIRATION = 60 * 60 * 1000
 
 /**
- * Generate a CSRF token and store it in a cookie
+ * Generate a CSRF token without storing it in a cookie
+ * Since we're only validating client-side now, we don't need to store it server-side
  */
-export async function generateCsrfToken(): Promise<string> {
+export function generateCsrfToken(): string {
   if (!CSRF_SECRET) {
     console.error("CSRF_SECRET environment variable is not defined")
     throw new Error("CSRF configuration error")
@@ -28,19 +29,7 @@ export async function generateCsrfToken(): Promise<string> {
     const hash = createHash("sha256").update(`${payload}${CSRF_SECRET}`).digest("hex")
 
     // Final token is payload + hash
-    const csrfToken = `${payload}|${hash}`
-
-    // Store in a cookie (HTTP only for security)
-    const cookieStore = cookies()
-    await cookieStore.set("csrf_token", csrfToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/",
-      maxAge: TOKEN_EXPIRATION / 1000, // Convert to seconds
-    })
-
-    return csrfToken
+    return `${payload}|${hash}`
   } catch (error) {
     console.error("Error generating CSRF token:", error)
     throw new Error("Failed to generate security token")
@@ -48,24 +37,16 @@ export async function generateCsrfToken(): Promise<string> {
 }
 
 /**
- * Validate a CSRF token against the one stored in cookies
+ * Validate a CSRF token (checks timestamp and hash)
+ * Since this is only for client-side validation now, we don't need to check cookies
  */
-export async function validateCsrfToken(token: string): Promise<boolean> {
+export function validateCsrfToken(token: string): boolean {
   if (!CSRF_SECRET) {
     console.error("CSRF_SECRET environment variable is not defined")
     return false
   }
 
   try {
-    // Get the stored token from cookies
-    const cookieStore = cookies()
-    const storedToken = await cookieStore.get("csrf_token")?.value
-
-    if (!storedToken || !token) {
-      console.error("CSRF token missing from cookie or request")
-      return false
-    }
-
     // Token should be in format: random|timestamp|hash
     const parts = token.split("|")
     if (parts.length !== 3) {
@@ -87,7 +68,7 @@ export async function validateCsrfToken(token: string): Promise<boolean> {
     const expectedHash = createHash("sha256").update(`${payload}${CSRF_SECRET}`).digest("hex")
 
     // Compare the provided hash with the expected hash
-    const isValid = providedHash === expectedHash && token === storedToken
+    const isValid = providedHash === expectedHash
     if (!isValid) {
       console.error("CSRF token validation failed")
     }

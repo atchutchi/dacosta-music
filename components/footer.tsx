@@ -18,7 +18,7 @@ export default function Footer() {
               />
             </Link>
             <p className="text-white/70 mb-6">
-              A creative agency and talent management company representing a new era of African electronic music.
+              A creative agency and talent management company representing a new era of electronic music.
             </p>
             <div className="flex space-x-4">
               <a
@@ -79,7 +79,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/#roster" className="text-white/70 hover:text-white">
-                  Artist Roster
+                  Roster
                 </Link>
               </li>
               <li>

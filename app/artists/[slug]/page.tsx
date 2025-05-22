@@ -1,11 +1,22 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ArrowLeft, Instagram, Twitter, Globe, Facebook, Music, Headphones, Youtube } from "lucide-react"
+import { ArrowLeft, Instagram, Twitter, Globe, Facebook, Music, Headphones, Youtube, Calendar, MapPin } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
+
+interface Event {
+  id: string
+  name: string
+  date: string
+  location: string
+  ticketLink: string
+  image?: string
+  artistId?: string
+  description?: string
+}
 
 interface Artist {
   id: string
@@ -77,11 +88,12 @@ export default function ArtistPage() {
   const params = useParams()
   const artistSlug = params.slug as string
   const [artist, setArtist] = useState<Artist | null>(null)
+  const [artistEvents, setArtistEvents] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [imageError, setImageError] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
-    // Simulate fetching artist data
+    // Fetch artist data
     const fetchArtist = () => {
       const artists: Artist[] = [
         {
@@ -328,6 +340,23 @@ export default function ArtistPage() {
 
       const foundArtist = artists.find((a) => a.id === artistSlug)
       setArtist(foundArtist || null)
+      
+      // Try to get events from localStorage
+      const savedEvents = localStorage.getItem("dacosta-events");
+      if (savedEvents) {
+        const allEvents = JSON.parse(savedEvents);
+        // Filter events for this artist
+        const filteredEvents = allEvents.filter((event: Event) => event.artistId === artistSlug);
+        setArtistEvents(filteredEvents);
+      } else if (foundArtist) {
+        // If no events in localStorage, use the default events
+        setArtistEvents(foundArtist.events.map(event => ({
+          ...event,
+          artistId: foundArtist.id,
+          image: foundArtist.gallery[0] // Use first gallery image as event image
+        })));
+      }
+      
       setIsLoading(false)
     }
 
@@ -556,6 +585,65 @@ export default function ArtistPage() {
             </div>
           </div>
         </motion.div>
+
+        {/* Artist Events */}
+        <div className="mb-16">
+          <h2 className="text-2xl font-bold mb-6 text-center">{artist.name}'s Upcoming Shows</h2>
+          
+          {artistEvents.length === 0 ? (
+            <div className="text-center py-12 border border-white/10 rounded-lg bg-black/30">
+              <p className="text-white/70 mb-4">No upcoming shows currently scheduled.</p>
+              <Link href="/events">
+                <Button variant="outline">View All Events</Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {artistEvents.map((event) => (
+                <div 
+                  key={event.id} 
+                  className="overflow-hidden rounded-lg border border-white/10 bg-black/50 hover:bg-white/5 transition-colors group"
+                >
+                  {event.image && (
+                    <div className="aspect-video overflow-hidden">
+                      <img
+                        src={event.image}
+                        alt={event.name}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                    </div>
+                  )}
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold mb-4">{event.name}</h3>
+                    
+                    <div className="flex items-center mb-3 text-white/70">
+                      <Calendar className="h-4 w-4 mr-2" />
+                      <span>{event.date}</span>
+                    </div>
+                    
+                    <div className="flex items-center mb-6 text-white/70">
+                      <MapPin className="h-4 w-4 mr-2" />
+                      <span>{event.location}</span>
+                    </div>
+                    
+                    {event.ticketLink && event.ticketLink !== "#" ? (
+                      <a 
+                        href={event.ticketLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="block w-full"
+                      >
+                        <Button className="w-full">Get Tickets</Button>
+                      </a>
+                    ) : (
+                      <Button disabled className="w-full opacity-50">Coming Soon</Button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Booking CTA */}
         <div className="text-center mb-16">

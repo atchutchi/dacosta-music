@@ -14,23 +14,28 @@ function generateRandomString(length) {
 // Configuration
 const envFile = '.env.local';
 const envVars = {
-  // Resend API Key - add your key here or use the one provided
-  RESEND_API_KEY: 're_8rPftMfG_MZbhekKFggGqgUgLvWc2am6H',
+  // Supabase environment variables
+  NEXT_PUBLIC_SUPABASE_URL: 'https://your-supabase-project-url.supabase.co',
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: 'your-supabase-anon-key',
   
-  // Email to use as sender - change to your verified sender
-  EMAIL_FROM: 'bookings@dacosta-music.com',
+  // CSRF environment variables - should match what you set in middleware.ts
+  CSRF_SECRET: 'your-csrf-secret-a-random-string-min-32-chars',
   
-  // Email to receive admin notifications - change to your email
+  // EmailJS environment variables for server-side (deprecated)
+  EMAILJS_SERVICE_ID: 'your-emailjs-service-id',
+  EMAILJS_TEMPLATE_ID: 'your-emailjs-template-id',
+  EMAILJS_PUBLIC_KEY: 'your-emailjs-public-key',
+  EMAILJS_PRIVATE_KEY: 'your-emailjs-private-key',
+  
+  // EmailJS environment variables for client-side (browser)
+  NEXT_PUBLIC_EMAILJS_SERVICE_ID: 'service_io7khql',
+  NEXT_PUBLIC_EMAILJS_TEMPLATE_ID: 'template_9p1cubl',
+  NEXT_PUBLIC_EMAILJS_PUBLIC_KEY: 'fAaxEO9MexrnI9ypq',
+  
+  // Admin email for contact form
   ADMIN_EMAIL: 'admin@dacosta-music.com',
-  
-  // CSRF Secret for security
-  CSRF_SECRET: generateRandomString(64),
-  
-  // Bit.io API Keys for different artists
-  NEXT_PUBLIC_BIT_APP_ID_CAIRO: '46869fabf38284e834ea2fe5359ac6a3',
-  // Will add these later:
-  // NEXT_PUBLIC_BIT_APP_ID_ENOO_NAPA: '',
-  // NEXT_PUBLIC_BIT_APP_ID_DA_CAPO: '',
+  EMAIL_FROM: 'bookings@dacosta-music.com',
+  CONTACT_EMAIL: 'contact@dacosta-music.com',
 };
 
 // Create or update .env.local file
@@ -58,12 +63,6 @@ try {
 
   // Merge with new variables, preserving existing ones
   const mergedVars = { ...envVars, ...existingVars };
-  
-  // Add or update the new Resend API key
-  mergedVars.RESEND_API_KEY = envVars.RESEND_API_KEY;
-  
-  // Add or update the Bit.io API keys
-  mergedVars.NEXT_PUBLIC_BIT_APP_ID_CAIRO = envVars.NEXT_PUBLIC_BIT_APP_ID_CAIRO;
   
   // Create new content
   let newContent = '';
