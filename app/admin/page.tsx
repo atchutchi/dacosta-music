@@ -3,12 +3,9 @@
 import Link from "next/link";
 import { 
   CalendarDays, 
-  Music, 
-  Headphones,
   Settings, 
   Users, 
   ShoppingBag,
-  FileText,
   Home
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,27 +18,6 @@ export default function AdminPage() {
       icon: <CalendarDays className="h-8 w-8" />,
       link: "/admin/events",
       color: "bg-blue-500/10 text-blue-400"
-    },
-    {
-      title: "Live Sets",
-      description: "Manage live set recordings",
-      icon: <Headphones className="h-8 w-8" />,
-      link: "/admin/live-sets",
-      color: "bg-purple-500/10 text-purple-400"
-    },
-    {
-      title: "Tracks",
-      description: "Manage track listings",
-      icon: <Music className="h-8 w-8" />,
-      link: "/admin/tracks",
-      color: "bg-green-500/10 text-green-400"
-    },
-    {
-      title: "Albums",
-      description: "Manage album releases",
-      icon: <FileText className="h-8 w-8" />,
-      link: "/admin/albums",
-      color: "bg-orange-500/10 text-orange-400"
     },
     {
       title: "Artists",
