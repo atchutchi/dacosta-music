@@ -1,30 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { 
-  ArrowLeft, 
-  Calendar, 
-  MapPin, 
-  Link as LinkIcon, 
-  Save, 
-  Plus, 
-  Trash, 
-  ImagePlus,
-  Upload
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
+import { useState, useEffect } from "react";import Link from "next/link";import {   ArrowLeft,   Calendar,   MapPin,   Link as LinkIcon,   Save,   Plus,   Trash,   ImagePlus,  Upload} from "lucide-react";import { Button } from "@/components/ui/button";import { Input } from "@/components/ui/input";import { Label } from "@/components/ui/label";import { Textarea } from "@/components/ui/textarea";import {   Select,   SelectContent,   SelectItem,   SelectTrigger,   SelectValue } from "@/components/ui/select";import { useToast } from "@/components/ui/use-toast";import { FileUploader } from "@/components/ui/file-uploader";import { BUCKET_EVENTS } from "@/lib/supabase/storage";
 
 interface Event {
   id: string;
@@ -473,15 +449,17 @@ export default function AdminEventsPage() {
             </div>
             
             <div>
-              <Label htmlFor="image">Image URL</Label>
-              <Input
-                id="image"
-                name="image"
-                value={newEvent.image}
-                onChange={handleInputChange}
-                placeholder="/images/..."
-                className="mt-1"
-              />
+              <Label htmlFor="image">Event Image</Label>
+              <div className="mt-1">
+                <FileUploader
+                  onFileUploaded={(url: string) => setNewEvent(prev => ({ ...prev, image: url }))}
+                  currentFileUrl={newEvent.image}
+                  bucket={BUCKET_EVENTS}
+                  folder="covers"
+                  acceptedFileTypes="image/*"
+                  maxSizeMB={10}
+                />
+              </div>
             </div>
             
             <div>

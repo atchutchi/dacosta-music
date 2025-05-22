@@ -6,8 +6,13 @@ const nextConfig = {
   },
   // Configuração para imagens externas
   images: {
-    domains: ['localhost', 'supabase.co', 'storage.googleapis.com'],
-    unoptimized: true,
+    domains: [
+      'localhost', 
+      'supabase.co', 
+      'storage.googleapis.com',
+      'oxplahazlmpcpkelpolv.supabase.co' // Domínio específico do seu projeto Supabase
+    ],
+    // Remover unoptimized: true para permitir que o Next.js otimize as imagens
   },
   eslint: {
     ignoreDuringBuilds: true,
