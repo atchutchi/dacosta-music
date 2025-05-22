@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Save, Database, Image, Mail, ExternalLink } from "lucide-react";
+import { ArrowLeft, Save, Database, Image, Mail, ExternalLink, Check, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +11,14 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BUCKET_IMAGES, BUCKET_VIDEOS, BUCKET_EVENTS, BUCKET_ARTISTS } from "@/lib/supabase/storage";
+import { 
+  BUCKET_IMAGES, 
+  BUCKET_VIDEOS, 
+  BUCKET_EVENTS, 
+  BUCKET_ARTISTS,
+  checkBuckets,
+  createBucket
+} from "@/lib/supabase/storage";
 
 export default function AdminSettingsPage() {
   const { toast } = useToast();
@@ -22,6 +29,15 @@ export default function AdminSettingsPage() {
     totalArtists: '...',
     storageUsed: '...',
   });
+  
+  const [bucketStatus, setBucketStatus] = useState<Array<{name: string, exists: boolean}>>([
+    { name: BUCKET_IMAGES, exists: false },
+    { name: BUCKET_VIDEOS, exists: false },
+    { name: BUCKET_EVENTS, exists: false },
+    { name: BUCKET_ARTISTS, exists: false }
+  ]);
+  
+  const [creatingBucket, setCreatingBucket] = useState<string | null>(null);
   
   const [emailSettings, setEmailSettings] = useState({
     serviceId: '',
@@ -35,7 +51,11 @@ export default function AdminSettingsPage() {
   // Simulação de carregamento das configurações
   useEffect(() => {
     // Em um caso real, carregaríamos do banco de dados ou do localStorage
-    const loadSettings = () => {
+    const loadSettings = async () => {
+      // Verificar status dos buckets
+      const bucketsStatus = await checkBuckets();
+      setBucketStatus(bucketsStatus);
+      
       // Simular stats do Storage
       setSupabaseStats({
         totalImages: '24',
@@ -104,6 +124,44 @@ export default function AdminSettingsPage() {
     });
   };
 
+  const handleCreateBucket = async (bucketName: string) => {
+    setCreatingBucket(bucketName);
+    
+    try {
+      const success = await createBucket(bucketName, true);
+      
+      if (success) {
+        // Atualizar o status dos buckets
+        setBucketStatus(prev => 
+          prev.map(bucket => 
+            bucket.name === bucketName 
+              ? { ...bucket, exists: true } 
+              : bucket
+          )
+        );
+        
+        toast({
+          title: "Bucket criado",
+          description: `O bucket "${bucketName}" foi criado com sucesso.`,
+        });
+      } else {
+        toast({
+          title: "Erro",
+          description: `Não foi possível criar o bucket "${bucketName}". Verifique as permissões e políticas RLS.`,
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: `Erro ao criar bucket: ${error instanceof Error ? error.message : String(error)}`,
+        variant: "destructive"
+      });
+    } finally {
+      setCreatingBucket(null);
+    }
+  };
+
   return (
     <div className="min-h-screen pt-24 pb-20 bg-black">
       <div className="container mx-auto px-4">
@@ -169,24 +227,40 @@ export default function AdminSettingsPage() {
                       </div>
                       
                       <div className="p-4 rounded-md border border-white/10 bg-black/30">
-                        <h3 className="text-lg font-medium mb-2">Buckets</h3>
-                        <div className="space-y-1 text-white/70">
-                          <div className="flex justify-between">
-                            <span>{BUCKET_IMAGES}</span>
-                            <span className="font-medium text-green-400">Active</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>{BUCKET_VIDEOS}</span>
-                            <span className="font-medium text-green-400">Active</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>{BUCKET_EVENTS}</span>
-                            <span className="font-medium text-green-400">Active</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>{BUCKET_ARTISTS}</span>
-                            <span className="font-medium text-green-400">Active</span>
-                          </div>
+                        <h3 className="text-lg font-medium mb-4">Buckets</h3>
+                        <div className="space-y-3">
+                          {bucketStatus.map((bucket) => (
+                            <div key={bucket.name} className="flex justify-between items-center">
+                              <div className="flex items-center">
+                                {bucket.exists ? (
+                                  <Check className="h-4 w-4 mr-2 text-green-400" />
+                                ) : (
+                                  <AlertCircle className="h-4 w-4 mr-2 text-amber-400" />
+                                )}
+                                <span className={`${bucket.exists ? 'text-white' : 'text-white/70'}`}>
+                                  {bucket.name}
+                                </span>
+                              </div>
+                              {!bucket.exists && (
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  onClick={() => handleCreateBucket(bucket.name)}
+                                  disabled={creatingBucket === bucket.name}
+                                >
+                                  {creatingBucket === bucket.name ? "Criando..." : "Criar Bucket"}
+                                </Button>
+                              )}
+                              {bucket.exists && (
+                                <span className="text-xs bg-green-900/40 text-green-400 px-2 py-1 rounded-full">
+                                  Ativo
+                                </span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                        <div className="mt-4 text-xs text-white/50">
+                          <p>Nota: A criação de buckets requer permissões adequadas no Supabase.</p>
                         </div>
                       </div>
                     </div>

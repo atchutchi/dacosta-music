@@ -1,11 +1,12 @@
 "use client"
 
 import React, { useState, useRef } from "react"
-import { Upload, X, Image as ImageIcon, Film } from "lucide-react"
+import { Upload, X, Image as ImageIcon, Film, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 import { BUCKET_IMAGES, BUCKET_VIDEOS, BUCKET_EVENTS, BUCKET_ARTISTS } from "@/lib/supabase/storage"
 
 interface FileUploaderProps {
@@ -31,6 +32,7 @@ export function FileUploader({
 }: FileUploaderProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
+  const [errorCode, setErrorCode] = useState<string | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string>(currentFileUrl)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const maxSizeBytes = maxSizeMB * 1024 * 1024 // Converter MB para bytes
@@ -45,17 +47,20 @@ export function FileUploader({
     // Validar tamanho do arquivo
     if (file.size > maxSizeBytes) {
       setUploadError(`O arquivo é muito grande. O tamanho máximo é ${maxSizeMB}MB.`)
+      setErrorCode("FILE_TOO_LARGE")
       return
     }
 
     // Validar tipo de arquivo
     if (acceptedFileTypes !== "*" && !file.type.match(acceptedFileTypes)) {
       setUploadError(`Tipo de arquivo não suportado. Tipos aceitos: ${acceptedFileTypes}`)
+      setErrorCode("INVALID_FILE_TYPE")
       return
     }
 
     // Limpar erro anterior
     setUploadError(null)
+    setErrorCode(null)
     
     // Mostrar preview se for imagem
     if (isImage) {
@@ -90,6 +95,7 @@ export function FileUploader({
 
       if (!response.ok) {
         const errorData = await response.json()
+        setErrorCode(errorData.code || null)
         throw new Error(errorData.error || "Erro no upload")
       }
 
@@ -97,7 +103,7 @@ export function FileUploader({
       onFileUploaded(data.url)
     } catch (error) {
       console.error("Erro ao fazer upload:", error)
-      setUploadError("Falha ao fazer upload do arquivo. Tente novamente.")
+      setUploadError(error instanceof Error ? error.message : "Falha ao fazer upload do arquivo. Tente novamente.")
       // Se o upload falhar, remover o preview
       if (!currentFileUrl) {
         setPreviewUrl("")
@@ -119,6 +125,8 @@ export function FileUploader({
     if (fileInputRef.current) {
       fileInputRef.current.value = ""
     }
+    setUploadError(null)
+    setErrorCode(null)
   }
 
   const handleButtonClick = () => {
@@ -188,7 +196,17 @@ export function FileUploader({
         </div>
       )}
 
-      {uploadError && <p className="text-sm text-red-500">{uploadError}</p>}
+      {uploadError && (
+        <div className="text-sm text-red-500 space-y-2">
+          <p>{uploadError}</p>
+          {errorCode === "BUCKET_NOT_FOUND" && (
+            <Link href="/admin/settings" className="flex items-center text-xs text-blue-400 hover:text-blue-300">
+              <Settings className="h-3 w-3 mr-1" />
+              Ir para configurações para criar o bucket
+            </Link>
+          )}
+        </div>
+      )}
       
       {isUploading && (
         <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">

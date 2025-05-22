@@ -17,19 +17,8 @@ export async function uploadFile(bucket: string, file: File, path: string): Prom
   try {
     const supabase = createClientClient();
     
-    // Verifica se o bucket existe, se não, tenta criar
-    const { data: buckets } = await supabase.storage.listBuckets();
-    if (!buckets?.find(b => b.name === bucket)) {
-      // Tenta criar o bucket se ele não existir
-      const { error: createError } = await supabase.storage.createBucket(bucket, {
-        public: true // Bucket público para acesso direto às imagens
-      });
-      
-      if (createError) {
-        console.error('Erro ao criar bucket:', createError);
-        return null;
-      }
-    }
+    // Não verifica mais se o bucket existe nem tenta criar
+    // Assume que os buckets foram criados previamente no painel do Supabase
     
     // Faz o upload do arquivo
     const { error } = await supabase.storage
@@ -40,6 +29,12 @@ export async function uploadFile(bucket: string, file: File, path: string): Prom
       });
     
     if (error) {
+      // Se o erro for que o bucket não existe, dá uma mensagem mais clara
+      if (error.message?.includes('bucket') && error.message?.includes('not found')) {
+        console.error(`Bucket '${bucket}' não existe. Por favor, crie-o no painel admin do Supabase.`);
+        return null;
+      }
+      
       console.error('Erro ao fazer upload:', error);
       return null;
     }
@@ -50,6 +45,72 @@ export async function uploadFile(bucket: string, file: File, path: string): Prom
   } catch (error) {
     console.error('Erro no upload para o Supabase Storage:', error);
     return null;
+  }
+}
+
+/**
+ * Cria um bucket no Supabase Storage (deve ser chamado por um usuário autenticado com permissões)
+ * IMPORTANTE: Esta função só funcionará se chamada por um usuário autenticado com permissões adequadas
+ * @param bucketName Nome do bucket a ser criado
+ * @param isPublic Se o bucket será público (acessível sem autenticação)
+ * @returns true se criado com sucesso, false caso contrário
+ */
+export async function createBucket(bucketName: string, isPublic: boolean = true): Promise<boolean> {
+  try {
+    const supabase = createClientClient();
+    
+    // Verifica se o bucket já existe
+    const { data: existingBuckets } = await supabase.storage.listBuckets();
+    if (existingBuckets?.find(b => b.name === bucketName)) {
+      console.log(`Bucket '${bucketName}' já existe.`);
+      return true;
+    }
+    
+    // Cria o bucket
+    const { error } = await supabase.storage.createBucket(bucketName, {
+      public: isPublic
+    });
+    
+    if (error) {
+      console.error('Erro ao criar bucket:', error);
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Erro ao criar bucket:', error);
+    return false;
+  }
+}
+
+/**
+ * Verifica se todos os buckets necessários existem
+ * @returns Array com o status de cada bucket (nome e se existe)
+ */
+export async function checkBuckets(): Promise<Array<{name: string, exists: boolean}>> {
+  try {
+    const supabase = createClientClient();
+    const requiredBuckets = [BUCKET_IMAGES, BUCKET_VIDEOS, BUCKET_EVENTS, BUCKET_ARTISTS];
+    
+    const { data: existingBuckets, error } = await supabase.storage.listBuckets();
+    
+    if (error) {
+      console.error('Erro ao listar buckets:', error);
+      return requiredBuckets.map(name => ({ name, exists: false }));
+    }
+    
+    return requiredBuckets.map(name => ({
+      name,
+      exists: existingBuckets?.some(b => b.name === name) || false
+    }));
+  } catch (error) {
+    console.error('Erro ao verificar buckets:', error);
+    return [
+      { name: BUCKET_IMAGES, exists: false },
+      { name: BUCKET_VIDEOS, exists: false },
+      { name: BUCKET_EVENTS, exists: false },
+      { name: BUCKET_ARTISTS, exists: false }
+    ];
   }
 }
 
