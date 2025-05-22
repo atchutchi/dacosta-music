@@ -130,7 +130,9 @@ export default function AdminEventsPage() {
 
   // Handle select changes
   const handleSelectChange = (name: string, value: string) => {
-    setNewEvent(prev => ({ ...prev, [name]: value }));
+    // Se o valor for "none", definir como string vazia no estado
+    const actualValue = value === "none" ? "" : value;
+    setNewEvent(prev => ({ ...prev, [name]: actualValue }));
   };
 
   // Add new event
@@ -485,14 +487,14 @@ export default function AdminEventsPage() {
             <div>
               <Label htmlFor="artistId">Artist</Label>
               <Select 
-                value={newEvent.artistId || ''} 
+                value={newEvent.artistId === "" ? "none" : newEvent.artistId || "none"} 
                 onValueChange={(value) => handleSelectChange('artistId', value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select an artist" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   <SelectItem value="caiiro">Caiiro</SelectItem>
                   <SelectItem value="dacapo">Da Capo</SelectItem>
                   <SelectItem value="enoonapa">Enoo Napa</SelectItem>
