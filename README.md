@@ -4,6 +4,8 @@
 
 A modern, responsive website for Da Costa Music, a creative agency and talent management company representing a new era of African electronic music.
 
+🌐 **Live Website**: [https://www.dacosta-music.com](https://www.dacosta-music.com)
+
 ## Table of Contents
 
 - [Overview](#overview)
@@ -31,6 +33,7 @@ Da Costa Music website serves as a digital platform for the agency to showcase t
 - **Events**: Calendar and detailed event pages
 - **Contact Form**: With form validation and reCAPTCHA integration
 - **Authentication**: User registration and login system for admin access
+- **Media Storage**: Supabase Storage integration for images and videos
 - **Responsive Design**: Mobile-first approach for all screen sizes
 
 ## Technology Stack
@@ -49,6 +52,7 @@ Da Costa Music website serves as a digital platform for the agency to showcase t
   - Server Components and Server Actions
   - Supabase (PostgreSQL database)
   - Supabase Auth
+  - Supabase Storage (media files)
 
 - **Deployment**:
   - Vercel (recommended)
@@ -353,3 +357,14 @@ The current implementation includes several security measures:
 This project is proprietary and confidential. All rights reserved by Da Costa Music.
 
 © 2023-2024 Da Costa Music
+
+## Storage Structure
+
+The application uses Supabase Storage with the following bucket organization:
+
+- **images**: General purpose images
+- **artists**: Artist photos and logos
+- **events**: Event images and promotional materials
+- **videos**: Video content and media files
+
+Each bucket is configured with appropriate permissions and public access settings through Supabase's Row Level Security (RLS) policies.
