@@ -100,7 +100,7 @@ export default function B3BPage() {
             className="relative overflow-hidden rounded-lg aspect-video"
           >
             <video
-              src="/videos/video-hero-section.mov"
+              src="/videos/video-hero-section.mp4"
               className="w-full h-full object-cover"
               autoPlay={isVideoPlaying}
               muted

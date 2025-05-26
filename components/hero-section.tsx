@@ -18,7 +18,7 @@ export default function HeroSection() {
       {/* Hero Video */}
       <div className="absolute inset-0">
         <video
-          src="/videos/video-hero-section.mov"
+          src="/videos/video-hero-section.mp4"
           className="object-cover w-full h-full"
           autoPlay
           muted
