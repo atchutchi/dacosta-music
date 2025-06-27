@@ -15,15 +15,25 @@ export default function HeroSection() {
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
-      {/* Hero Video */}
+      {/* Hero Video - YouTube Embed */}
       <div className="absolute inset-0">
-        <video
-          src="/videos/video-hero-section.mp4"
-          className="object-cover w-full h-full"
-          autoPlay
-          muted
-          loop
-          playsInline
+        <iframe
+          src="https://www.youtube.com/embed/M9Nr1uGgh_4?autoplay=1&mute=1&loop=1&playlist=M9Nr1uGgh_4&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&fs=0&cc_load_policy=0&playsinline=1&enablejsapi=1"
+          className="w-full h-full"
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            width: '100vw',
+            height: '56.25vw', // 16:9 aspect ratio
+            minHeight: '100vh',
+            minWidth: '177.78vh', // 16:9 aspect ratio
+            transform: 'translate(-50%, -50%)',
+            pointerEvents: 'none'
+          }}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
         />
       </div>
 
