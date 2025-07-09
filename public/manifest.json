@@ -1,0 +1,29 @@
+{
+  "name": "Da Costa Music - African Electronic Music Agency",
+  "short_name": "Da Costa Music",
+  "description": "A creative agency and talent management company representing a new era of African electronic music",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/images/logo-white.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/logo-branco-dacosta.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["music", "entertainment", "business"],
+  "scope": "/",
+  "lang": "en-US",
+  "dir": "ltr",
+  "prefer_related_applications": false
+} 
