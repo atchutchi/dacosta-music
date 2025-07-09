@@ -121,11 +121,11 @@ export default function EventCalendar() {
         <h2 className="text-2xl font-bold tracking-tight">Calendário de Eventos</h2>
 
         <div className="flex items-center space-x-2">
-          <Button variant="outline" size="icon" onClick={previousMonth}>
+          <Button variant="outline" size="icon" onClick={previousMonth} aria-label="Mês anterior">
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <span className="min-w-[150px] text-center font-medium">{getCurrentMonthName()}</span>
-          <Button variant="outline" size="icon" onClick={nextMonth}>
+          <Button variant="outline" size="icon" onClick={nextMonth} aria-label="Próximo mês">
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>

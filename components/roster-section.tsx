@@ -29,8 +29,8 @@ export default function RosterSection() {
     {
       id: "caiiro",
       name: "Caiiro",
-      logo: "/images/caiiro-logo-branco.png",
-      image: "/images/Caiiro-VIII.jpg",
+      logo: "/images/caiiro-logo-branco.webp",
+      image: "/images/Caiiro-VIII.webp",
       bio: "Renowned for his emotionally charged soundscapes and powerful Afro-Tech sets, Caiiro is one of Africa’s most prominent electronic music exports. With a global fan base and standout performances across Europe, the Americas, and beyond, Caiiro continues to shape the narrative of modern African dance music.",
       socials: {
         instagram: "https://www.instagram.com/caiirosa/",
@@ -42,8 +42,8 @@ export default function RosterSection() {
     {
       id: "dacapo",
       name: "Da Capo",
-      logo: "/images/logo-branco-da-capo.png",
-      image: "/images/da-capo-X.jpg",
+      logo: "/images/logo-branco-da-capo.webp",
+      image: "/images/da-capo-X.webp",
       bio: "A visionary in Afro House and Deep Tech, Da Capo is known for his rich, layered productions and genre-defining DJ sets. A true craftsman of sound, his artistry bridges underground energy with refined musical storytelling—earning him global recognition and a dedicated audience.",
       socials: {
         instagram: "https://instagram.com/dacapo",
@@ -54,8 +54,8 @@ export default function RosterSection() {
     {
       id: "enoonapa",
       name: "Enoo Napa",
-      logo: "/images/logo-branco-enoo-napa.png",
-      image: "/images/Enoo-Napa0374.jpg",
+      logo: "/images/logo-branco-enoo-napa.webp",
+      image: "/images/Enoo-Napa0374.webp",
       bio: "Enoo Napa delivers cutting-edge Afro-Electronic music with a signature edge. Fusing raw energy with intricate production, his work is celebrated in clubs and festivals around the world. Bold, futuristic, and uniquely African—Enoo’s sound commands attention and respect.",
       socials: {
         instagram: "https://instagram.com/enoonapa",
@@ -148,10 +148,10 @@ export default function RosterSection() {
                     <img
                       src={
                         artist.id === "caiiro"
-                          ? "/images/caiiro-logo-branco.png"
+                          ? "/images/caiiro-logo-branco.webp"
                           : artist.id === "dacapo"
-                            ? "/images/logo-branco-da-capo.png"
-                            : "/images/logo-branco-enoo-napa.png"
+                            ? "/images/logo-branco-da-capo.webp"
+                            : "/images/logo-branco-enoo-napa.webp"
                       }
                       alt={`${artist.name} logo`}
                       className="h-full object-contain"
@@ -194,7 +194,7 @@ export default function RosterSection() {
                     </div>
                     <div className="overflow-hidden rounded-lg">
                       <motion.img
-                        src="/images/club-view.png"
+                        src="/images/club-view.webp"
                         alt="B3B Concept"
                         className="w-full h-full object-cover"
                         initial={{ scale: 1.2, filter: "grayscale(100%)" }}

@@ -19,7 +19,7 @@ export default function BlogSection() {
       excerpt:
         "Our innovative B3B concept made its debut at a sold-out London venue, featuring three of our top artists in a groundbreaking back-to-back set.",
       date: "April 15, 2023",
-      image: "/images/crowd-lights.png",
+      image: "/images/crowd-lights.webp",
       category: "Events",
     },
     {
@@ -28,7 +28,7 @@ export default function BlogSection() {
       excerpt:
         "Caiiro's latest EP 'Ancestral Rhythms' has topped the Afro House charts, cementing his position as a pioneer in the genre.",
       date: "March 22, 2023",
-      image: "/images/dj-performance-2.png",
+      image: "/images/dj-performance-2.webp",
       category: "Releases",
     },
     {
@@ -37,7 +37,7 @@ export default function BlogSection() {
       excerpt:
         "How African electronic music is reshaping the global dance music landscape and creating new cultural connections.",
       date: "February 10, 2023",
-      image: "/images/crowd-pattern.png",
+      image: "/images/crowd-pattern.webp",
       category: "Features",
     },
   ]

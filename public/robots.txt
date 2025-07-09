@@ -1,0 +1,42 @@
+User-agent: *
+Allow: /
+
+# Permitir todos os principais bots de busca
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Disallow admin pages
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /login
+Disallow: /register
+
+# Allow important pages
+Allow: /artists/
+Allow: /events/
+Allow: /blog/
+Allow: /shop/
+Allow: /services/
+Allow: /b3b/
+
+# Sitemap
+Sitemap: https://www.dacosta-music.com/sitemap.xml
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1 

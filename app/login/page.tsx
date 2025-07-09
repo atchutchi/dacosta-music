@@ -60,7 +60,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-black px-4">
       <div className="mb-8 w-full max-w-[200px]">
-        <Image src="/images/logo-white.png" alt="Da Costa Music" width={200} height={80} className="w-full" priority />
+        <Image src="/images/logo-white.webp" alt="Da Costa Music" width={200} height={80} className="w-full" priority />
       </div>
 
       <Card className="w-full max-w-md border-gray-800 bg-black text-white">

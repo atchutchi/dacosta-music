@@ -10,7 +10,7 @@ export default function Footer() {
           <div>
             <Link href="/" className="inline-block mb-6">
               <Image
-                src="/images/logo-branco-dacosta.png"
+                src="/images/logo-branco-dacosta.webp"
                 alt="Da Costa Music"
                 width={120}
                 height={60}

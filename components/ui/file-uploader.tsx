@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
-import { BUCKET_IMAGES, BUCKET_VIDEOS, BUCKET_EVENTS, BUCKET_ARTISTS } from "@/lib/supabase/storage"
+import { BUCKET_IMAGES, BUCKET_VIDEOS, BUCKET_EVENTS, BUCKET_ARTISTS, BUCKET_MEDIA } from "@/lib/supabase/storage"
 
 interface FileUploaderProps {
   onFileUploaded: (url: string) => void
@@ -190,6 +190,7 @@ export function FileUploader({
             size="icon"
             className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
             onClick={handleRemoveFile}
+            aria-label="Remover arquivo"
           >
             <X className="h-4 w-4" />
           </Button>

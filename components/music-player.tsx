@@ -193,13 +193,13 @@ export function MusicPlayer({ tracks, initialTrackIndex = 0, onTrackChange, clas
           <p className="text-sm text-muted-foreground">{currentTrack?.artist}</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={prevTrack}>
+          <Button variant="ghost" size="icon" onClick={prevTrack} aria-label="Faixa anterior">
             <SkipBack className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" onClick={togglePlay}>
+          <Button variant="ghost" size="icon" onClick={togglePlay} aria-label={isPlaying ? "Pausar" : "Reproduzir"}>
             {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
           </Button>
-          <Button variant="ghost" size="icon" onClick={nextTrack}>
+          <Button variant="ghost" size="icon" onClick={nextTrack} aria-label="Próxima faixa">
             <SkipForward className="h-5 w-5" />
           </Button>
         </div>

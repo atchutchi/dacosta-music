@@ -8,6 +8,7 @@ export default function BitWidget({ artistId }: BitWidgetProps) {
   
   return (
     <iframe
+      title={`${artistId} Bandsintown Events Widget`}
       src={`https://widget.bandsintown.com/${artistId}?app_id=${appId}&theme=light&language=pt`}
       loading="lazy"
       width="100%"

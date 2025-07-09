@@ -1,19 +1,47 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Configuração para não pré-renderizar páginas administrativas
+  // Configuração para desenvolvimento
   experimental: {
     // Remover appDir que está causando o aviso
   },
-  // Configuração para imagens externas
+  
+  // Configuração para origens permitidas em desenvolvimento
+  allowedDevOrigins: [
+    'localhost:3000',
+    '192.168.17.16:3000'
+  ],
+  
+  // Configuração para imagens externas - Nova sintaxe (corrigido)
   images: {
-    domains: [
-      'localhost', 
-      'supabase.co', 
-      'storage.googleapis.com',
-      'oxplahazlmpcpkelpolv.supabase.co' // Domínio específico do seu projeto Supabase
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'supabase.co',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'storage.googleapis.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'oxplahazlmpcpkelpolv.supabase.co',
+        pathname: '/**',
+      },
     ],
-    // Remover unoptimized: true para permitir que o Next.js otimize as imagens
+    unoptimized: false, // Permitir otimização
   },
+  
+  // Compressão automática
+  compress: true,
+  
   eslint: {
     ignoreDuringBuilds: true,
   },

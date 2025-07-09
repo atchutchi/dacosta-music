@@ -5,6 +5,7 @@ export const BUCKET_IMAGES = 'images';
 export const BUCKET_VIDEOS = 'videos';
 export const BUCKET_EVENTS = 'events';
 export const BUCKET_ARTISTS = 'artists';
+export const BUCKET_MEDIA = 'media'; // Novo bucket para blog posts
 
 /**
  * Faz upload de um arquivo para o Supabase Storage
@@ -90,7 +91,7 @@ export async function createBucket(bucketName: string, isPublic: boolean = true)
 export async function checkBuckets(): Promise<Array<{name: string, exists: boolean}>> {
   try {
     const supabase = createClientClient();
-    const requiredBuckets = [BUCKET_IMAGES, BUCKET_VIDEOS, BUCKET_EVENTS, BUCKET_ARTISTS];
+    const requiredBuckets = [BUCKET_IMAGES, BUCKET_VIDEOS, BUCKET_EVENTS, BUCKET_ARTISTS, BUCKET_MEDIA];
     
     const { data: existingBuckets, error } = await supabase.storage.listBuckets();
     
@@ -109,7 +110,8 @@ export async function checkBuckets(): Promise<Array<{name: string, exists: boole
       { name: BUCKET_IMAGES, exists: false },
       { name: BUCKET_VIDEOS, exists: false },
       { name: BUCKET_EVENTS, exists: false },
-      { name: BUCKET_ARTISTS, exists: false }
+      { name: BUCKET_ARTISTS, exists: false },
+      { name: BUCKET_MEDIA, exists: false }
     ];
   }
 }

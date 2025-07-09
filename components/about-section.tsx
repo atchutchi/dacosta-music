@@ -39,18 +39,18 @@ export default function AboutSection() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-4">
               <div className="overflow-hidden rounded-lg h-64">
-                <img src="/images/dj-closeup.png" alt="DJ Performance" className="w-full h-full object-cover" />
+                <img src="/images/dj-closeup.webp" alt="DJ Performance" className="w-full h-full object-cover" />
               </div>
               <div className="overflow-hidden rounded-lg h-48">
-                <img src="/images/dj-duo.png" alt="DJ Performance" className="w-full h-full object-cover" />
+                <img src="/images/dj-duo.webp" alt="DJ Performance" className="w-full h-full object-cover" />
               </div>
             </div>
             <div className="space-y-4 mt-8">
               <div className="overflow-hidden rounded-lg h-48">
-                <img src="/images/dj-red-light.png" alt="DJ Performance" className="w-full h-full object-cover" />
+                <img src="/images/dj-red-light.webp" alt="DJ Performance" className="w-full h-full object-cover" />
               </div>
               <div className="overflow-hidden rounded-lg h-64">
-                <img src="/images/crowd-pattern.png" alt="Crowd" className="w-full h-full object-cover" />
+                <img src="/images/crowd-pattern.webp" alt="Crowd" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>

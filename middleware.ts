@@ -2,10 +2,26 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 export async function middleware(request: NextRequest) {
-  // Simple middleware that doesn't do authentication checks
-  return NextResponse.next()
+  // Create response
+  const response = NextResponse.next()
+
+  // Minimal security headers (non-breaking)
+  response.headers.set('X-DNS-Prefetch-Control', 'on')
+  response.headers.set('X-XSS-Protection', '1; mode=block')
+  response.headers.set('X-Content-Type-Options', 'nosniff')
+
+  return response
 }
 
 export const config = {
-  matcher: [], // No routes to match
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
 }

@@ -15,19 +15,19 @@ export default function ArtistsPage() {
     {
       id: "caiiro",
       name: "Caiiro",
-      image: "/images/Caiiro-VIII.jpg",
+      image: "/images/Caiiro-VIII.webp",
       bio: "Renowned for his emotionally charged soundscapes and powerful Afro-Tech sets, Caiiro is one of Africa's most prominent electronic music exports.",
     },
     {
       id: "dacapo",
       name: "Da Capo",
-      image: "/images/da-capo-X.jpg",
+      image: "/images/da-capo-X.webp",
       bio: "A visionary in Afro House and Deep Tech, Da Capo's rich, layered productions and refined musical storytelling form the backbone of many B3B sets.",
     },
     {
       id: "enoonapa",
       name: "Enoo Napa",
-      image: "/images/Enoo-Napa0374.jpg",
+      image: "/images/Enoo-Napa0374.webp",
       bio: "Delivering cutting-edge Afro-Electronic music with a signature edge, Enoo Napa brings raw energy and futuristic sounds to the collective.",
     },
   ]
@@ -57,10 +57,10 @@ export default function ArtistsPage() {
                 <img
                   src={
                     artist.id === "caiiro"
-                      ? "/images/caiiro-logo-branco.png"
+                      ? "/images/caiiro-logo-branco.webp"
                       : artist.id === "dacapo"
-                        ? "/images/logo-branco-da-capo.png"
-                        : "/images/logo-branco-enoo-napa.png"
+                        ? "/images/logo-branco-da-capo.webp"
+                        : "/images/logo-branco-enoo-napa.webp"
                   }
                   alt={`${artist.name} logo`}
                   className="h-full object-contain"

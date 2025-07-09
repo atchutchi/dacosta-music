@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { uploadFile, checkBuckets, BUCKET_IMAGES, BUCKET_VIDEOS, BUCKET_EVENTS, BUCKET_ARTISTS } from "@/lib/supabase/storage";
+import { uploadFile, checkBuckets, BUCKET_IMAGES, BUCKET_VIDEOS, BUCKET_EVENTS, BUCKET_ARTISTS, BUCKET_MEDIA } from "@/lib/supabase/storage";
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Valida o bucket para garantir que é um dos permitidos
-    const validBuckets = [BUCKET_IMAGES, BUCKET_VIDEOS, BUCKET_EVENTS, BUCKET_ARTISTS];
+    const validBuckets = [BUCKET_IMAGES, BUCKET_VIDEOS, BUCKET_EVENTS, BUCKET_ARTISTS, BUCKET_MEDIA];
     if (!validBuckets.includes(bucket)) {
       return NextResponse.json({ error: "Bucket inválido" }, { status: 400 });
     }

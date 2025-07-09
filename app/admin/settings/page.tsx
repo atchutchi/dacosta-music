@@ -16,6 +16,7 @@ import {
   BUCKET_VIDEOS, 
   BUCKET_EVENTS, 
   BUCKET_ARTISTS,
+  BUCKET_MEDIA,
   checkBuckets,
   createBucket
 } from "@/lib/supabase/storage";
@@ -34,7 +35,8 @@ export default function AdminSettingsPage() {
     { name: BUCKET_IMAGES, exists: false },
     { name: BUCKET_VIDEOS, exists: false },
     { name: BUCKET_EVENTS, exists: false },
-    { name: BUCKET_ARTISTS, exists: false }
+    { name: BUCKET_ARTISTS, exists: false },
+    { name: BUCKET_MEDIA, exists: false }
   ]);
   
   const [creatingBucket, setCreatingBucket] = useState<string | null>(null);

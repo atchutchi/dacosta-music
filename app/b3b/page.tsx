@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeft, Calendar, MapPin, Play } from "lucide-react"
+import { ArrowLeft, Calendar, MapPin } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
@@ -16,7 +16,6 @@ interface Event {
 }
 
 export default function B3BPage() {
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
   const [activeTab, setActiveTab] = useState("concept")
 
   const upcomingEvents: Event[] = [
@@ -25,7 +24,7 @@ export default function B3BPage() {
       name: "B3B London Showcase",
       date: "June 15, 2023",
       location: "Printworks, London",
-      image: "/images/crowd-lights.png",
+      image: "/images/crowd-lights.webp",
       ticketLink: "#",
     },
     {
@@ -33,7 +32,7 @@ export default function B3BPage() {
       name: "B3B Berlin Experience",
       date: "July 22, 2023",
       location: "Berghain, Berlin",
-      image: "/images/club-view.png",
+      image: "/images/club-view.webp",
       ticketLink: "#",
     },
     {
@@ -41,7 +40,7 @@ export default function B3BPage() {
       name: "B3B Amsterdam Special",
       date: "August 5, 2023",
       location: "Shelter, Amsterdam",
-      image: "/images/crowd-pattern.png",
+      image: "/images/crowd-pattern.webp",
       ticketLink: "#",
     },
   ]
@@ -99,28 +98,14 @@ export default function B3BPage() {
             transition={{ duration: 0.6 }}
             className="relative overflow-hidden rounded-lg aspect-video"
           >
-            <video
-              src="/videos/video-hero-section.mp4"
-              className="w-full h-full object-cover"
-              autoPlay={isVideoPlaying}
-              muted
-              loop
-              playsInline
-              controls={isVideoPlaying}
+            <iframe
+              title="B3B Concept Video"
+              src="https://www.youtube.com/embed/CQuWxclJ_5c?rel=0&modestbranding=1"
+              className="w-full h-full"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
             />
-            {!isVideoPlaying && (
-              <>
-                <div className="absolute inset-0 bg-black/50"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Button
-                    onClick={() => setIsVideoPlaying(true)}
-                    className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full h-16 w-16 flex items-center justify-center transition-transform hover:scale-110"
-                  >
-                    <Play className="h-8 w-8" />
-                  </Button>
-                </div>
-              </>
-            )}
           </motion.div>
 
           <motion.div
@@ -222,13 +207,13 @@ export default function B3BPage() {
               <div className="bg-white/5 p-6 rounded-lg">
                 <div className="aspect-square overflow-hidden rounded-lg mb-4">
                   <img
-                    src="/images/Caiiro-VIII.jpg"
+                    src="/images/Caiiro-VIII.webp"
                     alt="Caiiro"
                     className="w-full h-full object-cover object-top"
                   />
                 </div>
                 <div className="h-12 flex items-center mb-4">
-                  <img src="/images/caiiro-logo-branco.png" alt="Caiiro" className="h-full object-contain" />
+                  <img src="/images/caiiro-logo-branco.webp" alt="Caiiro" className="h-full object-contain" />
                 </div>
                 {/* Nome removido */}
                 <p className="text-white/80 mb-4">
@@ -244,13 +229,13 @@ export default function B3BPage() {
               <div className="bg-white/5 p-6 rounded-lg">
                 <div className="aspect-square overflow-hidden rounded-lg mb-4">
                   <img
-                    src="/images/da-capo-X.jpg"
+                    src="/images/da-capo-X.webp"
                     alt="Da Capo"
                     className="w-full h-full object-cover object-top"
                   />
                 </div>
                 <div className="h-12 flex items-center mb-4">
-                  <img src="/images/logo-branco-da-capo.png" alt="Da Capo" className="h-full object-contain" />
+                  <img src="/images/logo-branco-da-capo.webp" alt="Da Capo" className="h-full object-contain" />
                 </div>
                 {/* Nome removido */}
                 <p className="text-white/80 mb-4">
@@ -266,13 +251,13 @@ export default function B3BPage() {
               <div className="bg-white/5 p-6 rounded-lg">
                 <div className="aspect-square overflow-hidden rounded-lg mb-4">
                   <img
-                    src="/images/Enoo-Napa0374.jpg"
+                    src="/images/Enoo-Napa0374.webp"
                     alt="Enoo Napa"
                     className="w-full h-full object-cover object-top"
                   />
                 </div>
                 <div className="h-12 flex items-center mb-4">
-                  <img src="/images/logo-branco-enoo-napa.png" alt="Enoo Napa" className="h-full object-contain" />
+                  <img src="/images/logo-branco-enoo-napa.webp" alt="Enoo Napa" className="h-full object-contain" />
                 </div>
                 {/* Nome removido */}
                 <p className="text-white/80 mb-4">
@@ -335,21 +320,21 @@ export default function B3BPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="overflow-hidden rounded-lg">
                   <img
-                    src="/images/crowd-lights.png"
+                    src="/images/hero-dj-booth.webp"
                     alt="B3B Experience"
                     className="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
                   />
                 </div>
                 <div className="overflow-hidden rounded-lg">
                   <img
-                    src="/images/concert-phones.png"
+                    src="/images/dj-white-shirt.webp"
                     alt="B3B Experience"
                     className="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
                   />
                 </div>
                 <div className="overflow-hidden rounded-lg col-span-2">
                   <img
-                    src="/images/crowd-pattern.png"
+                    src="/images/dj-performance-2.webp"
                     alt="B3B Experience"
                     className="w-full h-40 object-cover hover:scale-110 transition-transform duration-700"
                   />
@@ -408,19 +393,19 @@ export default function B3BPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           <div className="text-center">
             <div className="h-16 mb-4 flex items-center justify-center">
-              <img src="/images/caiiro-logo-branco.png" alt="Caiiro" className="h-full object-contain" />
+              <img src="/images/caiiro-logo-branco.webp" alt="Caiiro" className="h-full object-contain" />
             </div>
             <p className="text-white/70">Emotionally charged soundscapes and powerful Afro-Tech sets</p>
           </div>
           <div className="text-center">
             <div className="h-16 mb-4 flex items-center justify-center">
-              <img src="/images/logo-branco-da-capo.png" alt="Da Capo" className="h-full object-contain" />
+              <img src="/images/logo-branco-da-capo.webp" alt="Da Capo" className="h-full object-contain" />
             </div>
             <p className="text-white/70">Rich, layered productions and refined musical storytelling</p>
           </div>
           <div className="text-center">
             <div className="h-16 mb-4 flex items-center justify-center">
-              <img src="/images/logo-branco-enoo-napa.png" alt="Enoo Napa" className="h-full object-contain" />
+              <img src="/images/logo-branco-enoo-napa.webp" alt="Enoo Napa" className="h-full object-contain" />
             </div>
             <p className="text-white/70">Raw energy and futuristic sounds with a signature edge</p>
           </div>

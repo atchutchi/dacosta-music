@@ -18,6 +18,7 @@ export default function HeroSection() {
       {/* Hero Video - YouTube Embed */}
       <div className="absolute inset-0">
         <iframe
+          title="Da Costa Music Background Video"
           src="https://www.youtube.com/embed/M9Nr1uGgh_4?autoplay=1&mute=1&loop=1&playlist=M9Nr1uGgh_4&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&fs=0&cc_load_policy=0&playsinline=1&enablejsapi=1"
           className="w-full h-full"
           style={{
@@ -49,7 +50,7 @@ export default function HeroSection() {
         >
           <div className="w-full max-w-md mb-2">
             <Image
-              src="/images/logo-branco-dacosta.png"
+              src="/images/logo-branco-dacosta.webp"
               alt="Da Costa Music"
               width={800}
               height={450}
