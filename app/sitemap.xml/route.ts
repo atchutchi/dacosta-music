@@ -12,7 +12,7 @@ export async function GET() {
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>${baseUrl}/images/logo-branco-dacosta.png</image:loc>
+      <image:loc>${baseUrl}/images/logo-branco-dacosta.webp</image:loc>
       <image:title>Da Costa Music Logo</image:title>
     </image:image>
   </url>

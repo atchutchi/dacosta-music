@@ -71,7 +71,7 @@ export default function Navbar() {
       <div className="container mx-auto flex items-center justify-between">
         <Link href="/" className="flex items-center">
           <Image
-            src="/images/logo-branco-dacosta.png"
+            src="/images/logo-branco-dacosta.webp"
             alt="Da Costa Music"
             width={120}
             height={60}

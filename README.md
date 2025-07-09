@@ -1,6 +1,6 @@
 # Da Costa Music Website
 
-![Da Costa Music](public/images/logo-branco-dacosta.png)
+![Da Costa Music](public/images/logo-branco-dacosta.webp)
 
 A modern, responsive website for Da Costa Music, a creative agency and talent management company representing a new era of African electronic music.
 

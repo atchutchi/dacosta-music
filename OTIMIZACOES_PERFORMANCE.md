@@ -97,7 +97,7 @@ Pages:           max-age=3600, stale-while-revalidate=86400
 
 ```html
 <!-- Critical resources preloaded -->
-<link rel="preload" href="/images/logo-branco-dacosta.png" as="image" />
+<link rel="preload" href="/images/logo-branco-dacosta.webp" as="image" type="image/webp" />
 <link rel="preload" href="/videos/Video-Hero-Section.mp4" as="video" />
 
 <!-- DNS prefetch para external domains -->
