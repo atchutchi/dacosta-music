@@ -1,5 +1,5 @@
 import type React from "react"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -12,12 +12,48 @@ const inter = Inter({
   display: 'swap',
   preload: true,
   variable: '--font-inter',
+  fallback: ['system-ui', 'arial'],
+  weight: ['400', '500', '600', '700'],
+  style: ['normal'],
 })
 
 export const metadata: Metadata = {
   title: "Da Costa Music - African Electronic Music Agency",
   description: "A creative agency and talent management company representing a new era of African electronic music.",
-  generator: 'v0.dev'
+  generator: 'Next.js',
+  keywords: 'African electronic music, music agency, talent management, Da Costa Music',
+  authors: [{ name: 'Da Costa Music' }],
+  manifest: '/manifest.json',
+  icons: {
+    icon: '/images/logo-branco-dacosta.webp',
+    apple: '/images/logo-branco-dacosta.webp',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://dacostamusic.com',
+    title: 'Da Costa Music - African Electronic Music Agency',
+    description: 'A creative agency and talent management company representing a new era of African electronic music.',
+    siteName: 'Da Costa Music',
+  },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#000000',
 }
 
 export default function RootLayout({
@@ -28,37 +64,50 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
-        {/* Critical resource hints */}
+        {/* Critical resource hints - ordered by priority */}
         <link rel="preload" href="/images/logo-branco-dacosta.webp" as="image" type="image/webp" />
-        <link rel="preload" href="/videos/Video-Hero-Section.mp4" as="video" type="video/mp4" />
         
         {/* DNS prefetch for external domains */}
         <link rel="dns-prefetch" href="//www.youtube.com" />
         <link rel="dns-prefetch" href="//widget.bandsintown.com" />
         <link rel="dns-prefetch" href="//open.spotify.com" />
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
         
         {/* Preconnect to important origins */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         
-        {/* PWA manifest */}
+        {/* PWA and mobile optimization */}
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#ffffff" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Da Costa Music" />
         
-        {/* Viewport meta for mobile optimization */}
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        {/* Performance hints */}
+        <meta httpEquiv="x-dns-prefetch-control" content="on" />
         
         {/* Service Worker Registration - Optimized */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if ('serviceWorker' in navigator && 'requestIdleCallback' in window) {
-                requestIdleCallback(function() {
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
                   navigator.serviceWorker.register('/sw.js', { scope: '/' })
                     .then(function(registration) {
                       console.log('SW registered: ', registration.scope);
+                      // Update available
+                      registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        if (newWorker) {
+                          newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                              // New content available, notify user
+                              console.log('New content available, please refresh.');
+                            }
+                          });
+                        }
+                      });
                     })
                     .catch(function(registrationError) {
                       console.warn('SW registration failed: ', registrationError);
@@ -68,11 +117,28 @@ export default function RootLayout({
             `,
           }}
         />
+        
+        {/* Critical CSS inlining hint */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Preload critical resources
+              (function() {
+                var link = document.createElement('link');
+                link.rel = 'preload';
+                link.href = '/videos/Video-Hero-Section.mp4';
+                link.as = 'video';
+                link.type = 'video/mp4';
+                document.head.appendChild(link);
+              })();
+            `,
+          }}
+        />
       </head>
-      <body className={`${inter.className} min-h-screen bg-black text-white`}>
+      <body className={`${inter.className} ${inter.variable} min-h-screen bg-black text-white antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <Navbar />
-          <main>{children}</main>
+          <main className="flex-1">{children}</main>
           <Footer />
           <Toaster />
         </ThemeProvider>

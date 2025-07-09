@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Menu, X } from "lucide-react"
+import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import { motion } from "framer-motion"
 
 export default function Navbar() {
@@ -76,6 +76,7 @@ export default function Navbar() {
             width={120}
             height={60}
             className="h-10 w-auto"
+            priority
           />
         </Link>
 
@@ -102,20 +103,17 @@ export default function Navbar() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="bg-black border-l border-white/20">
-              <div className="flex flex-col h-full">
-                <div className="flex justify-end mb-8">
-                  <SheetTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <X className="h-6 w-6" />
-                      <span className="sr-only">Close menu</span>
-                    </Button>
-                  </SheetTrigger>
-                </div>
+              <div className="flex flex-col h-full pt-8">
                 <nav className="flex flex-col space-y-6">
                   {navLinks.map((link) => (
-                    <Link key={link.href} href={link.href} className="text-xl font-medium">
-                      {link.label}
-                    </Link>
+                    <SheetClose asChild key={link.href}>
+                      <Link 
+                        href={link.href} 
+                        className="text-xl font-medium hover:text-white/80 transition-colors duration-300"
+                      >
+                        {link.label}
+                      </Link>
+                    </SheetClose>
                   ))}
                 </nav>
                 <div className="mt-auto pt-8">

@@ -1,14 +1,21 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enhanced experimental features
+  // Enhanced experimental features for better performance
   experimental: {
-    optimizePackageImports: ['lucide-react'],
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
     optimizeServerReact: true,
-    webVitalsAttribution: ['CLS', 'LCP'],
+    webVitalsAttribution: ['CLS', 'LCP', 'FID', 'FCP', 'TTFB'],
+    serverMinification: true,
+    serverSourceMaps: false,
+    fallbackNodePolyfills: false,
   },
   
   // Server external packages (moved from experimental)
-  serverExternalPackages: [],
+  serverExternalPackages: ['sharp'],
+  
+  // Enhanced compression
+  compress: true,
+  poweredByHeader: false,
   
   // Configuração para origens permitidas em desenvolvimento
   allowedDevOrigins: [
@@ -22,7 +29,7 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
+        protocol: 'https',
         hostname: 'localhost',
         port: '3000',
         pathname: '/**',
@@ -50,27 +57,59 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    unoptimized: false,
   },
   
-  // Otimizações de performance
-  compress: true,
-  poweredByHeader: false,
+  // Production optimizations
+  productionBrowserSourceMaps: false,
   
   // Webpack optimizations
-  webpack: (config, { dev, isServer }) => {
-    // Produção optimizations
-    if (!dev && !isServer) {
-      config.optimization.splitChunks = {
-        chunks: 'all',
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            chunks: 'all',
+  webpack: (config, { dev, isServer, webpack }) => {
+    // Production optimizations
+    if (!dev) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          maxInitialRequests: 10,
+          maxAsyncRequests: 10,
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              chunks: 'all',
+              maxSize: 244000,
+            },
+            common: {
+              name: 'common',
+              minChunks: 2,
+              chunks: 'all',
+              maxSize: 244000,
+            },
           },
         },
+        usedExports: true,
+        sideEffects: false,
       }
+      
+      // Bundle analyzer for optimization (disabled in production)
+      // if (process.env.ANALYZE === 'true') {
+      //   const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+      //   config.plugins.push(
+      //     new BundleAnalyzerPlugin({
+      //       analyzerMode: 'static',
+      //       openAnalyzer: false,
+      //     })
+      //   )
+      // }
     }
+    
+    // Performance optimizations
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': new URL('.', import.meta.url).pathname.slice(0, -1),
+    }
+    
     return config
   },
   
@@ -80,6 +119,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  
   env: {
     CSRF_SECRET: process.env.CSRF_SECRET || 'da-costa-music-csrf-secret-key',
     NEXT_PUBLIC_BIT_APP_ID_CAIRO: process.env.NEXT_PUBLIC_BIT_APP_ID_CAIRO,
@@ -112,7 +152,11 @@ const nextConfig = {
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(), payment=()',
+            value: 'camera=(), microphone=(), geolocation=(), payment=(), autoplay=(self)',
+          },
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on',
           },
         ],
       },
@@ -123,6 +167,10 @@ const nextConfig = {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable',
           },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
         ],
       },
       {
@@ -132,9 +180,43 @@ const nextConfig = {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable',
           },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+        ],
+      },
+      {
+        source: '/_next/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
         ],
       },
     ]
+  },
+
+  // Force HTTPS redirects (for production)
+  async redirects() {
+    if (process.env.NODE_ENV === 'production') {
+      return [
+        {
+          source: '/(.*)',
+          has: [
+            {
+              type: 'header',
+              key: 'x-forwarded-proto',
+              value: 'http',
+            },
+          ],
+          destination: 'https://dacostamusic.com/:path*',
+          permanent: true,
+        },
+      ]
+    }
+    return []
   },
 }
 
