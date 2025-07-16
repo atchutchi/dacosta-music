@@ -113,12 +113,12 @@ export function ShowsSection() {
       <div className="container mx-auto my-12 text-center">
         <h2 className="text-3xl font-bold mb-8">Upcoming Shows</h2>
         <div className="bg-white/5 rounded-lg p-12 mb-8">
-          <h3 className="text-2xl font-semibold mb-4">Nenhum evento disponível no momento</h3>
+          <h3 className="text-2xl font-semibold mb-4">No events available at the moment</h3>
           <p className="text-white/80 max-w-2xl mx-auto mb-6">
-            Fique atento para novos eventos que serão adicionados em breve.
+            Stay tuned for new events to be added soon.
           </p>
           <Link href="/#contact">
-            <Button className="bg-white text-black hover:bg-white/90">Entre em Contato</Button>
+            <Button className="bg-white text-black hover:bg-white/90">Get in Touch</Button>
           </Link>
         </div>
       </div>

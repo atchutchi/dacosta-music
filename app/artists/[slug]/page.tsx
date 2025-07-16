@@ -92,9 +92,9 @@ export default function ArtistPage() {
         {
           id: "caiiro",
           name: "Caiiro",
-          logo: "/images/caiiro-logo-branco.png",
-          image: "/images/dj-performance-1.png",
-          secondaryImage: "/images/caiiro-photo-profile.png",
+          logo: "/images/caiiro-logo-branco.webp",
+          image: "/images/dj-performance-1.webp",
+          secondaryImage: "/images/caiiro-photo-profile.webp",
           bio: "Renowned for his emotionally charged soundscapes and powerful Afro-Tech sets.",
           longBio:
             'Patrick Dumisani Mahlangu, known as Caiiro, is a leading South African DJ and producer in the global house music scene. Inspired by Egyptian history and diverse cultures, his unique sound has attracted a worldwide audience. His third album, Pyramids (2022), was a breakthrough success, cementing his status in electronic music.\n\nCaiiro has performed in 30+ countries across five continents, with his track "The Akan" becoming a viral sensation on major electronic stages. His remix collaboration with Adam Port on "Your Voice" became one of the year\'s biggest house hits, earning him recognition as one of 1001 Tracklists\' most influential producers in 2022.\n\nHis latest release, the self-titled album Caiiro (July 2024), has gained strong industry and listener support. It surpassed one million streams in its first month and exceeded 10 million Spotify streams in six months. Mixmag named him among the "DJs Who Defined the Year".',
@@ -141,18 +141,18 @@ export default function ArtistPage() {
             { id: "track5", title: "Pyramids", duration: "8:10" },
           ],
           gallery: [
-            "/images/caiiro-photo-profile.png",
-            "/images/Caiiro-VIII.jpg",
-            "/images/caiiro-new-photo.jpeg",
-            "/images/Caiiro-IV.jpg",
+            "/images/caiiro-photo-profile.webp",
+            "/images/Caiiro-VIII.webp",
+            "/images/caiiro-new-photo.webp",
+            "/images/Caiiro-IV.webp",
           ],
         },
         {
           id: "dacapo",
           name: "Da Capo",
-          logo: "/images/logo-branco-da-capo.png",
-          image: "/images/dj-white-shirt.png",
-          secondaryImage: "/images/da-capo-photo-profile.png",
+          logo: "/images/logo-branco-da-capo.webp",
+          image: "/images/dj-white-shirt.webp",
+          secondaryImage: "/images/da-capo-photo-profile.webp",
           bio: "A visionary in Afro House and Deep Tech, known for rich, layered productions.",
           longBio:
             "Da Capo, born Nicodimas Mogashoa, is a self-taught South African DJ and producer renowned for his innovative approach to music. His stage name, 'Da Capo,' signifies a commitment to constant evolution.\n\nHaving signed with DNH Records at 20, Da Capo quickly made his mark in the Afro House scene. His 2014 debut album featured collaborations with notable vocalists. Joining Soulistic Music in 2015, he released the acclaimed 'Touched' EP in 2016.\n\nIn 2017, the highly anticipated 'Indigo Child Part I' album showcased his versatile sound, garnering over 38 million streams. Platinum-certified singles like 'Africa' and 'Kelaya' solidified his global impact. In 2020, Da Capo founded Genesys Entity, releasing hits like 'Yehla Moja.'\n\nHis international presence is evident in performances at iconic venues like OUTPUT in New York and Hï Ibiza in Ibiza. Da Capo's unwavering commitment to musical excellence continues to redefine the global house music landscape.",
@@ -208,9 +208,9 @@ export default function ArtistPage() {
         {
           id: "enoonapa",
           name: "Enoo Napa",
-          logo: "/images/logo-branco-enoo-napa.png",
-          image: "/images/dj-red-light.png",
-          secondaryImage: "/images/enoo-napa-photo-profile.png",
+          logo: "/images/enoonapa_white_logo_1.webp",
+          image: "/images/dj-red-light.webp",
+          secondaryImage: "/images/enoo-napa-photo-profile.webp",
           bio: "Delivers cutting-edge Afro-Electronic music with a signature edge.",
           longBio:
             "Enoo Napa, the self-taught Afro House and Afro Tech maestro from Durban, South Africa, made his mark in 2013 with a distinctive fusion of Afro House basslines and tech synths. His transformative remix of Jackie Queen's \"Conqueror\" in 2015, catching the ears of international DJs, notably Black Coffee, marked a pivotal moment in his career.\n\nOver the last 5 years, Enoo Napa has not only remixed for industry giants like Black Coffee, Mi Casa, and others but also graced prestigious stages such as Hi Ibiza, Circoloco Ibiza, and Scorpios Mykonos. His tracks, released on acclaimed labels like MoBlack and Offering Recordings, position him as a rising star in the global house music scene.\n\nAnticipation is building for Enoo Napa's highly awaited debut album, set to release in mid-2024. As a key contributor to the exposure and evolution of the Afro House/Tech sound, he is not just reshaping the cultural definition of house music but also building a movement and promising further innovation for the global house music scene.",
@@ -254,10 +254,10 @@ export default function ArtistPage() {
             { id: "track15", title: "Two Zulu Men In Ibiza", duration: "6:40" },
           ],
           gallery: [
-            "/images/enoo-napa-photo-profile.png",
-            "/images/enoo-napa-photo.jpg",
-            "/images/Enoo-Napa0374.jpg",
-            "/images/enoo-napa-i.jpg",
+            "/images/enoo-napa-photo-profile.webp",
+            "/images/enoo-napa-photo.webp",
+            "/images/Enoo-Napa0374.webp",
+            "/images/enoo-napa-i.webp",
           ],
         },
       ]
@@ -365,10 +365,10 @@ export default function ArtistPage() {
             <img
               src={
                 params.slug === "caiiro"
-                  ? "/images/caiiro-logo-branco.png"
+                  ? "/images/caiiro-logo-branco.webp"
                   : params.slug === "dacapo"
-                    ? "/images/logo-branco-da-capo.png"
-                    : "/images/logo-branco-enoo-napa.png"
+                    ? "/images/logo-branco-da-capo.webp"
+                    : "/images/enoonapa_white_logo_1.png"
               }
               alt={`${artist.name} logo`}
               className="h-16 object-contain"
