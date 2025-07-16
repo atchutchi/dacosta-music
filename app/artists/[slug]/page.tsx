@@ -143,7 +143,7 @@ export default function ArtistPage() {
           gallery: [
             "/images/caiiro-photo-profile.webp",
             "/images/Caiiro-VIII.webp",
-            "/images/caiiro-new-photo.webp",
+            "/images/artist-jet.webp",
             "/images/Caiiro-IV.webp",
           ],
         },
@@ -199,10 +199,10 @@ export default function ArtistPage() {
             { id: "track10", title: "Indigo Child", duration: "6:18" },
           ],
           gallery: [
-            "/images/Da-Capo-IX.jpg",
-            "/images/dj-white-shirt.png",
-            "/images/da-capo-photo-profile.png",
-            "/images/dj-closeup.png",
+            "/images/Da-Capo-IX.webp",
+            "/images/dj-white-shirt.webp",
+            "/images/da-capo-photo-profile.webp",
+            "/images/dj-closeup.webp",
           ],
         },
         {
