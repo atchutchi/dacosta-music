@@ -32,7 +32,7 @@ export default function B3BPage() {
       name: "B3B Berlin Experience",
       date: "July 22, 2023",
       location: "Berghain, Berlin",
-      image: "/images/club-view.webp",
+      image: "/images/DSCF6032.webp",
       ticketLink: "#",
     },
     {

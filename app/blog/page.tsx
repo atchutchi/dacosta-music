@@ -91,7 +91,7 @@ export default function BlogPage() {
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl, eu aliquam nisl nisl eu nisl. Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl, eu aliquam nisl nisl eu nisl.",
       date: "November 5, 2022",
       author: "Collaboration Specialist",
-      image: "/images/club-view.webp",
+      image: "/images/DSCF6032.webp",
       category: "Collaborations",
       slug: "enoo-napa-international-collaborations",
     },
