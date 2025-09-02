@@ -1,16 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enhanced experimental features for better performance
+  // Simplified configuration to fix runtime errors
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
-    optimizeServerReact: true,
-    webVitalsAttribution: ['CLS', 'LCP', 'FID', 'FCP', 'TTFB'],
-    serverMinification: true,
-    serverSourceMaps: false,
-    fallbackNodePolyfills: false,
   },
   
-  // Server external packages (moved from experimental)
+  // Server external packages
   serverExternalPackages: ['sharp'],
   
   // Enhanced compression
@@ -65,53 +60,8 @@ const nextConfig = {
   // Production optimizations
   productionBrowserSourceMaps: false,
   
-  // Webpack optimizations
-  webpack: (config, { dev, isServer, webpack }) => {
-    // Production optimizations
-    if (!dev) {
-      config.optimization = {
-        ...config.optimization,
-        splitChunks: {
-          chunks: 'all',
-          maxInitialRequests: 10,
-          maxAsyncRequests: 10,
-          cacheGroups: {
-            vendor: {
-              test: /[\\/]node_modules[\\/]/,
-              name: 'vendors',
-              chunks: 'all',
-              maxSize: 244000,
-            },
-            common: {
-              name: 'common',
-              minChunks: 2,
-              chunks: 'all',
-              maxSize: 244000,
-            },
-          },
-        },
-        usedExports: true,
-        sideEffects: false,
-      }
-      
-      // Bundle analyzer for optimization (disabled in production)
-      // if (process.env.ANALYZE === 'true') {
-      //   const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
-      //   config.plugins.push(
-      //     new BundleAnalyzerPlugin({
-      //       analyzerMode: 'static',
-      //       openAnalyzer: false,
-      //     })
-      //   )
-      // }
-    }
-    
-    // Performance optimizations
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': new URL('.', import.meta.url).pathname.slice(0, -1),
-    }
-    
+  // Simplified webpack configuration
+  webpack: (config) => {
     return config
   },
   
