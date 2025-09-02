@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Construction, Music, Calendar, Mail } from "lucide-react"
+import { Construction, Music, Calendar, Mail, Instagram } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import MarqueeText from "@/components/marquee-text"
@@ -149,11 +149,64 @@ export default function ConstructionPage() {
             </Card>
           </motion.div>
 
+          {/* Contact Information */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1 }}
+            className="mb-12"
+          >
+            <h3 className="text-2xl font-bold mb-6 text-center">Entre em Contacto</h3>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6">
+              {/* Email */}
+              <Card className="bg-white/5 border-white/10 w-full md:w-auto">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                      <Mail className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-400">Bookings</p>
+                      <a 
+                        href="mailto:bookings@dacosta-music.com"
+                        className="text-white hover:text-blue-400 transition-colors font-medium"
+                      >
+                        bookings@dacosta-music.com
+                      </a>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Instagram */}
+              <Card className="bg-white/5 border-white/10 w-full md:w-auto">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
+                      <Instagram className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-400">Instagram</p>
+                      <a 
+                        href="https://www.instagram.com/dacosta_music?igsh=MTZ2cDE3M2hqa3hxMw=="
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-white hover:text-pink-400 transition-colors font-medium"
+                      >
+                        @dacosta_music
+                      </a>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </motion.div>
+
           {/* Coming Soon */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 1 }}
+            transition={{ duration: 0.6, delay: 1.2 }}
             className="text-center"
           >
             <p className="text-gray-400 mb-4">
