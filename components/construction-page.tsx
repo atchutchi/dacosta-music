@@ -22,6 +22,16 @@ export default function ConstructionPage() {
             transition={{ duration: 0.6 }}
             className="mb-12"
           >
+            {/* Logo Image */}
+            <div className="flex justify-center mb-6">
+              <img 
+                src="/images/logo-white.webp" 
+                alt="Da Costa Music Logo"
+                className="h-16 md:h-20 w-auto object-contain"
+                loading="eager"
+              />
+            </div>
+            
             <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
               Da Costa Music
             </h1>
