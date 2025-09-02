@@ -275,3 +275,10 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Em app/globals.css adicionar */
+@layer components {
+  .button-press {
+    @apply active:scale-95 transition-transform duration-150;
+  }
+}

@@ -38,8 +38,8 @@ export async function middleware(request: NextRequest) {
     "base-uri 'self'",
     "form-action 'self'",
     "frame-ancestors 'self'",
-    "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://widget.bandsintown.com https://open.spotify.com",
-    "connect-src 'self' https: wss: https://www.youtube.com",
+    "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://widget.bandsintown.com https://open.spotify.com https://*.spotify.com https://spotify.com",
+    "connect-src 'self' https: wss: https://www.youtube.com https://open.spotify.com https://*.spotify.com",
     "worker-src 'self'",
     "manifest-src 'self'"
   ].join('; ')

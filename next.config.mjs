@@ -21,8 +21,10 @@ const nextConfig = {
   allowedDevOrigins: [
     'localhost:3000',
     'localhost:3001', 
-    '192.168.17.16:3000',
-    '192.168.17.16:3001'
+    '192.168.1.217:3000',
+    '192.168.1.217:3001',
+    '127.0.0.1:3000',
+    '0.0.0.0:3000'
   ],
   
   // Configuração para imagens externas - Otimizada para performance
@@ -157,6 +159,35 @@ const nextConfig = {
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on',
+          },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, POST, PUT, DELETE, OPTIONS',
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Content-Type, Authorization, X-Requested-With',
+          },
+        ],
+      },
+      {
+        source: '/api/(.*)',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, POST, PUT, DELETE, OPTIONS',
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Content-Type, Authorization, X-Requested-With',
           },
         ],
       },
