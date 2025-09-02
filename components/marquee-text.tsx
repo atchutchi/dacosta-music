@@ -1,35 +1,36 @@
 export default function MarqueeText() {
+  const marqueeItems = [
+    "Caiiro",
+    "Da Capo", 
+    "Enoo Napa",
+    "Artist Management",
+    "Talent Management",
+    "Creative Agency",
+    "African Electronic Music",
+    "Creative Branding",
+    "Global Branding"
+  ];
+
   return (
     <div className="bg-white text-black py-3 overflow-hidden">
-      <div className="marquee-container">
-        <div className="marquee-content">
-          <span className="mx-4 text-sm font-medium uppercase tracking-wider">Caiiro</span>
-          <span className="mx-4">•</span>
-          <span className="mx-4 text-sm font-medium uppercase tracking-wider">Da Capo</span>
-          <span className="mx-4">•</span>
-          <span className="mx-4 text-sm font-medium uppercase tracking-wider">Enoo Napa</span>
-          <span className="mx-4">•</span>
-          <span className="mx-4 text-sm font-medium uppercase tracking-wider">Artist Management</span>
-          <span className="mx-4">•</span>
-          <span className="mx-4 text-sm font-medium uppercase tracking-wider">Talent Management</span>
-          <span className="mx-4">•</span>
-          <span className="mx-4 text-sm font-medium uppercase tracking-wider">Creative Agency</span>
-          <span className="mx-4">•</span>
-          <span className="mx-4 text-sm font-medium uppercase tracking-wider">Caiiro</span>
-          <span className="mx-4">•</span>
-          <span className="mx-4 text-sm font-medium uppercase tracking-wider">Da Capo</span>
-          <span className="mx-4">•</span>
-          <span className="mx-4 text-sm font-medium uppercase tracking-wider">Enoo Napa</span>
-          <span className="mx-4">•</span>
-          <span className="mx-4 text-sm font-medium uppercase tracking-wider">African Electronic Music</span>
-          <span className="mx-4">•</span>
-          <span className="mx-4 text-sm font-medium uppercase tracking-wider">Talent Management</span>
-          <span className="mx-4">•</span>
-          <span className="mx-4 text-sm font-medium uppercase tracking-wider">Creative Agency</span>
-          <span className="mx-4">•</span>
-          <span className="mx-4 text-sm font-medium uppercase tracking-wider">Creative Branding</span>
-          <span className="mx-4">•</span>
-          <span className="mx-4 text-sm font-medium uppercase tracking-wider">Global Branding</span>
+      <div className="flex animate-marquee whitespace-nowrap">
+        {/* Primeira sequência */}
+        <div className="flex items-center">
+          {marqueeItems.map((item, index) => (
+            <div key={`first-${index}`} className="flex items-center">
+              <span className="mx-4 text-sm font-medium uppercase tracking-wider">{item}</span>
+              <span className="mx-4">•</span>
+            </div>
+          ))}
+        </div>
+        {/* Segunda sequência (duplicada para efeito infinito) */}
+        <div className="flex items-center">
+          {marqueeItems.map((item, index) => (
+            <div key={`second-${index}`} className="flex items-center">
+              <span className="mx-4 text-sm font-medium uppercase tracking-wider">{item}</span>
+              <span className="mx-4">•</span>
+            </div>
+          ))}
         </div>
       </div>
     </div>

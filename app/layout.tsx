@@ -18,10 +18,10 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Da Costa Music - African Electronic Music Agency",
+  title: "Da Costa Music - Artist Management, Global Bookings & Creative Branding",
   description: "A creative agency and talent management company representing a new era of African electronic music.",
   generator: 'Next.js',
-  keywords: 'African electronic music, music agency, talent management, Da Costa Music',
+  keywords: 'Artist management music, global bookings, creative branding, Da Costa Music',
   authors: [{ name: 'Da Costa Music' }],
   manifest: '/manifest.json',
   icons: {
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://dacostamusic.com',
-    title: 'Da Costa Music - African Electronic Music Agency',
+    title: 'Da Costa Music - Artist Management, Global Bookings & Creative Branding',
     description: 'A creative agency and talent management company representing a new era of African electronic music.',
     siteName: 'Da Costa Music',
     images: [{
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Da Costa Music',
-    description: 'African Electronic Music Agency',
+    description: 'AArtist Management, Global Bookings & Creative Branding',
     images: ['https://dacostamusic.com/twitter-image.jpg'],
   },
 }
@@ -149,9 +149,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} ${inter.variable} min-h-screen bg-black text-white antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          {children}
           <Toaster />
         </ThemeProvider>
       </body>

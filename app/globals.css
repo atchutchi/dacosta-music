@@ -197,6 +197,21 @@
   }
 }
 
+/* New infinite marquee animation */
+@keyframes marquee-infinite {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee-infinite 30s linear infinite;
+  will-change: transform;
+}
+
 /* Navigation optimizations */
 .nav-link {
   position: relative;
