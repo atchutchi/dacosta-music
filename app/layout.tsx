@@ -149,7 +149,9 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} ${inter.variable} min-h-screen bg-black text-white antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          {children}
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
           <Toaster />
         </ThemeProvider>
       </body>
