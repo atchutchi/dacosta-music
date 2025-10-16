@@ -56,14 +56,16 @@ export default function ContactSection() {
       artistSubject: value === "booking" ? prev.artistSubject : ""
     }))
 
-    // Clear error when user selects
-    if (errors.title) {
-      setErrors((prev) => {
-        const newErrors = { ...prev }
-        delete newErrors.title
-        return newErrors
-      })
-    }
+    // Clear errors when user selects
+    setErrors((prev) => {
+      const newErrors = { ...prev }
+      delete newErrors.title
+      // Clear artistSubject error if switching away from booking
+      if (value !== "booking") {
+        delete newErrors.artistSubject
+      }
+      return newErrors
+    })
   }
 
   const validateForm = () => {
@@ -363,7 +365,17 @@ export default function ContactSection() {
                     <label htmlFor="artistSubject" className="block text-sm font-medium mb-2">
                       Select Artist
                     </label>
-                    <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, artistSubject: value }))}>
+                    <Select onValueChange={(value) => {
+                      setFormData((prev) => ({ ...prev, artistSubject: value }))
+                      // Clear error when user selects an artist
+                      if (errors.artistSubject) {
+                        setErrors((prev) => {
+                          const newErrors = { ...prev }
+                          delete newErrors.artistSubject
+                          return newErrors
+                        })
+                      }
+                    }}>
                       <SelectTrigger className={`bg-white/5 border-white/10 ${errors.artistSubject ? "border-red-500" : ""}`}>
                         <SelectValue placeholder="Choose an artist" />
                       </SelectTrigger>
