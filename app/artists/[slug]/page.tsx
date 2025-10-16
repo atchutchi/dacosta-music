@@ -351,7 +351,7 @@ export default function ArtistPage() {
           {/* DC Logo */}
           <div className="mb-6">
             <img
-              src="/images/logo-branco-dacosta.webp"
+              src="/images/whiteICON.png"
               alt="Da Costa Music"
               className="h-12 object-contain"
               onError={(e) => {

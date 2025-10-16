@@ -69,7 +69,7 @@ export async function middleware(request: NextRequest) {
   // Critical resource hints for homepage
   if (url === '/') {
     const resourceHints = [
-      '</images/logo-branco-dacosta.webp>; rel=preload; as=image; type=image/webp',
+      '</images/whiteICON.png>; rel=preload; as=image; type=image/png',
       '</videos/Video-Hero-Section.mp4>; rel=preload; as=video; type=video/mp4',
       '<https://fonts.googleapis.com>; rel=preconnect',
       '<https://fonts.gstatic.com>; rel=preconnect; crossorigin',

@@ -6,7 +6,7 @@ const API_CACHE = 'da-costa-api-v1'
 // Critical resources to cache immediately
 const CRITICAL_ASSETS = [
   '/',
-  '/images/logo-branco-dacosta.webp',
+  '/images/whiteICON.png',
   '/manifest.json',
   '/videos/Video-Hero-Section.mp4'
 ]
