@@ -519,10 +519,7 @@ export default function ArtistPage() {
           
           {artistEvents.length === 0 ? (
             <div className="text-center py-12 border border-white/10 rounded-lg bg-black/30">
-              <p className="text-white/70 mb-4">No upcoming shows currently scheduled.</p>
-              <Link href="/events">
-                <Button variant="outline">View All Events</Button>
-              </Link>
+              <p className="text-white/70">No upcoming shows currently scheduled.</p>
             </div>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
