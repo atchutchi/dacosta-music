@@ -257,7 +257,7 @@ export default function B3BPage() {
                   />
                 </div>
                 <div className="h-12 flex items-center mb-4">
-                  <img src="/images/enoonapa_white_logo_1.png" alt="Enoo Napa" className="h-full object-contain" />
+                  <img src="/images/enoo-napa-logo-official-05.webp" alt="Enoo Napa" className="h-full object-contain" />
                 </div>
                 {/* Nome removido */}
                 <p className="text-white/80 mb-4">
@@ -405,7 +405,7 @@ export default function B3BPage() {
           </div>
           <div className="text-center">
             <div className="h-16 mb-4 flex items-center justify-center">
-              <img src="/images/enoonapa_white_logo_1.png" alt="Enoo Napa" className="h-full object-contain" />
+              <img src="/images/enoo-napa-logo-official-05.webp" alt="Enoo Napa" className="h-full object-contain" />
             </div>
             <p className="text-white/70">Raw energy and futuristic sounds with a signature edge</p>
           </div>

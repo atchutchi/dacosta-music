@@ -368,7 +368,7 @@ export default function ArtistPage() {
                   ? "/images/caiiro-logo-branco.webp"
                   : params.slug === "dacapo"
                     ? "/images/logo-branco-da-capo.webp"
-                    : "/images/enoonapa_white_logo_1.png"
+                    : "/images/enoo-napa-logo-official-05.webp"
               }
               alt={`${artist.name} logo`}
               className="h-16 object-contain"

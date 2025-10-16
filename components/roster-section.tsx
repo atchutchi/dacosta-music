@@ -57,7 +57,7 @@ export default function RosterSection() {
     {
       id: "enoonapa",
       name: "Enoo Napa",
-      logo: "/images/enoonapa_white_logo.webp",
+      logo: "/images/enoo-napa-logo-official-05.webp",
       image: "/images/Enoo-Napa0374.webp",
       bio: "Enoo Napa delivers cutting-edge Afro-Electronic music with a signature edge. Fusing raw energy with intricate production, his work is celebrated in clubs and festivals around the world. Bold, futuristic, and uniquely African—Enoo’s sound commands attention and respect.",
       socials: {
@@ -153,7 +153,7 @@ export default function RosterSection() {
                           ? "/images/caiiro-logo-branco.webp"
                           : artist.id === "dacapo"
                             ? "/images/logo-branco-da-capo.webp"
-                            : "/images/logo-branco-enoo-napa.webp"
+                            : "/images/enoo-napa-logo-official-05.webp"
                       }
                       alt={`${artist.name} logo`}
                       className="h-full object-contain"
