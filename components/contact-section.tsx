@@ -17,7 +17,6 @@ export default function ContactSection() {
     name: "",
     email: "",
     title: "",
-    artistSubject: "",
     message: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -50,22 +49,16 @@ export default function ContactSection() {
   }
 
   const handleSelectChange = (value: string) => {
-    setFormData((prev) => ({ 
-      ...prev, 
-      title: value,
-      artistSubject: value === "booking" ? prev.artistSubject : ""
-    }))
+    setFormData((prev) => ({ ...prev, title: value }))
 
-    // Clear errors when user selects
-    setErrors((prev) => {
-      const newErrors = { ...prev }
-      delete newErrors.title
-      // Clear artistSubject error if switching away from booking
-      if (value !== "booking") {
-        delete newErrors.artistSubject
-      }
-      return newErrors
-    })
+    // Clear error when user selects
+    if (errors.title) {
+      setErrors((prev) => {
+        const newErrors = { ...prev }
+        delete newErrors.title
+        return newErrors
+      })
+    }
   }
 
   const validateForm = () => {
@@ -83,10 +76,6 @@ export default function ContactSection() {
 
     if (!formData.title) {
       newErrors.title = "Please select a subject"
-    }
-
-    if (formData.title === "booking" && !formData.artistSubject) {
-      newErrors.artistSubject = "Please select an artist"
     }
 
     if (!formData.message.trim()) {
@@ -147,7 +136,7 @@ export default function ContactSection() {
       if (result.status === 200) {
         // Show success message
         setIsSubmitted(true)
-        setFormData({ name: "", email: "", title: "", artistSubject: "", message: "" })
+        setFormData({ name: "", email: "", title: "", message: "" })
       } else {
         console.error("EmailJS returned non-200 status:", result);
         throw new Error(`Failed to send email: Status ${result.status} - ${result.text}`)
@@ -360,37 +349,6 @@ export default function ContactSection() {
                   <input type="hidden" name="title" value={formData.title} />
                   {errors.title && <p className="mt-1 text-sm text-red-500">{errors.title}</p>}
                 </div>
-                {formData.title === "booking" && (
-                  <div>
-                    <label htmlFor="artistSubject" className="block text-sm font-medium mb-2">
-                      Select Artist
-                    </label>
-                    <Select onValueChange={(value) => {
-                      setFormData((prev) => ({ ...prev, artistSubject: value }))
-                      // Clear error when user selects an artist
-                      if (errors.artistSubject) {
-                        setErrors((prev) => {
-                          const newErrors = { ...prev }
-                          delete newErrors.artistSubject
-                          return newErrors
-                        })
-                      }
-                    }}>
-                      <SelectTrigger className={`bg-white/5 border-white/10 ${errors.artistSubject ? "border-red-500" : ""}`}>
-                        <SelectValue placeholder="Choose an artist" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="enoo-napa">Enoo Napa</SelectItem>
-                        <SelectItem value="caiiro">Caiiro</SelectItem>
-                        <SelectItem value="da-capo">Da Capo</SelectItem>
-                        <SelectItem value="b2b">B2B (Back to Back)</SelectItem>
-                        <SelectItem value="b3b">B3B (Back 3 Back)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <input type="hidden" name="artistSubject" value={formData.artistSubject} />
-                    {errors.artistSubject && <p className="mt-1 text-sm text-red-500">{errors.artistSubject}</p>}
-                  </div>
-                )}
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium mb-2">
                     Message
