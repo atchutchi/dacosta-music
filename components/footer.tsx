@@ -22,7 +22,7 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               <a
-                href="https://www.instagram.com/dacosta_music/"
+                href="https://www.instagram.com/dacosta_music/?igsh=MWxpaHp0Z2ViNmQ0eg%3D%3D#"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/60 hover:text-white"
@@ -59,7 +59,7 @@ export default function Footer() {
                 <Facebook className="h-5 w-5" />
               </a>
               <a
-                href="https://youtube.com/dacosta_music/"
+                href="https://www.instagram.com/dacosta_music/?igsh=MWxpaHp0Z2ViNmQ0eg%3D%3D#"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/60 hover:text-white"
@@ -116,11 +116,6 @@ export default function Footer() {
               <li>
                 <Link href="/artists/enoonapa" className="text-white/70 hover:text-white">
                   Enoo Napa
-                </Link>
-              </li>
-              <li>
-                <Link href="/b3b" className="text-white/70 hover:text-white">
-                  B3B Concept
                 </Link>
               </li>
             </ul>

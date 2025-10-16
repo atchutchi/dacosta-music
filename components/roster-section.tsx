@@ -16,7 +16,9 @@ interface Artist {
   bio: string
   socials: {
     instagram: string
+    facebook?: string
     twitter: string
+    youtube?: string
     website: string
   }
 }
@@ -34,7 +36,7 @@ export default function RosterSection() {
       bio: "Renowned for his emotionally charged soundscapes and powerful Afro-Tech sets, Caiiro is one of Africa’s most prominent electronic music exports. With a global fan base and standout performances across Europe, the Americas, and beyond, Caiiro continues to shape the narrative of modern African dance music.",
       socials: {
         instagram: "https://www.instagram.com/caiirosa/",
-        facebook:"https://www.facebook.com/CaiiroSA",
+        facebook: "https://www.facebook.com/CaiiroSA",
         twitter: "https://x.com/caiirosa",
         youtube: "http://www.youtube.com/@caiiromusic2445",
       },
@@ -128,9 +130,8 @@ export default function RosterSection() {
         </div>
 
         <Tabs defaultValue="artists" className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-12">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-1 mb-12">
             <TabsTrigger value="artists">Individual Artists</TabsTrigger>
-            <TabsTrigger value="b3b">B3B Concept</TabsTrigger>
           </TabsList>
 
           <TabsContent value="artists" className="space-y-8">
@@ -174,39 +175,6 @@ export default function RosterSection() {
                 </Button>
               </Link>
             </div>
-          </TabsContent>
-
-          <TabsContent value="b3b">
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <Card className="bg-black border border-white/10">
-                <CardContent className="p-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div>
-                      <h3 className="text-2xl font-bold mb-4">B3B (Back 3 Back)</h3>
-                      <p className="text-white/80 mb-6">
-                        A high-concept DJ collaboration series merging art, visuals, and curated sound experiences. Our
-                        B3B concept brings together three of our roster artists for unique, boundary-pushing
-                        performances that showcase the diversity and innovation of African electronic music.
-                      </p>
-                      <Link href="/b3b">
-                        <Button className="bg-white text-black hover:bg-white/90">Book B3B Experience</Button>
-                      </Link>
-                    </div>
-                    <div className="overflow-hidden rounded-lg">
-                      <motion.img
-                        src="/images/club-view.webp"
-                        alt="B3B Concept"
-                        className="w-full h-full object-cover"
-                        initial={{ scale: 1.2, filter: "grayscale(100%)" }}
-                        animate={{ scale: 1, filter: "grayscale(0%)" }}
-                        transition={{ duration: 1 }}
-                        whileHover={{ scale: 1.05 }}
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
           </TabsContent>
         </Tabs>
       </div>
