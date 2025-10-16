@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { ArrowDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
@@ -110,14 +109,6 @@ export default function HeroSection() {
               </Button>
             </Link>
           </div>
-        </div>
-
-        {/* Scroll Down Indicator with better animation */}
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2">
-          <div className="animate-bounce">
-            <ArrowDown className="h-6 w-6 drop-shadow-lg" />
-          </div>
-          <div className="text-xs mt-2 text-white/60 uppercase tracking-widest">Scroll</div>
         </div>
       </div>
     </section>
