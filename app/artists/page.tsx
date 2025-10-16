@@ -60,7 +60,7 @@ export default function ArtistsPage() {
                       ? "/images/caiiro-logo-branco.webp"
                       : artist.id === "dacapo"
                         ? "/images/logo-branco-da-capo.webp"
-                        : "/images/enoonapa_white_logo_1.png"
+                        : "/images/enoo-napa-logo-official-05.webp"
                   }
                   alt={`${artist.name} logo`}
                   className="h-full object-contain"
@@ -74,17 +74,6 @@ export default function ArtistsPage() {
               </Link>
             </div>
           ))}
-        </div>
-
-        <div className="bg-white/5 rounded-lg p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">B3B Concept</h2>
-          <p className="text-white/80 max-w-2xl mx-auto mb-6">
-            Experience our revolutionary B3B (Back-to-Back-to-Back) concept featuring three of our top artists in a
-            seamless, curated musical journey that transcends boundaries.
-          </p>
-          <Link href="/b3b">
-            <Button className="bg-white text-black hover:bg-white/90">Learn More About B3B</Button>
-          </Link>
         </div>
       </div>
     </div>

@@ -39,6 +39,7 @@ export default function RosterSection() {
         facebook: "https://www.facebook.com/CaiiroSA",
         twitter: "https://x.com/caiirosa",
         youtube: "http://www.youtube.com/@caiiromusic2445",
+        website: "https://caiiro.com",
       },
     },
     {

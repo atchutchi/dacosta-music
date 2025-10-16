@@ -208,7 +208,7 @@ export default function ArtistPage() {
         {
           id: "enoonapa",
           name: "Enoo Napa",
-          logo: "/images/enoonapa_white_logo_1.webp",
+          logo: "/images/enoo-napa-logo-official-05.webp",
           image: "/images/dj-red-light.webp",
           secondaryImage: "/images/enoo-napa-photo-profile.webp",
           bio: "Delivers cutting-edge Afro-Electronic music with a signature edge.",

@@ -25,8 +25,8 @@ export const metadata: Metadata = {
   authors: [{ name: 'Da Costa Music' }],
   manifest: '/manifest.json',
   icons: {
-    icon: '/images/logo-branco-dacosta.webp',
-    apple: '/images/logo-branco-dacosta.webp',
+    icon: '/images/whiteICON.png',
+    apple: '/images/whiteICON.png',
   },
   robots: {
     index: true,
@@ -77,7 +77,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <head>
         {/* Critical resource hints - ordered by priority */}
-        <link rel="preload" href="/images/logo-branco-dacosta.webp" as="image" type="image/webp" />
+        <link rel="preload" href="/images/whiteICON.png" as="image" type="image/webp" />
         
         {/* DNS prefetch for external domains */}
         <link rel="dns-prefetch" href="//www.youtube.com" />
