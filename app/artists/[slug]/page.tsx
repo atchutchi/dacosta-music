@@ -208,7 +208,7 @@ export default function ArtistPage() {
         {
           id: "enoonapa",
           name: "Enoo Napa",
-          logo: "/images/enoo-napa-logo-official-05.webp",
+          logo: "/images/enoonapa_logo_final.png",
           image: "/images/dj-red-light.webp",
           secondaryImage: "/images/enoo-napa-photo-profile.webp",
           bio: "Delivers cutting-edge Afro-Electronic music with a signature edge.",
@@ -368,7 +368,7 @@ export default function ArtistPage() {
                   ? "/images/caiiro-logo-branco.webp"
                   : params.slug === "dacapo"
                     ? "/images/logo-branco-da-capo.webp"
-                    : "/images/enoo-napa-logo-official-05.webp"
+                    : "/images/enoonapa_logo_final.png"
               }
               alt={`${artist.name} logo`}
               className="h-16 object-contain"
@@ -479,15 +479,6 @@ export default function ArtistPage() {
                     <span>YouTube</span>
                   </a>
                 )}
-                <a
-                  href={artist.socials.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center text-white/70 hover:text-white transition-colors duration-300"
-                >
-                  <Globe className="h-5 w-5 mr-2" />
-                  <span>Website</span>
-                </a>
               </div>
             </div>
 
