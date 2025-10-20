@@ -1,22 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ArrowLeft, Instagram, Twitter, Globe, Facebook, Music, Headphones, Youtube, Calendar, MapPin } from "lucide-react"
+import { ArrowLeft, Instagram, Twitter, Globe, Facebook, Music, Headphones, Youtube } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
-
-interface Event {
-  id: string
-  name: string
-  date: string
-  location: string
-  ticketLink: string
-  image?: string
-  artistId?: string
-  description?: string
-}
 
 interface Artist {
   id: string
@@ -81,7 +70,6 @@ export default function ArtistPage() {
   const params = useParams()
   const artistSlug = params.slug as string
   const [artist, setArtist] = useState<Artist | null>(null)
-  const [artistEvents, setArtistEvents] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [imageError, setImageError] = useState<Record<string, boolean>>({})
 
@@ -264,26 +252,6 @@ export default function ArtistPage() {
 
       const foundArtist = artists.find((a) => a.id === artistSlug)
       setArtist(foundArtist || null)
-      
-      // Try to get events from localStorage or API
-      try {
-        // Try to get events from localStorage first
-        const savedEvents = localStorage.getItem("dacosta-events");
-        
-        if (savedEvents) {
-          const allEvents = JSON.parse(savedEvents);
-          // Filter events for this artist
-          const filteredEvents = allEvents.filter((event: Event) => event.artistId === artistSlug);
-          setArtistEvents(filteredEvents);
-        } else {
-          // Se não houver eventos no localStorage, definir como array vazio
-          setArtistEvents([]);
-        }
-      } catch (error) {
-        console.error("Error fetching artist events:", error);
-        setArtistEvents([]);
-      }
-      
       setIsLoading(false)
     }
 
