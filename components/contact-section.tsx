@@ -18,6 +18,7 @@ export default function ContactSection() {
     email: "",
     title: "",
     message: "",
+    selectedArtists: [] as string[],
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -49,13 +50,38 @@ export default function ContactSection() {
   }
 
   const handleSelectChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, title: value }))
+    setFormData((prev) => ({ 
+      ...prev, 
+      title: value,
+      // Clear selectedArtists if changing away from booking
+      selectedArtists: value === "booking" ? prev.selectedArtists : []
+    }))
 
     // Clear error when user selects
     if (errors.title) {
       setErrors((prev) => {
         const newErrors = { ...prev }
         delete newErrors.title
+        return newErrors
+      })
+    }
+  }
+
+  const handleArtistCheckbox = (artist: string) => {
+    setFormData((prev) => {
+      const isSelected = prev.selectedArtists.includes(artist)
+      const newSelectedArtists = isSelected
+        ? prev.selectedArtists.filter((a) => a !== artist)
+        : [...prev.selectedArtists, artist]
+      
+      return { ...prev, selectedArtists: newSelectedArtists }
+    })
+
+    // Clear error when user selects an artist
+    if (errors.artists) {
+      setErrors((prev) => {
+        const newErrors = { ...prev }
+        delete newErrors.artists
         return newErrors
       })
     }
@@ -76,6 +102,11 @@ export default function ContactSection() {
 
     if (!formData.title) {
       newErrors.title = "Please select a subject"
+    }
+
+    // Validate artist selection when booking is selected
+    if (formData.title === "booking" && formData.selectedArtists.length === 0) {
+      newErrors.artists = "Please select at least one artist"
     }
 
     if (!formData.message.trim()) {
@@ -136,7 +167,7 @@ export default function ContactSection() {
       if (result.status === 200) {
         // Show success message
         setIsSubmitted(true)
-        setFormData({ name: "", email: "", title: "", message: "" })
+        setFormData({ name: "", email: "", title: "", message: "", selectedArtists: [] })
       } else {
         console.error("EmailJS returned non-200 status:", result);
         throw new Error(`Failed to send email: Status ${result.status} - ${result.text}`)
@@ -347,8 +378,30 @@ export default function ContactSection() {
                     </SelectContent>
                   </Select>
                   <input type="hidden" name="title" value={formData.title} />
+                  <input type="hidden" name="artists" value={formData.selectedArtists.join(", ")} />
                   {errors.title && <p className="mt-1 text-sm text-red-500">{errors.title}</p>}
                 </div>
+                {formData.title === "booking" && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Select Artist(s)
+                    </label>
+                    <div className="space-y-2 bg-white/5 border border-white/10 rounded-md p-4">
+                      {["B3B", "B2B", "Caiiro", "Da Capo", "Enoo Napa"].map((artist) => (
+                        <label key={artist} className="flex items-center space-x-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={formData.selectedArtists.includes(artist)}
+                            onChange={() => handleArtistCheckbox(artist)}
+                            className="rounded border-white/20 bg-white/5 text-white focus:ring-white focus:ring-offset-0"
+                          />
+                          <span className="text-white">{artist}</span>
+                        </label>
+                      ))}
+                    </div>
+                    {errors.artists && <p className="mt-1 text-sm text-red-500">{errors.artists}</p>}
+                  </div>
+                )}
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium mb-2">
                     Message
