@@ -14,9 +14,7 @@ export default function AboutSection() {
             <p className="text-white/80 mb-6">
               Driven by authenticity and a commitment to excellence, we work closely with our artists to support their creative vision, professional growth, and global reach. Every partnership is guided by purpose—amplifying voices, building lasting connections, and shaping legacies that extend beyond the music.
             </p>
-            <Link href="/artists">
-              <Button className="mt-8 bg-white text-black hover:bg-white/90">Learn More</Button>
-            </Link>
+            
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-4">
