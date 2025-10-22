@@ -38,8 +38,7 @@ export default function ArtistsPage() {
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-5xl font-bold mb-4">Our Artists</h1>
           <p className="text-white/80 max-w-2xl mx-auto">
-            Representing the finest talent in African electronic music, our roster features boundary-pushing artists who
-            are redefining the global dance music landscape.
+          Representing forward-thinking talent in electronic music, our roster features boundary-pushing artists who are redefining the global dance music landscape.
           </p>
         </div>
 
