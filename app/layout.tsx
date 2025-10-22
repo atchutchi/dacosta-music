@@ -131,21 +131,6 @@ export default function RootLayout({
         />
         
         {/* Critical CSS inlining hint */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              // Preload critical resources
-              (function() {
-                var link = document.createElement('link');
-                link.rel = 'preload';
-                link.href = '/videos/Video-Hero-Section.mp4';
-                link.as = 'video';
-                link.type = 'video/mp4';
-                document.head.appendChild(link);
-              })();
-            `,
-          }}
-        />
       </head>
       <body className={`${inter.className} ${inter.variable} min-h-screen bg-black text-white antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>

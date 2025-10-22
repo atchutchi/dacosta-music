@@ -70,7 +70,7 @@ export async function middleware(request: NextRequest) {
   if (url === '/') {
     const resourceHints = [
       '</images/whiteICON.png>; rel=preload; as=image; type=image/png',
-      '</videos/Video-Hero-Section.mp4>; rel=preload; as=video; type=video/mp4',
+      '</images/club-view.webp>; rel=preload; as=image; type=image/webp',
       '<https://fonts.googleapis.com>; rel=preconnect',
       '<https://fonts.gstatic.com>; rel=preconnect; crossorigin',
       '<https://www.youtube.com>; rel=dns-prefetch',

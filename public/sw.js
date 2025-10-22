@@ -1,14 +1,14 @@
-const CACHE_NAME = 'da-costa-music-v2'
-const STATIC_CACHE = 'da-costa-static-v2'
-const IMAGES_CACHE = 'da-costa-images-v2'
-const API_CACHE = 'da-costa-api-v1'
+const CACHE_NAME = 'da-costa-music-v3'
+const STATIC_CACHE = 'da-costa-static-v3'
+const IMAGES_CACHE = 'da-costa-images-v3'
+const API_CACHE = 'da-costa-api-v2'
 
 // Critical resources to cache immediately
 const CRITICAL_ASSETS = [
   '/',
   '/images/whiteICON.png',
-  '/manifest.json',
-  '/videos/Video-Hero-Section.mp4'
+  '/images/club-view.webp',
+  '/manifest.json'
 ]
 
 // Assets to cache on first request
@@ -23,9 +23,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then((cache) => {
-        return cache.addAll(CRITICAL_ASSETS.filter(asset => 
-          !asset.endsWith('.mp4') // Skip video files in initial cache
-        ))
+        return cache.addAll(CRITICAL_ASSETS)
       })
       .then(() => {
         return self.skipWaiting()
@@ -72,8 +70,7 @@ self.addEventListener('fetch', (event) => {
 
   // Strategy 1: Cache First for static assets
   if (url.pathname.includes('/_next/static/') || 
-      url.pathname.includes('/images/') ||
-      url.pathname.includes('/videos/')) {
+      url.pathname.includes('/images/')) {
     event.respondWith(cacheFirst(request))
     return
   }
