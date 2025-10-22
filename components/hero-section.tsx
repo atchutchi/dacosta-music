@@ -1,66 +1,30 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
 
 export default function HeroSection() {
   const [isLoaded, setIsLoaded] = useState(false)
-  const [videoLoaded, setVideoLoaded] = useState(false)
-  const [shouldLoadVideo, setShouldLoadVideo] = useState(false)
-  const videoRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setIsLoaded(true)
-    
-    // Load video after initial content is loaded
-    const timer = setTimeout(() => {
-      setShouldLoadVideo(true)
-    }, 500)
-
-    return () => clearTimeout(timer)
   }, [])
-
-  const handleVideoLoad = () => {
-    setVideoLoaded(true)
-  }
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
-      {/* Background Fallback */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
-
-      {/* Hero Video - YouTube Embed with Lazy Loading */}
-      <div 
-        ref={videoRef}
-        className={`absolute inset-0 transition-opacity duration-1000 ${
-          videoLoaded ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
-        {shouldLoadVideo && (
-          <iframe
-            title="Da Costa Music Background Video"
-            src="https://www.youtube.com/embed/M9Nr1uGgh_4?autoplay=1&mute=1&loop=1&playlist=M9Nr1uGgh_4&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&fs=0&cc_load_policy=0&playsinline=1&enablejsapi=1"
-            className="w-full h-full"
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              width: '100vw',
-              height: '56.25vw',
-              minHeight: '100vh',
-              minWidth: '177.78vh',
-              transform: 'translate(-50%, -50%)',
-              pointerEvents: 'none'
-            }}
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            loading="lazy"
-            onLoad={handleVideoLoad}
-          />
-        )}
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <Image
+          src="/images/club-view.webp"
+          alt="Da Costa Music Background"
+          fill
+          priority
+          quality={90}
+          className="object-cover"
+          sizes="100vw"
+        />
       </div>
 
       {/* Overlay with better gradient */}
