@@ -383,6 +383,15 @@ export default function ArtistPage() {
                 )}
               </div>
 
+              {/* Book Artist Button */}
+              <div className="mt-8 mb-8">
+                <Link href="/#contact">
+                  <Button className="w-full md:w-auto bg-white text-black hover:bg-white/90 text-lg px-8 py-6">
+                    Book Artist
+                  </Button>
+                </Link>
+              </div>
+
               {/* Social Links */}
               <div className="flex flex-wrap gap-6 mt-8">
                 <a
