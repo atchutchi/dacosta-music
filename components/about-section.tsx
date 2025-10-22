@@ -9,29 +9,11 @@ export default function AboutSection() {
           <div>
             <h2 className="text-3xl md:text-4xl font-bold mb-6">About Us</h2>
             <p className="text-white/80 mb-6">
-              Da Costa Music is a creative agency and talent management company representing a new era of electronic music. With a foundation in strategy, storytelling, and global networking, we offer a unique blend of artist development, event direction, and brand building.
-
-              Our approach combines hands-on project management, digital growth strategies, and cultural insight—ensuring each artist, concept, and collaboration reaches its full potential. We don’t just manage talent; we build legacy.
+              Da Costa Music is a booking and management agency representing established and forward-thinking artists in electronic music. Built on strategy, integrity, and meaningful industry relationships, we focus on cultivating long-term careers and connecting exceptional talent with audiences around the world.
             </p>
             <p className="text-white/80 mb-6">
-              Our approach combines hands-on project management, digital growth strategies, and cultural
-              insight—ensuring each artist, concept, and collaboration reaches its full potential. We don't just manage
-              talent; we build legacy.
+              Driven by authenticity and a commitment to excellence, we work closely with our artists to support their creative vision, professional growth, and global reach. Every partnership is guided by purpose—amplifying voices, building lasting connections, and shaping legacies that extend beyond the music.
             </p>
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-xl font-semibold mb-2">Mission Statement</h3>
-                <p className="text-white/80">
-                  To bridge culture, creativity, and global sound by developing standout talent and curating experiences that elevate African electronic music on the world stage.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-2">Ethos</h3>
-                <p className="text-white/80">
-                  We are driven by authenticity, artistic integrity, and a commitment to excellence. Every project, partnership, and performance is guided by purpose—amplifying voices, crafting powerful narratives, and building a global community rooted in music, culture, and innovation.
-                </p>
-              </div>
-            </div>
             <Link href="/artists">
               <Button className="mt-8 bg-white text-black hover:bg-white/90">Learn More</Button>
             </Link>
