@@ -6,7 +6,7 @@ export default function MarqueeText() {
     "Artist Management",
     "Talent Management",
     "Creative Agency",
-    "African Electronic Music",
+    "Electronic Music",
     "Creative Branding",
     "Global Branding"
   ];

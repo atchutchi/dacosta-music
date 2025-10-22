@@ -189,7 +189,7 @@ export default function B3BPage() {
               <div className="bg-white/5 p-6 rounded-lg">
                 <h3 className="text-xl font-bold mb-4">Cultural Exchange</h3>
                 <p className="text-white/80">
-                  At its core, B3B represents a cultural exchange—bringing African electronic music to global audiences
+                  At its core, B3B represents a cultural exchange—bringing Electronic music to global audiences
                   while incorporating influences from around the world. It's a celebration of diversity and unity
                   through music, breaking down barriers between genres and cultures.
                 </p>

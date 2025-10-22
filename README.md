@@ -2,7 +2,7 @@
 
 ![Da Costa Music](public/images/logo-branco-dacosta.webp)
 
-A modern, responsive website for Da Costa Music, a creative agency and talent management company representing a new era of African electronic music.
+A modern, responsive website for Da Costa Music, a creative agency and talent management company representing a new era of electronic music.
 
 🌐 **Live Website**: [https://www.dacosta-music.com](https://www.dacosta-music.com)
 
@@ -21,20 +21,106 @@ A modern, responsive website for Da Costa Music, a creative agency and talent ma
 
 ## Overview
 
-Da Costa Music website serves as a digital platform for the agency to showcase their artists, music, events, and services. The website features a modern, responsive design with a focus on visual appeal and user experience.
+Da Costa Music é uma agência criativa e empresa de gestão de talentos que representa uma nova era da música eletrônica. O website serve como plataforma digital para a agência mostrar seus artistas, música, eventos e serviços. O site apresenta um design moderno e responsivo com foco em apelo visual e experiência do usuário, oferecendo funcionalidades completas para gestão de artistas, e-commerce, blog e eventos.
 
 ## Features
 
-- **Home Page**: Dynamic hero section, artist roster, music player, and contact form
-- **Artist Profiles**: Detailed pages for each artist with biography, music, events, and gallery
-- **B3B Concept**: Dedicated page for the unique Back-to-Back-to-Back DJ concept
-- **Blog**: Articles and news about artists, events, and the electronic music scene
-- **Shop**: E-commerce functionality for merchandise and music
-- **Events**: Calendar and detailed event pages
-- **Contact Form**: With form validation and reCAPTCHA integration
-- **Authentication**: User registration and login system for admin access
-- **Media Storage**: Supabase Storage integration for images and videos
-- **Responsive Design**: Mobile-first approach for all screen sizes
+### Páginas Públicas
+
+- **Home Page**: 
+  - Hero section dinâmico com vídeo de fundo
+  - Seção "About Us" com missão e ethos da agência
+  - Roster de artistas (Caiiro, Da Capo, Enoo Napa)
+  - Player de música integrado
+  - Formulário de contato com validação e reCAPTCHA
+  - Newsletter subscription
+
+- **Artists Page**: 
+  - Listagem de todos os artistas do roster
+  - Páginas individuais detalhadas para cada artista com:
+    - Biografia completa
+    - Galeria de fotos
+    - Redes sociais integradas
+    - Próximos eventos
+    - Música e sets ao vivo
+
+- **B3B Concept Page**: 
+  - Página dedicada ao conceito único Back-to-Back-to-Back
+  - Explicação detalhada da filosofia B3B
+  - Showcase de eventos B3B
+  - Galeria visual
+
+- **Blog**: 
+  - Sistema de blog completo com artigos e notícias
+  - Páginas individuais para cada post
+  - Categorização de conteúdo
+  - Imagens e formatação rica
+
+- **Events Page**: 
+  - Calendário de eventos interativo
+  - Listagem de shows e performances
+  - Páginas detalhadas para cada evento
+  - Integração com informações de artistas
+  - Links para compra de ingressos
+
+- **Services Page**: 
+  - Serviços completos oferecidos:
+    - Turnkey Service (Soluções completas)
+    - Worldwide Booking (Reservas globais)
+    - Travel & Logistics Management
+    - Artist Management
+    - Artist Image & Branding
+    - Artist Finance & Administrative Organization
+
+- **Shop**: 
+  - E-commerce completo para merchandise e música
+  - Filtros por categoria e preço
+  - Ordenação de produtos
+  - Sistema de carrinho de compras
+  - Produtos: roupas, acessórios, música, eletrônicos
+  - Interface responsiva com animações
+
+- **Legal Pages**:
+  - Página de Termos de Serviço
+  - Página de Política de Privacidade
+
+### Funcionalidades Técnicas
+
+- **Authentication System**: 
+  - Registro e login de usuários
+  - Sistema de autenticação via Supabase Auth
+  - Área de admin protegida
+
+- **Admin Dashboard**: 
+  - Gerenciamento de eventos
+  - Upload de vídeos e mídia
+  - Configurações do site
+  - Acesso restrito por autenticação
+
+- **Media Storage**: 
+  - Integração com Supabase Storage
+  - Buckets organizados: images, artists, events, videos
+  - Upload e gerenciamento de arquivos
+
+- **Security Features**:
+  - CSRF Protection em formulários
+  - reCAPTCHA para proteção contra bots
+  - Row Level Security (RLS) no banco de dados
+  - Validação de formulários client-side e server-side
+
+- **SEO & Performance**:
+  - Sitemap.xml dinâmico
+  - Meta tags otimizadas
+  - Imagens otimizadas em WebP
+  - Lazy loading de componentes
+  - Service Worker para PWA
+  - Manifest.json configurado
+
+- **Responsive Design**: 
+  - Mobile-first approach
+  - Design totalmente responsivo
+  - Animações suaves com Framer Motion
+  - UI moderna com shadcn/ui components
 
 ## Technology Stack
 

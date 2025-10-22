@@ -46,16 +46,16 @@ export default function BlogPage() {
     },
     {
       id: "post3",
-      title: "African Electronic Music: A Global Movement",
+      title: "Electronic Music: A Global Movement",
       excerpt:
-        "How African electronic music is reshaping the global dance music landscape and creating new cultural connections.",
+        "How Electronic music is reshaping the global dance music landscape and creating new cultural connections.",
       content:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl, eu aliquam nisl nisl eu nisl. Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl, eu aliquam nisl nisl eu nisl.",
       date: "February 10, 2023",
       author: "Cultural Analyst",
       image: "/images/crowd-pattern.webp",
       category: "Features",
-      slug: "african-electronic-music-global-movement",
+      slug: "electronic-music-global-movement",
     },
     {
       id: "post4",

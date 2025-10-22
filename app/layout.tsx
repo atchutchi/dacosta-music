@@ -19,7 +19,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Da Costa Music - Artist Management, Global Bookings & Creative Branding",
-  description: "A creative agency and talent management company representing a new era of African electronic music.",
+  description: "A creative agency and talent management company representing a new era of Electronic music.",
   generator: 'Next.js',
   keywords: 'Artist management music, global bookings, creative branding, Da Costa Music',
   authors: [{ name: 'Da Costa Music' }],
