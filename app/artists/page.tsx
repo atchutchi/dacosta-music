@@ -64,7 +64,7 @@ export default function ArtistsPage() {
                       ? "/images/caiiro-logo-branco.webp"
                       : artist.id === "dacapo"
                         ? "/images/logo-branco-da-capo.webp"
-                        : "/images/enoonapa_logo_final.png"
+                        : "/images/enoo_napa_logotipo.svg"
                   }
                   alt={`${artist.name} logo`}
                   width={200}

@@ -197,7 +197,7 @@ export default function ArtistPage() {
         {
           id: "enoonapa",
           name: "Enoo Napa",
-          logo: "/images/enoonapa_logo_final.png",
+          logo: "/images/enoo_napa_logotipo.svg",
           image: "/images/dj-red-light.webp",
           secondaryImage: "/images/enoo-napa-photo-profile.webp",
           bio: "Delivers cutting-edge Afro-Electronic music with a signature edge.",
@@ -338,7 +338,7 @@ export default function ArtistPage() {
                   ? "/images/caiiro-logo-branco.webp"
                   : params.slug === "dacapo"
                     ? "/images/logo-branco-da-capo.webp"
-                    : "/images/enoonapa_logo_final.png"
+                    : "/images/enoo_napa_logotipo.svg"
               }
               alt={`${artist.name} logo`}
               width={250}
