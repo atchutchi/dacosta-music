@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import Image from "next/image"
 
 export default function AboutSection() {
   return (
@@ -18,19 +19,51 @@ export default function AboutSection() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-4">
-              <div className="overflow-hidden rounded-lg h-64">
-                <img src="/images/dj-closeup.webp" alt="DJ Performance" className="w-full h-full object-cover" />
+              <div className="overflow-hidden rounded-lg h-64 relative">
+                <Image 
+                  src="/images/dj-closeup.webp" 
+                  alt="DJ Performance" 
+                  fill
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-cover"
+                  loading="lazy"
+                  quality={80}
+                />
               </div>
-              <div className="overflow-hidden rounded-lg h-48">
-                <img src="/images/dj-duo.webp" alt="DJ Performance" className="w-full h-full object-cover" />
+              <div className="overflow-hidden rounded-lg h-48 relative">
+                <Image 
+                  src="/images/dj-duo.webp" 
+                  alt="DJ Performance" 
+                  fill
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-cover"
+                  loading="lazy"
+                  quality={80}
+                />
               </div>
             </div>
             <div className="space-y-4 mt-8">
-              <div className="overflow-hidden rounded-lg h-48">
-                <img src="/images/dj-red-light.webp" alt="DJ Performance" className="w-full h-full object-cover" />
+              <div className="overflow-hidden rounded-lg h-48 relative">
+                <Image 
+                  src="/images/dj-red-light.webp" 
+                  alt="DJ Performance" 
+                  fill
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-cover"
+                  loading="lazy"
+                  quality={80}
+                />
               </div>
-              <div className="overflow-hidden rounded-lg h-64">
-                <img src="/images/crowd-pattern.webp" alt="Crowd" className="w-full h-full object-cover" />
+              <div className="overflow-hidden rounded-lg h-64 relative">
+                <Image 
+                  src="/images/crowd-pattern.webp" 
+                  alt="Crowd" 
+                  fill
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-cover"
+                  loading="lazy"
+                  quality={80}
+                />
               </div>
             </div>
           </div>

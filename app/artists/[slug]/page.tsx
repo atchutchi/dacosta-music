@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { ArrowLeft, Instagram, Twitter, Globe, Facebook, Music, Headphones, Youtube } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
@@ -317,20 +318,21 @@ export default function ArtistPage() {
           className="relative overflow-hidden rounded-lg border border-white/10 bg-black p-8 mb-16"
         >
           {/* DC Logo */}
-          <div className="mb-6">
-            <img
+          <div className="mb-6 h-12 relative">
+            <Image
               src="/images/whiteICON.png"
               alt="Da Costa Music"
-              className="h-12 object-contain"
-              onError={(e) => {
-                e.currentTarget.src = fallbackImage
-              }}
+              width={120}
+              height={48}
+              className="object-contain"
+              priority
+              quality={90}
             />
           </div>
 
           {/* Artist Logo */}
-          <div className="mb-10 flex justify-center">
-            <img
+          <div className="mb-10 flex justify-center h-16 relative">
+            <Image
               src={
                 params.slug === "caiiro"
                   ? "/images/caiiro-logo-branco.webp"
@@ -339,10 +341,11 @@ export default function ArtistPage() {
                     : "/images/enoonapa_logo_final.png"
               }
               alt={`${artist.name} logo`}
-              className="h-16 object-contain"
-              onError={(e) => {
-                e.currentTarget.src = fallbackImage
-              }}
+              width={250}
+              height={64}
+              className="object-contain"
+              priority
+              quality={95}
             />
           </div>
 
@@ -462,12 +465,16 @@ export default function ArtistPage() {
             {/* Right Column - Images */}
             <div className="grid grid-cols-2 gap-4">
               {[0, 1, 2, 3].map((index) => (
-                <div key={index} className="aspect-square overflow-hidden rounded-lg bg-white/5">
-                  {!imageError[index] ? (
-                    <img
-                      src={artist.gallery[index] || fallbackImage}
+                <div key={index} className="aspect-square overflow-hidden rounded-lg bg-white/5 relative">
+                  {!imageError[index] && artist.gallery[index] ? (
+                    <Image
+                      src={artist.gallery[index]}
                       alt={`${artist.name} - Image ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      fill
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                      className="object-cover"
+                      loading={index < 2 ? "eager" : "lazy"}
+                      quality={85}
                       onError={() => handleImageError(index)}
                     />
                   ) : (

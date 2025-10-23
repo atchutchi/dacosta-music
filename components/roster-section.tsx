@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import Image from "next/image"
 
 interface Artist {
   id: string
@@ -139,15 +140,19 @@ export default function RosterSection() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {artists.map((artist) => (
                 <div key={artist.id} className="group">
-                  <div className="overflow-hidden rounded-lg mb-4 aspect-square">
-                    <img
+                  <div className="overflow-hidden rounded-lg mb-4 aspect-square relative">
+                    <Image
                       src={artist.image || "/placeholder.svg"}
                       alt={artist.name}
-                      className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                      quality={85}
                     />
                   </div>
-                  <div className="h-12 mb-4 flex items-center">
-                    <img
+                  <div className="h-12 mb-4 flex items-center justify-start relative">
+                    <Image
                       src={
                         artist.id === "caiiro"
                           ? "/images/caiiro-logo-branco.webp"
@@ -156,7 +161,11 @@ export default function RosterSection() {
                             : "/images/enoonapa_logo_final.png"
                       }
                       alt={`${artist.name} logo`}
-                      className="h-full object-contain"
+                      width={200}
+                      height={48}
+                      className="object-contain max-h-full w-auto"
+                      loading="lazy"
+                      quality={90}
                     />
                   </div>
                   <p className="text-white/70 mb-4 line-clamp-3">{artist.bio}</p>

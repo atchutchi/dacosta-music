@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 
@@ -38,22 +39,26 @@ export default function ArtistsPage() {
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-5xl font-bold mb-4">Our Artists</h1>
           <p className="text-white/80 max-w-2xl mx-auto">
-          Representing forward-thinking talent in electronic music, our roster features boundary-pushing artists who are redefining the global dance music landscape.
+            Representing forward-thinking talent in electronic music, our roster features boundary-pushing artists who are redefining the global dance music landscape.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {artists.map((artist) => (
             <div key={artist.id} className="group">
-              <div className="overflow-hidden rounded-lg mb-4 aspect-square">
-                <img
+              <div className="overflow-hidden rounded-lg mb-4 aspect-square relative">
+                <Image
                   src={artist.image || "/placeholder.svg"}
                   alt={artist.name}
-                  className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                  quality={85}
                 />
               </div>
-              <div className="h-16 mb-4 flex items-center">
-                <img
+              <div className="h-16 mb-4 flex items-center justify-start relative">
+                <Image
                   src={
                     artist.id === "caiiro"
                       ? "/images/caiiro-logo-branco.webp"
@@ -62,7 +67,11 @@ export default function ArtistsPage() {
                         : "/images/enoonapa_logo_final.png"
                   }
                   alt={`${artist.name} logo`}
-                  className="h-full object-contain"
+                  width={200}
+                  height={64}
+                  className="object-contain max-h-full w-auto"
+                  loading="lazy"
+                  quality={90}
                 />
               </div>
               <p className="text-white/70 mb-4">{artist.bio}</p>
