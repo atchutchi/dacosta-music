@@ -242,7 +242,10 @@ export default function ContactSection() {
                 <motion.a
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
-                  href="#"
+                  href="https://www.instagram.com/dacosta_music"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
                   className="h-10 w-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10"
                 >
                   <Instagram className="h-5 w-5" />
@@ -250,7 +253,10 @@ export default function ContactSection() {
                 <motion.a
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
-                  href="#"
+                  href="https://x.com/dacostamusicofc"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="X (Twitter)"
                   className="h-10 w-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10"
                 >
                   <svg
@@ -271,7 +277,10 @@ export default function ContactSection() {
                 <motion.a
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
-                  href="#"
+                  href="https://www.facebook.com/dacostamusicofc/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
                   className="h-10 w-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10"
                 >
                   <Facebook className="h-5 w-5" />
@@ -279,7 +288,10 @@ export default function ContactSection() {
                 <motion.a
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
-                  href="#"
+                  href="https://youtube.com/@dacostamusicofc"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
                   className="h-10 w-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10"
                 >
                   <Youtube className="h-5 w-5" />
