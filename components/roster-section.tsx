@@ -33,7 +33,7 @@ export default function RosterSection() {
       id: "caiiro",
       name: "Caiiro",
       logo: "/images/caiiro-logo-branco.webp",
-      image: "/images/Caiiro-VIII.webp",
+      image: "/images/Caiiro-VIII.svg",
       bio: "Renowned for his emotionally charged soundscapes and powerful Afro-Tech sets, Caiiro is one of Africa’s most prominent electronic music exports. With a global fan base and standout performances across Europe, the Americas, and beyond, Caiiro continues to shape the narrative of modern African dance music.",
       socials: {
         instagram: "https://www.instagram.com/caiirosa/",
@@ -47,7 +47,7 @@ export default function RosterSection() {
       id: "dacapo",
       name: "Da Capo",
       logo: "/images/logo-branco-da-capo.webp",
-      image: "/images/da-capo-X.webp",
+      image: "/images/da-capo-X.svg",
       bio: "A visionary in Afro House and Deep Tech, Da Capo is known for his rich, layered productions and genre-defining DJ sets. A true craftsman of sound, his artistry bridges underground energy with refined musical storytelling—earning him global recognition and a dedicated audience.",
       socials: {
         instagram: "https://instagram.com/dacapo",
@@ -59,7 +59,7 @@ export default function RosterSection() {
       id: "enoonapa",
       name: "Enoo Napa",
       logo: "/images/enoo_napa_logotipo.svg",
-      image: "/images/Enoo-Napa0374.webp",
+      image: "/images/Enoo-Napa0374.svg",
       bio: "Enoo Napa delivers cutting-edge Afro-Electronic music with a signature edge. Fusing raw energy with intricate production, his work is celebrated in clubs and festivals around the world. Bold, futuristic, and uniquely African—Enoo’s sound commands attention and respect.",
       socials: {
         instagram: "https://instagram.com/enoonapa",

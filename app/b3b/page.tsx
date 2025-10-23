@@ -207,7 +207,7 @@ export default function B3BPage() {
               <div className="bg-white/5 p-6 rounded-lg">
                 <div className="aspect-square overflow-hidden rounded-lg mb-4">
                   <img
-                    src="/images/Caiiro-VIII.webp"
+                    src="/images/Caiiro-VIII.svg"
                     alt="Caiiro"
                     className="w-full h-full object-cover object-top"
                   />
@@ -229,7 +229,7 @@ export default function B3BPage() {
               <div className="bg-white/5 p-6 rounded-lg">
                 <div className="aspect-square overflow-hidden rounded-lg mb-4">
                   <img
-                    src="/images/da-capo-X.webp"
+                    src="/images/da-capo-X.svg"
                     alt="Da Capo"
                     className="w-full h-full object-cover object-top"
                   />
@@ -251,7 +251,7 @@ export default function B3BPage() {
               <div className="bg-white/5 p-6 rounded-lg">
                 <div className="aspect-square overflow-hidden rounded-lg mb-4">
                   <img
-                    src="/images/Enoo-Napa0374.webp"
+                    src="/images/Enoo-Napa0374.svg"
                     alt="Enoo Napa"
                     className="w-full h-full object-cover object-top"
                   />

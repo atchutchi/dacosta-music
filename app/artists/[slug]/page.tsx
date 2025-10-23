@@ -131,7 +131,7 @@ export default function ArtistPage() {
           ],
           gallery: [
             "/images/caiiro-photo-profile.webp",
-            "/images/Caiiro-VIII.webp",
+            "/images/Caiiro-VIII.svg",
             "/images/artist-jet.webp",
             "/images/Caiiro-IV.webp",
           ],
@@ -245,7 +245,7 @@ export default function ArtistPage() {
           gallery: [
             "/images/enoo-napa-photo-profile.webp",
             "/images/enoo-napa-photo.webp",
-            "/images/Enoo-Napa0374.webp",
+            "/images/Enoo-Napa0374.svg",
             "/images/enoo-napa-i.webp",
           ],
         },
