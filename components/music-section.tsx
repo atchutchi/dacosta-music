@@ -34,11 +34,11 @@ export default function MusicSection() {
             className="bg-white/5 rounded-lg overflow-hidden p-6"
           >
             <iframe 
-              title="Da Costa Music Selected Spotify Playlist"
+              data-testid="embed-iframe"
               style={{ borderRadius: "12px" }} 
-              src="https://open.spotify.com/embed/playlist/4cVbtiKn7myAipZOflZ9rE?utm_source=generator&theme=0" 
+              src="https://open.spotify.com/embed/playlist/4cVbtiKn7myAipZOflZ9rE?utm_source=generator" 
               width="100%" 
-              height="480" 
+              height="352" 
               frameBorder="0" 
               allowFullScreen 
               allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
