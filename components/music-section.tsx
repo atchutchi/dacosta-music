@@ -36,7 +36,7 @@ export default function MusicSection() {
             <iframe 
               title="Da Costa Music Selected Spotify Playlist"
               style={{ borderRadius: "12px" }} 
-              src="https://open.spotify.com/embed/playlist/4cVbtiKn7myAipZOflZ9rE?utm_source=generator" 
+              src="https://spotify.link/4hKJtcvZPXb" 
               width="100%" 
               height="352" 
               frameBorder="0" 
