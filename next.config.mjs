@@ -24,6 +24,7 @@ const nextConfig = {
   
   // Configuração para imagens externas - Otimizada para performance
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -54,7 +55,6 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'inline',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    unoptimized: false,
     loader: 'default',
   },
   
