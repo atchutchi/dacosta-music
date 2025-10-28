@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "img-src 'self' data: blob: https: https://i.ytimg.com https://yt3.ggpht.com",
     "font-src 'self' https://fonts.gstatic.com",
-    "media-src 'self' blob: data: https://www.youtube.com https://www.youtube-nocookie.com",
+    "media-src 'self' blob: data: https://www.youtube.com https://www.youtube-nocookie.com https://open.spotify.com https://*.spotify.com",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
