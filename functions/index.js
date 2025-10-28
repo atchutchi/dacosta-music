@@ -6,8 +6,16 @@ const app = express();
 app.use(express.json());
 
 // Inicializar cliente Supabase
-const supabaseUrl = process.env.SUPABASE_URL || 'https://oxplahazlmpcpkelpolv.supabase.co';
-const supabaseKey = process.env.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im94cGxhaGF6bG1wY3BrZWxwb2x2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzExNTA3MDAsImV4cCI6MjA0NjcyNjcwMH0.PpHCKJz4L34SFMJ8-xRLl2r0KdLbkqWZc5Hcl5N7LXo';
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error(
+    'Variáveis de ambiente SUPABASE_URL e SUPABASE_KEY não configuradas. ' +
+    'Configure-as no Firebase Console ou no ficheiro .env.local'
+  );
+}
+
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Middleware para CORS
