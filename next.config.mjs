@@ -12,40 +12,18 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   
-  // Configuração para origens permitidas em desenvolvimento
-  allowedDevOrigins: [
-    'localhost:3000',
-    'localhost:3001', 
-    '192.168.1.217:3000',
-    '192.168.1.217:3001',
-    '192.168.50.93:3000',
-    '127.0.0.1:3000',
-    '0.0.0.0:3000'
-  ],
-  
   // Configuração para imagens externas - Otimizada para performance
   images: {
-    unoptimized: true,
+    unoptimized: process.env.NODE_ENV === 'development', // Otimizado em produção no Vercel
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'localhost',
-        port: '3000',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'supabase.co',
+        hostname: '**.supabase.co',
         pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'storage.googleapis.com',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'oxplahazlmpcpkelpolv.supabase.co',
         pathname: '/**',
       },
     ],
@@ -56,7 +34,6 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'inline',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    loader: 'default',
   },
   
   // Production optimizations
@@ -77,9 +54,6 @@ const nextConfig = {
   env: {
     CSRF_SECRET: process.env.CSRF_SECRET || 'da-costa-music-csrf-secret-key',
     NEXT_PUBLIC_BIT_APP_ID_CAIRO: process.env.NEXT_PUBLIC_BIT_APP_ID_CAIRO,
-    // Will add these later:
-    // NEXT_PUBLIC_BIT_APP_ID_ENOO_NAPA: process.env.NEXT_PUBLIC_BIT_APP_ID_ENOO_NAPA,
-    // NEXT_PUBLIC_BIT_APP_ID_DA_CAPO: process.env.NEXT_PUBLIC_BIT_APP_ID_DA_CAPO,
   },
 }
 
