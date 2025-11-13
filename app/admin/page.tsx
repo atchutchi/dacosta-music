@@ -32,8 +32,7 @@ export default function AdminPage() {
       description: "Manage products and orders",
       icon: <ShoppingBag className="h-8 w-8" />,
       link: "/admin/shop",
-      color: "bg-yellow-500/10 text-yellow-400",
-      comingSoon: true
+      color: "bg-yellow-500/10 text-yellow-400"
     }
   ];
 
