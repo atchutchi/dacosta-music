@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useParams, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Check, Package, Truck, MapPin, CreditCard } from "lucide-react"
@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import type { Order, OrderItem } from "@/lib/database.types"
 
-export default function OrderConfirmationPage() {
+function OrderConfirmationContent() {
   const params = useParams()
   const searchParams = useSearchParams()
   const orderId = params.id as string
@@ -288,6 +288,18 @@ export default function OrderConfirmationPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function OrderConfirmationPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen pt-24 pb-20 flex items-center justify-center">
+        <div className="animate-pulse">Loading order...</div>
+      </div>
+    }>
+      <OrderConfirmationContent />
+    </Suspense>
   )
 }
 
