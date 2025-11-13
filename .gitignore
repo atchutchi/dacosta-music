@@ -27,6 +27,14 @@ yarn-error.log*
 .env*.local
 .env
 .env.local
+.env.example
+.env.production
+.env.test
+.env.test.local
+.env.test.development
+.env.test.production
+.env.test.local.development
+.env.test.local.production
 
 # vercel
 .vercel
@@ -38,3 +46,44 @@ next-env.d.ts
 # IDE
 .idea
 .vscode
+
+# Documentação temporária e guias de setup (contém informações sensíveis)
+CONFIGURAR_*.md
+ADICIONAR_*.md
+TUDO_*.md
+STRIPE_*.md
+IMPLEMENTACAO_*.md
+GUIA_*.md
+COMECE_*.md
+ENV_*.md
+RESUMO_*.md
+SOBRE_*.md
+CORRIGIR_*.md
+VERIFICAR_*.md
+TESTAR_*.md
+PROBLEMA_*.md
+SOLUCAO_*.md
+ERRO_*.md
+COMO_*.md
+RESET_*.md
+INSTRUCOES_*.md
+PLANO_*.md
+LOJA_README.md
+
+# Scripts SQL temporários com dados sensíveis
+scripts/fix-*.sql
+scripts/setup-admin-*.sql
+scripts/corrigir-*.sql
+scripts/diagnostico-*.sql
+scripts/debug-*.sql
+scripts/quick-*.sql
+scripts/insert-*.sql
+scripts/EXECUTE_*.sql
+
+# Arquivos de deployment e migração com configurações
+DEPLOY_*.md
+MIGRACAO_*.md
+SEGURANCA.md
+SEGURANCA_*.md
+OTIMIZACOES_*.md
+IMPLEMENTACOES_*.md
