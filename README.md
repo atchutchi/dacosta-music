@@ -74,11 +74,19 @@ Da Costa Music é uma agência criativa e empresa de gestão de talentos que rep
 
 - **Shop**: 
   - E-commerce completo para merchandise e música
+  - Sistema de produtos com Supabase Database
   - Filtros por categoria e preço
   - Ordenação de produtos
   - Sistema de carrinho de compras
-  - Produtos: roupas, acessórios, música, eletrônicos
+  - Guest checkout (compra sem cadastro)
+  - Integração Stripe para pagamentos
+  - Controle automático de stock
+  - Admin panel para gestão de produtos e pedidos
+  - Upload de imagens para Supabase Storage
+  - Produtos: camisas, acessórios, música, eletrônicos
   - Interface responsiva com animações
+  
+  📖 **Ver documentação completa:** `LOJA_README.md`
 
 - **Legal Pages**:
   - Página de Termos de Serviço

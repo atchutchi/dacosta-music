@@ -3,6 +3,265 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export interface Database {
   public: {
     Tables: {
+      products: {
+        Row: {
+          id: string
+          created_at: string
+          updated_at: string
+          name: string
+          slug: string
+          description: string | null
+          price: number
+          category: string
+          artist_id: string | null
+          sizes: string[] | null
+          colors: string[] | null
+          stock_quantity: number
+          low_stock_threshold: number
+          image_urls: string[] | null
+          featured: boolean
+          active: boolean
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          name: string
+          slug: string
+          description?: string | null
+          price: number
+          category: string
+          artist_id?: string | null
+          sizes?: string[] | null
+          colors?: string[] | null
+          stock_quantity?: number
+          low_stock_threshold?: number
+          image_urls?: string[] | null
+          featured?: boolean
+          active?: boolean
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          name?: string
+          slug?: string
+          description?: string | null
+          price?: number
+          category?: string
+          artist_id?: string | null
+          sizes?: string[] | null
+          colors?: string[] | null
+          stock_quantity?: number
+          low_stock_threshold?: number
+          image_urls?: string[] | null
+          featured?: boolean
+          active?: boolean
+        }
+      }
+      customers: {
+        Row: {
+          id: string
+          user_id: string | null
+          email: string
+          name: string
+          phone: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id?: string | null
+          email: string
+          name: string
+          phone?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string | null
+          email?: string
+          name?: string
+          phone?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      orders: {
+        Row: {
+          id: string
+          customer_id: string
+          order_number: string
+          status: string
+          subtotal: number
+          shipping_cost: number
+          tax: number
+          total: number
+          currency: string
+          shipping_name: string
+          shipping_email: string
+          shipping_phone: string | null
+          shipping_address_line1: string
+          shipping_address_line2: string | null
+          shipping_city: string
+          shipping_state: string | null
+          shipping_country: string
+          shipping_postal_code: string
+          payment_method: string | null
+          payment_status: string
+          payment_intent_id: string | null
+          paypal_order_id: string | null
+          shipping_method: string | null
+          tracking_number: string | null
+          tracking_url: string | null
+          shipped_at: string | null
+          delivered_at: string | null
+          notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          customer_id: string
+          order_number: string
+          status?: string
+          subtotal: number
+          shipping_cost: number
+          tax?: number
+          total: number
+          currency?: string
+          shipping_name: string
+          shipping_email: string
+          shipping_phone?: string | null
+          shipping_address_line1: string
+          shipping_address_line2?: string | null
+          shipping_city: string
+          shipping_state?: string | null
+          shipping_country: string
+          shipping_postal_code: string
+          payment_method?: string | null
+          payment_status?: string
+          payment_intent_id?: string | null
+          paypal_order_id?: string | null
+          shipping_method?: string | null
+          tracking_number?: string | null
+          tracking_url?: string | null
+          shipped_at?: string | null
+          delivered_at?: string | null
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          customer_id?: string
+          order_number?: string
+          status?: string
+          subtotal?: number
+          shipping_cost?: number
+          tax?: number
+          total?: number
+          currency?: string
+          shipping_name?: string
+          shipping_email?: string
+          shipping_phone?: string | null
+          shipping_address_line1?: string
+          shipping_address_line2?: string | null
+          shipping_city?: string
+          shipping_state?: string | null
+          shipping_country?: string
+          shipping_postal_code?: string
+          payment_method?: string | null
+          payment_status?: string
+          payment_intent_id?: string | null
+          paypal_order_id?: string | null
+          shipping_method?: string | null
+          tracking_number?: string | null
+          tracking_url?: string | null
+          shipped_at?: string | null
+          delivered_at?: string | null
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      order_items: {
+        Row: {
+          id: string
+          order_id: string
+          product_id: string | null
+          product_name: string
+          product_image_url: string | null
+          size: string | null
+          color: string | null
+          quantity: number
+          unit_price: number
+          subtotal: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          order_id: string
+          product_id?: string | null
+          product_name: string
+          product_image_url?: string | null
+          size?: string | null
+          color?: string | null
+          quantity: number
+          unit_price: number
+          subtotal: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          order_id?: string
+          product_id?: string | null
+          product_name?: string
+          product_image_url?: string | null
+          size?: string | null
+          color?: string | null
+          quantity?: number
+          unit_price?: number
+          subtotal?: number
+          created_at?: string
+        }
+      }
+      stock_history: {
+        Row: {
+          id: string
+          product_id: string | null
+          change_type: string
+          quantity_change: number
+          quantity_after: number
+          reference_id: string | null
+          notes: string | null
+          created_by: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          product_id?: string | null
+          change_type: string
+          quantity_change: number
+          quantity_after: number
+          reference_id?: string | null
+          notes?: string | null
+          created_by?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          product_id?: string | null
+          change_type?: string
+          quantity_change?: number
+          quantity_after?: number
+          reference_id?: string | null
+          notes?: string | null
+          created_by?: string | null
+          created_at?: string
+        }
+      }
       artists: {
         Row: {
           id: string
@@ -206,8 +465,51 @@ export interface Database {
   }
 }
 
+// Type exports for easy usage
+export type Product = Database["public"]["Tables"]["products"]["Row"]
+export type Customer = Database["public"]["Tables"]["customers"]["Row"]
+export type Order = Database["public"]["Tables"]["orders"]["Row"]
+export type OrderItem = Database["public"]["Tables"]["order_items"]["Row"]
+export type StockHistory = Database["public"]["Tables"]["stock_history"]["Row"]
 export type Artist = Database["public"]["Tables"]["artists"]["Row"]
 export type Event = Database["public"]["Tables"]["events"]["Row"]
 export type Album = Database["public"]["Tables"]["albums"]["Row"]
 export type Track = Database["public"]["Tables"]["tracks"]["Row"]
 export type LiveSet = Database["public"]["Tables"]["live_sets"]["Row"]
+
+// Helper types for cart items (frontend)
+export interface CartItem {
+  productId: string
+  quantity: number
+  size?: string
+  color?: string
+}
+
+// Helper types for checkout
+export interface CheckoutData {
+  items: CartItem[]
+  customer: {
+    name: string
+    email: string
+    phone?: string
+  }
+  shipping: {
+    name: string
+    email: string
+    phone?: string
+    addressLine1: string
+    addressLine2?: string
+    city: string
+    state?: string
+    country: string
+    postalCode: string
+  }
+  shippingMethod: 'manual' | 'dhl' | 'fedex'
+  paymentMethod: 'stripe' | 'paypal'
+}
+
+// Order status types
+export type OrderStatus = 'pending' | 'paid' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded'
+export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded'
+export type ShippingMethod = 'manual' | 'dhl' | 'fedex'
+export type PaymentMethod = 'stripe' | 'paypal'

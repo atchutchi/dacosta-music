@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server"
-import { createServerClient } from "@/lib/supabase/app-server"
+import { createServerClient } from "@/lib/supabase/server"
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { id } = params
 
   const { data, error } = await supabase
@@ -30,7 +30,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
 }
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { id } = params
   const data = await request.json()
 
@@ -72,7 +72,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 }
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { id } = params
 
   // Primeiro, remover relacionamentos

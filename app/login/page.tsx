@@ -2,8 +2,8 @@
 
 import type React from "react"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { createClientClient } from "@/lib/supabase/client"
@@ -12,15 +12,27 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle } from "lucide-react"
+import { AlertCircle, Info } from "lucide-react"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [accessDenied, setAccessDenied] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClientClient()
+  
+  const redirectTo = searchParams.get('redirect') || '/admin'
+  
+  useEffect(() => {
+    // Verificar se veio de uma página que requer autenticação
+    if (searchParams.get('access') === 'denied') {
+      setAccessDenied(true)
+      setError('Você precisa fazer login para acessar esta página')
+    }
+  }, [searchParams])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,12 +53,16 @@ export default function LoginPage() {
       if (data?.user) {
         console.log("Login bem-sucedido:", data.user)
 
+        // Redirecionar para a página original ou admin
+        const destination = redirectTo || '/admin'
+        console.log("Redirecting to:", destination)
+
         // Use both router.push and window.location for more reliable redirection
-        router.push("/admin")
+        router.push(destination)
 
         // Force a hard navigation to ensure the session is applied
         setTimeout(() => {
-          window.location.href = "/admin"
+          window.location.href = destination
         }, 100)
       }
     } catch (err) {
@@ -72,6 +88,14 @@ export default function LoginPage() {
         </CardHeader>
         <form onSubmit={handleLogin}>
           <CardContent className="space-y-4">
+            {accessDenied && (
+              <Alert className="border-yellow-800 bg-yellow-950 text-yellow-300">
+                <Info className="h-4 w-4" />
+                <AlertDescription>
+                  Você precisa fazer login para acessar o painel administrativo
+                </AlertDescription>
+              </Alert>
+            )}
             {error && (
               <Alert variant="destructive" className="border-red-800 bg-red-950 text-red-300">
                 <AlertCircle className="h-4 w-4" />

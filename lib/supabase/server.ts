@@ -3,10 +3,13 @@ import { cookies } from "next/headers"
 import type { Database } from "../database.types"
 
 // This function should only be used in Server Components or Server Actions
-export function createServerClient() {
-  const cookieStore = cookies()
+export async function createServerClient() {
+  const cookieStore = await cookies()
 
-  return createSupaServerClient<Database>(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!, {
+  return createSupaServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
     cookies: {
       get(name: string) {
         return cookieStore.get(name)?.value

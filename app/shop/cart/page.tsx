@@ -25,86 +25,43 @@ export default function CartPage() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Fetch products (simulated)
-    const fetchProducts = () => {
-      const allProducts: Product[] = [
-        {
-          id: "product1",
-          name: "Da Costa Logo T-Shirt",
-          price: 29.99,
-          image: "/images/dj-performance-1.png",
-          category: "Apparel",
-        },
-        {
-          id: "product2",
-          name: "Afro House Vinyl Collection",
-          price: 49.99,
-          image: "/images/dj-red-light.png",
-          category: "Music",
-        },
-        {
-          id: "product3",
-          name: "Caiiro Limited Edition Cap",
-          price: 24.99,
-          image: "/images/dj-white-shirt.png",
-          category: "Accessories",
-        },
-        {
-          id: "product4",
-          name: "Da Capo Signature Headphones",
-          price: 129.99,
-          image: "/images/dj-duo.png",
-          category: "Electronics",
-        },
-        {
-          id: "product5",
-          name: "African Rhythms Hoodie",
-          price: 59.99,
-          image: "/images/crowd-pattern.png",
-          category: "Apparel",
-        },
-        {
-          id: "product6",
-          name: "Enoo Napa Digital Album",
-          price: 14.99,
-          image: "/images/club-view.png",
-          category: "Music",
-        },
-        {
-          id: "product7",
-          name: "B3B Tour Poster (Signed)",
-          price: 39.99,
-          image: "/images/concert-phones.png",
-          category: "Accessories",
-        },
-        {
-          id: "product8",
-          name: "Da Costa Music Tote Bag",
-          price: 19.99,
-          image: "/images/crowd-lights.png",
-          category: "Accessories",
-        },
-        {
-          id: "product9",
-          name: "Limited Edition Vinyl Box Set",
-          price: 99.99,
-          image: "/images/dj-closeup.png",
-          category: "Music",
-        },
-      ]
-
-      setProducts(allProducts)
-
-      // Load cart from localStorage
-      const savedCart = localStorage.getItem("dacosta-cart")
-      if (savedCart) {
-        setCartItems(JSON.parse(savedCart))
+    const loadCartAndProducts = async () => {
+      setIsLoading(true)
+      try {
+        // Load cart from localStorage
+        const savedCart = localStorage.getItem("dacosta-cart")
+        if (savedCart) {
+          const cart = JSON.parse(savedCart)
+          setCartItems(cart)
+          
+          // Fetch real products from API
+          const productIds = cart.map((item: any) => item.id || item.productId).filter(Boolean)
+          
+          if (productIds.length > 0) {
+            const response = await fetch(`/api/products?ids=${productIds.join(',')}`)
+            const data = await response.json()
+            
+            if (data.products) {
+              // Transform to match cart format
+              const transformedProducts = data.products.map((p: any) => ({
+                id: p.id,
+                name: p.name,
+                price: p.price,
+                image: p.image_urls?.[0] || '/placeholder.svg',
+                category: p.category
+              }))
+              setProducts(transformedProducts)
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error loading cart:', error)
+      } finally {
+        setIsLoading(false)
       }
-
-      setIsLoading(false)
     }
 
-    fetchProducts()
+    loadCartAndProducts()
   }, [])
 
   const updateQuantity = (id: string, newQuantity: number) => {
@@ -145,18 +102,14 @@ export default function CartPage() {
 
   const calculateSubtotal = () => {
     return cartItems.reduce((total, item) => {
-      const product = getProductDetails(item.id)
+      const itemId = (item as any).productId || item.id
+      const product = products.find(p => p.id === itemId)
       return total + (product?.price || 0) * item.quantity
     }, 0)
   }
 
-  const calculateShipping = () => {
-    const subtotal = calculateSubtotal()
-    return subtotal > 100 ? 0 : 9.99
-  }
-
   const calculateTotal = () => {
-    return calculateSubtotal() + calculateShipping()
+    return calculateSubtotal()
   }
 
   if (isLoading) {
@@ -233,12 +186,13 @@ export default function CartPage() {
 
                 <div className="divide-y divide-white/10">
                   {cartItems.map((item) => {
-                    const product = getProductDetails(item.id)
+                    const itemId = (item as any).productId || item.id
+                    const product = products.find(p => p.id === itemId)
                     if (!product) return null
 
                     return (
                       <motion.div
-                        key={item.id}
+                        key={itemId}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
@@ -246,7 +200,8 @@ export default function CartPage() {
                       >
                         <div className="grid grid-cols-12 gap-4 items-center">
                           <div className="col-span-6 flex items-center">
-                            <div className="h-16 w-16 rounded overflow-hidden mr-4">
+                            <div className="h-16 w-16 rounded overflow-hidden mr-4 cursor-pointer hover:opacity-80 transition-opacity"
+                                 onClick={() => window.open(product.image, '_blank')}>
                               <img
                                 src={product.image || "/placeholder.svg"}
                                 alt={product.name}
@@ -259,19 +214,19 @@ export default function CartPage() {
                             </div>
                           </div>
                           <div className="col-span-2 text-center">
-                            <span>${product.price.toFixed(2)}</span>
+                            <span>€{product.price.toFixed(2)}</span>
                           </div>
                           <div className="col-span-2 flex items-center justify-center">
                             <div className="flex items-center border border-white/20 rounded-md">
                               <button
-                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                onClick={() => updateQuantity(itemId, item.quantity - 1)}
                                 className="px-2 py-1 hover:bg-white/10"
                               >
                                 <Minus className="h-4 w-4" />
                               </button>
                               <span className="px-3">{item.quantity}</span>
                               <button
-                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                onClick={() => updateQuantity(itemId, item.quantity + 1)}
                                 className="px-2 py-1 hover:bg-white/10"
                               >
                                 <Plus className="h-4 w-4" />
@@ -279,8 +234,8 @@ export default function CartPage() {
                             </div>
                           </div>
                           <div className="col-span-2 text-right flex items-center justify-end">
-                            <span className="mr-4">${(product.price * item.quantity).toFixed(2)}</span>
-                            <button onClick={() => removeFromCart(item.id)} className="text-white/60 hover:text-white">
+                            <span className="mr-4">€{(product.price * item.quantity).toFixed(2)}</span>
+                            <button onClick={() => removeFromCart(itemId)} className="text-white/60 hover:text-white">
                               <Trash2 className="h-4 w-4" />
                             </button>
                           </div>
@@ -309,27 +264,21 @@ export default function CartPage() {
                 <div className="space-y-4">
                   <div className="flex justify-between">
                     <span className="text-white/70">Subtotal</span>
-                    <span>${calculateSubtotal().toFixed(2)}</span>
+                    <span>€{calculateSubtotal().toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-white/70">Shipping</span>
-                    <span>
-                      {calculateShipping() === 0 ? (
-                        <span className="text-green-400">Free</span>
-                      ) : (
-                        `$${calculateShipping().toFixed(2)}`
-                      )}
-                    </span>
+                  <div className="py-3 border-t border-white/10">
+                    <p className="text-sm text-white/40 italic">
+                      Shipping calculated at checkout based on destination
+                    </p>
                   </div>
-                  {calculateShipping() > 0 && (
-                    <p className="text-sm text-white/60">Free shipping on orders over $100</p>
-                  )}
-                  <div className="pt-4 border-t border-white/10 flex justify-between font-bold">
+                  <div className="pt-2 flex justify-between font-bold">
                     <span>Total</span>
-                    <span>${calculateTotal().toFixed(2)}</span>
+                    <span>€{calculateTotal().toFixed(2)}</span>
                   </div>
                 </div>
-                <Button className="w-full mt-8 bg-white text-black hover:bg-white/90">Proceed to Checkout</Button>
+                <Link href="/shop/checkout" className="block w-full">
+                  <Button className="w-full mt-8 bg-white text-black hover:bg-white/90">Proceed to Checkout</Button>
+                </Link>
               </div>
             </div>
           </div>
