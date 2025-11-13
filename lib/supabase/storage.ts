@@ -6,6 +6,7 @@ export const BUCKET_VIDEOS = 'videos';
 export const BUCKET_EVENTS = 'events';
 export const BUCKET_ARTISTS = 'artists';
 export const BUCKET_MEDIA = 'media'; // Novo bucket para blog posts
+export const BUCKET_PRODUCTS = 'products'; // Bucket para imagens de produtos da loja
 
 /**
  * Faz upload de um arquivo para o Supabase Storage
@@ -13,15 +14,28 @@ export const BUCKET_MEDIA = 'media'; // Novo bucket para blog posts
  * @param file Arquivo a ser enviado
  * @param path Caminho onde o arquivo será armazenado (ex: 'artists/nome-artista.jpg')
  * @returns URL pública do arquivo ou null em caso de erro
+ * @throws Error se o bucket não existir ou houver erro no upload
  */
 export async function uploadFile(bucket: string, file: File, path: string): Promise<string | null> {
   try {
     const supabase = createClientClient();
     
-    // Não verifica mais se o bucket existe nem tenta criar
-    // Assume que os buckets foram criados previamente no painel do Supabase
+    // Verificar se o bucket existe
+    const { data: buckets, error: listError } = await supabase.storage.listBuckets();
     
-    // Faz o upload do arquivo
+    if (listError) {
+      console.error('Error listing buckets:', listError);
+      throw new Error('Erro ao verificar buckets disponíveis');
+    }
+    
+    const bucketExists = buckets?.some(b => b.name === bucket);
+    if (!bucketExists) {
+      const errorMsg = `Bucket '${bucket}' não existe. Crie-o no Supabase Dashboard → Storage → New bucket.`;
+      console.error(errorMsg);
+      throw new Error(errorMsg);
+    }
+    
+    // Fazer upload do arquivo
     const { error } = await supabase.storage
       .from(bucket)
       .upload(path, file, {
@@ -30,22 +44,27 @@ export async function uploadFile(bucket: string, file: File, path: string): Prom
       });
     
     if (error) {
-      // Se o erro for que o bucket não existe, dá uma mensagem mais clara
+      console.error('Erro ao fazer upload:', error);
+      
+      // Mensagens de erro mais específicas
       if (error.message?.includes('bucket') && error.message?.includes('not found')) {
-        console.error(`Bucket '${bucket}' não existe. Por favor, crie-o no painel admin do Supabase.`);
-        return null;
+        throw new Error(`Bucket '${bucket}' não encontrado. Verifique se foi criado no Supabase Storage.`);
       }
       
-      console.error('Erro ao fazer upload:', error);
-      return null;
+      if (error.message?.includes('new row violates row-level security')) {
+        throw new Error(`Sem permissão para fazer upload. Verifique as políticas de storage do bucket '${bucket}'.`);
+      }
+      
+      throw new Error(error.message || 'Erro desconhecido ao fazer upload');
     }
     
-    // Retorna a URL pública do arquivo
+    // Retornar URL pública do arquivo
     const { data } = supabase.storage.from(bucket).getPublicUrl(path);
     return data.publicUrl;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Erro no upload para o Supabase Storage:', error);
-    return null;
+    // Propagar erro para tratamento no componente
+    throw error;
   }
 }
 
@@ -91,7 +110,7 @@ export async function createBucket(bucketName: string, isPublic: boolean = true)
 export async function checkBuckets(): Promise<Array<{name: string, exists: boolean}>> {
   try {
     const supabase = createClientClient();
-    const requiredBuckets = [BUCKET_IMAGES, BUCKET_VIDEOS, BUCKET_EVENTS, BUCKET_ARTISTS, BUCKET_MEDIA];
+    const requiredBuckets = [BUCKET_IMAGES, BUCKET_VIDEOS, BUCKET_EVENTS, BUCKET_ARTISTS, BUCKET_MEDIA, BUCKET_PRODUCTS];
     
     const { data: existingBuckets, error } = await supabase.storage.listBuckets();
     
@@ -111,7 +130,8 @@ export async function checkBuckets(): Promise<Array<{name: string, exists: boole
       { name: BUCKET_VIDEOS, exists: false },
       { name: BUCKET_EVENTS, exists: false },
       { name: BUCKET_ARTISTS, exists: false },
-      { name: BUCKET_MEDIA, exists: false }
+      { name: BUCKET_MEDIA, exists: false },
+      { name: BUCKET_PRODUCTS, exists: false }
     ];
   }
 }
