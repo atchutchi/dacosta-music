@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server"
-import { createServerClient } from "@/lib/supabase/app-server"
+import { createServerClient } from "@/lib/supabase/server"
 
 export async function GET() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
 
   const { data, error } = await supabase.from("events").select("*").order("start_date")
 
@@ -14,7 +14,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const data = await request.json()
 
   // Inserir evento

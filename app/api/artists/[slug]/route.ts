@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server"
-import { createServerClient } from "@/lib/supabase/app-server"
+import { createServerClient } from "@/lib/supabase/server"
 
 export async function GET(request: Request, { params }: { params: { slug: string } }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { slug } = params
 
   const { data, error } = await supabase.from("artists").select("*").eq("slug", slug).single()
@@ -15,7 +15,7 @@ export async function GET(request: Request, { params }: { params: { slug: string
 }
 
 export async function PUT(request: Request, { params }: { params: { slug: string } }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { slug } = params
   const data = await request.json()
 
@@ -29,7 +29,7 @@ export async function PUT(request: Request, { params }: { params: { slug: string
 }
 
 export async function DELETE(request: Request, { params }: { params: { slug: string } }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { slug } = params
 
   const { error } = await supabase.from("artists").delete().eq("slug", slug)

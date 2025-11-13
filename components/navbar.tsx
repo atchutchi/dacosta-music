@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Menu } from "lucide-react"
+import { Menu, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import { motion } from "framer-motion"
@@ -55,6 +55,7 @@ export default function Navbar() {
     { href: "/", label: "Home" },
     { href: "/artists", label: "Roster" },
     { href: "/services", label: "Services" },
+    { href: "/shop", label: "Shop" },
     { href: "/#contact", label: "Contact" },
   ]
 
@@ -93,6 +94,17 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center space-x-4">
+          {/* Cart Icon with Counter */}
+          <Link href="/shop/cart" className="relative hidden md:block">
+            <Button variant="ghost" size="icon" className="relative">
+              <ShoppingCart className="h-5 w-5" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-white text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </Button>
+          </Link>
           {/* Mobile Navigation */}
           <Sheet>
             <SheetTrigger asChild className="md:hidden">
@@ -114,6 +126,15 @@ export default function Navbar() {
                       </Link>
                     </SheetClose>
                   ))}
+                  <SheetClose asChild>
+                    <Link 
+                      href="/shop/cart" 
+                      className="text-xl font-medium hover:text-white/80 transition-colors duration-300 flex items-center"
+                    >
+                      <ShoppingCart className="h-5 w-5 mr-2" />
+                      Cart {cartCount > 0 && `(${cartCount})`}
+                    </Link>
+                  </SheetClose>
                 </nav>
                 <div className="mt-auto pt-8">
                   <p className="text-sm text-white/60">© {new Date().getFullYear()} Da Costa Music</p>
