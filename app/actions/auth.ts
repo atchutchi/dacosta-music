@@ -4,7 +4,7 @@ import { createServerClient } from "@/lib/supabase/server"
 
 export async function updateUserPassword(currentPassword: string, newPassword: string) {
   try {
-    const supabase = createServerClient()
+    const supabase = await createServerClient()
 
     // Update the user's password
     const { error } = await supabase.auth.updateUser({
