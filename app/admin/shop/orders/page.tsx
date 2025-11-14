@@ -2,40 +2,69 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ArrowLeft, Eye, Package, Truck, Check, X, Search } from "lucide-react"
+import { ArrowLeft, Package, Truck, Clock, CheckCircle, XCircle, Eye, Search, Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { useToast } from "@/components/ui/use-toast"
 import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import type { Order, OrderItem } from "@/lib/database.types"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { useToast } from "@/components/ui/use-toast"
+import { motion } from "framer-motion"
 
-interface OrderWithItems extends Order {
-  items?: OrderItem[]
+interface Order {
+  id: string
+  order_number: string
+  status: string
+  payment_status: string
+  total: number
+  subtotal: number
+  shipping_cost: number
+  currency: string
+  shipping_name: string
+  shipping_email: string
+  shipping_phone: string
+  shipping_address_line1: string
+  shipping_address_line2?: string
+  shipping_city: string
+  shipping_state?: string
+  shipping_country: string
+  shipping_postal_code: string
+  tracking_number?: string
+  tracking_url?: string
+  carrier?: string
+  created_at: string
+  shipped_at?: string
+  order_items?: Array<{
+    product_name: string
+    quantity: number
+    unit_price: number
+    size?: string
+    color?: string
+    product_image_url?: string
+  }>
 }
 
 export default function AdminOrdersPage() {
-  const [orders, setOrders] = useState<OrderWithItems[]>([])
-  const [filteredOrders, setFilteredOrders] = useState<OrderWithItems[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [selectedOrder, setSelectedOrder] = useState<OrderWithItems | null>(null)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [isUpdating, setIsUpdating] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
   const { toast } = useToast()
-
-  // Update form state
-  const [updateData, setUpdateData] = useState({
-    status: "",
-    payment_status: "",
-    tracking_number: "",
-    tracking_url: "",
-    notes: ""
+  const [orders, setOrders] = useState<Order[]>([])
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
+  const [isShipDialogOpen, setIsShipDialogOpen] = useState(false)
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false)
+  const [isShipping, setIsShipping] = useState(false)
+  
+  // Filtros
+  const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [searchQuery, setSearchQuery] = useState("")
+  
+  // Form de tracking
+  const [trackingData, setTrackingData] = useState({
+    trackingNumber: "",
+    trackingUrl: "",
+    carrier: "DHL"
   })
 
   useEffect(() => {
@@ -44,7 +73,7 @@ export default function AdminOrdersPage() {
 
   useEffect(() => {
     filterOrders()
-  }, [orders, searchQuery, statusFilter])
+  }, [orders, statusFilter, searchQuery])
 
   const fetchOrders = async () => {
     setIsLoading(true)
@@ -58,8 +87,8 @@ export default function AdminOrdersPage() {
     } catch (error) {
       console.error('Error fetching orders:', error)
       toast({
-        title: "Error",
-        description: "Failed to fetch orders",
+        title: "Erro",
+        description: "Falha ao carregar pedidos",
         variant: "destructive"
       })
     } finally {
@@ -69,122 +98,102 @@ export default function AdminOrdersPage() {
 
   const filterOrders = () => {
     let filtered = [...orders]
-
-    // Filter by status
+    
+    // Filtrar por status
     if (statusFilter !== "all") {
       filtered = filtered.filter(order => order.status === statusFilter)
     }
-
-    // Filter by search query
+    
+    // Filtrar por pesquisa
     if (searchQuery) {
-      filtered = filtered.filter(order =>
-        order.order_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        order.shipping_email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        order.shipping_name.toLowerCase().includes(searchQuery.toLowerCase())
+      const query = searchQuery.toLowerCase()
+      filtered = filtered.filter(order => 
+        order.order_number.toLowerCase().includes(query) ||
+        order.shipping_name.toLowerCase().includes(query) ||
+        order.shipping_email.toLowerCase().includes(query) ||
+        order.tracking_number?.toLowerCase().includes(query)
       )
     }
-
+    
     setFilteredOrders(filtered)
   }
 
-  const handleViewOrder = async (order: Order) => {
-    // Fetch full order details with items
-    try {
-      const response = await fetch(`/api/orders/${order.id}`)
-      const data = await response.json()
-      
-      if (data.order) {
-        setSelectedOrder({ ...data.order, items: data.items })
-        setUpdateData({
-          status: data.order.status,
-          payment_status: data.order.payment_status,
-          tracking_number: data.order.tracking_number || "",
-          tracking_url: data.order.tracking_url || "",
-          notes: data.order.notes || ""
-        })
-        setIsDialogOpen(true)
-      }
-    } catch (error) {
-      console.error('Error fetching order details:', error)
-      toast({
-        title: "Error",
-        description: "Failed to fetch order details",
-        variant: "destructive"
-      })
-    }
+  const handleOpenShipDialog = (order: Order) => {
+    setSelectedOrder(order)
+    setTrackingData({
+      trackingNumber: order.tracking_number || "",
+      trackingUrl: order.tracking_url || "",
+      carrier: order.carrier || "DHL"
+    })
+    setIsShipDialogOpen(true)
   }
 
-  const handleUpdateOrder = async () => {
+  const handleOpenDetailsDialog = (order: Order) => {
+    setSelectedOrder(order)
+    setIsDetailsDialogOpen(true)
+  }
+
+  const handleMarkAsShipped = async () => {
     if (!selectedOrder) return
-
-    setIsUpdating(true)
+    
+    setIsShipping(true)
     try {
-      const response = await fetch(`/api/orders/${selectedOrder.id}`, {
-        method: 'PUT',
+      const response = await fetch(`/api/orders/${selectedOrder.id}/ship`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          status: updateData.status,
-          payment_status: updateData.payment_status,
-          tracking_number: updateData.tracking_number || null,
-          tracking_url: updateData.tracking_url || null,
-          notes: updateData.notes || null,
-          shipped_at: updateData.status === 'shipped' && !selectedOrder.shipped_at ? new Date().toISOString() : selectedOrder.shipped_at,
-          delivered_at: updateData.status === 'delivered' && !selectedOrder.delivered_at ? new Date().toISOString() : selectedOrder.delivered_at
-        })
+        body: JSON.stringify(trackingData)
       })
-
+      
       if (response.ok) {
         toast({
-          title: "Success",
-          description: "Order updated successfully"
+          title: "Pedido Despachado! 📦",
+          description: "Email de notificação enviado ao cliente",
         })
-        setIsDialogOpen(false)
-        fetchOrders()
+        setIsShipDialogOpen(false)
+        fetchOrders() // Recarregar lista
       } else {
-        throw new Error('Failed to update order')
+        throw new Error('Failed to ship order')
       }
-    } catch (error: any) {
+    } catch (error) {
       toast({
-        title: "Error",
-        description: error.message,
+        title: "Erro",
+        description: "Falha ao marcar pedido como enviado",
         variant: "destructive"
       })
     } finally {
-      setIsUpdating(false)
+      setIsShipping(false)
     }
   }
 
   const getStatusBadge = (status: string) => {
     const variants: any = {
-      pending: { variant: "secondary", label: "Pending" },
-      paid: { variant: "default", label: "Paid" },
-      processing: { variant: "default", label: "Processing" },
-      shipped: { variant: "default", label: "Shipped" },
-      delivered: { variant: "default", label: "Delivered" },
-      cancelled: { variant: "destructive", label: "Cancelled" },
-      refunded: { variant: "destructive", label: "Refunded" }
+      pending: { color: "bg-yellow-500/20 text-yellow-300 border-yellow-500/50", icon: Clock, label: "Pendente" },
+      paid: { color: "bg-blue-500/20 text-blue-300 border-blue-500/50", icon: CheckCircle, label: "Pago" },
+      shipped: { color: "bg-green-500/20 text-green-300 border-green-500/50", icon: Truck, label: "Enviado" },
+      delivered: { color: "bg-purple-500/20 text-purple-300 border-purple-500/50", icon: Package, label: "Entregue" },
+      cancelled: { color: "bg-red-500/20 text-red-300 border-red-500/50", icon: XCircle, label: "Cancelado" }
     }
-
-    const config = variants[status] || variants.pending
-    return <Badge variant={config.variant}>{config.label}</Badge>
+    
+    const variant = variants[status] || variants.pending
+    const Icon = variant.icon
+    
+    return (
+      <Badge className={`${variant.color} border`}>
+        <Icon className="h-3 w-3 mr-1" />
+        {variant.label}
+      </Badge>
+    )
   }
 
-  const getPaymentStatusBadge = (status: string) => {
-    const variants: any = {
-      pending: { variant: "secondary", label: "Pending" },
-      paid: { variant: "default", label: "Paid" },
-      failed: { variant: "destructive", label: "Failed" },
-      refunded: { variant: "destructive", label: "Refunded" }
-    }
-
-    const config = variants[status] || variants.pending
-    return <Badge variant={config.variant}>{config.label}</Badge>
+  const getStatusCount = (status: string) => {
+    if (status === "all") return orders.length
+    return orders.filter(o => o.status === status).length
   }
 
   if (isLoading) {
     return (
       <div className="min-h-screen pt-24 pb-20 flex items-center justify-center">
-        <div className="animate-pulse">Loading orders...</div>
+        <div className="animate-pulse">Carregando pedidos...</div>
       </div>
     )
   }
@@ -192,278 +201,407 @@ export default function AdminOrdersPage() {
   return (
     <div className="min-h-screen pt-24 pb-20 bg-black">
       <div className="container mx-auto px-4">
-        <div className="mb-8">
-          <Link href="/admin/shop">
-            <Button variant="ghost" className="pl-0">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Shop Management
-            </Button>
-          </Link>
-          <h1 className="text-3xl font-bold mt-2">Order Management</h1>
-          <p className="text-white/60 mt-2">View and manage customer orders</p>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <Link href="/admin">
+              <Button variant="ghost" className="pl-0">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Voltar ao Admin
+              </Button>
+            </Link>
+            <h1 className="text-3xl font-bold mt-2">Gerenciar Pedidos</h1>
+          </div>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+          <Card className="bg-white/5 border-white/10">
+            <CardContent className="p-4">
+              <div className="text-sm text-white/60">Total</div>
+              <div className="text-2xl font-bold">{getStatusCount("all")}</div>
+            </CardContent>
+          </Card>
+          <Card className="bg-yellow-500/10 border-yellow-500/20">
+            <CardContent className="p-4">
+              <div className="text-sm text-yellow-300">Pendentes</div>
+              <div className="text-2xl font-bold text-yellow-300">{getStatusCount("pending")}</div>
+            </CardContent>
+          </Card>
+          <Card className="bg-blue-500/10 border-blue-500/20">
+            <CardContent className="p-4">
+              <div className="text-sm text-blue-300">Pagos</div>
+              <div className="text-2xl font-bold text-blue-300">{getStatusCount("paid")}</div>
+            </CardContent>
+          </Card>
+          <Card className="bg-green-500/10 border-green-500/20">
+            <CardContent className="p-4">
+              <div className="text-sm text-green-300">Enviados</div>
+              <div className="text-2xl font-bold text-green-300">{getStatusCount("shipped")}</div>
+            </CardContent>
+          </Card>
+          <Card className="bg-purple-500/10 border-purple-500/20">
+            <CardContent className="p-4">
+              <div className="text-sm text-purple-300">Entregues</div>
+              <div className="text-2xl font-bold text-purple-300">{getStatusCount("delivered")}</div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Filters */}
-        <Card className="bg-black border-white/10 mb-6">
-          <CardContent className="pt-6">
+        <Card className="bg-white/5 border-white/10 mb-6">
+          <CardContent className="p-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/40" />
-                <Input
-                  placeholder="Search by order #, email or name..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-gray-900 border-white/20"
-                />
+              <div>
+                <Label htmlFor="search">Pesquisar</Label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-3 h-4 w-4 text-white/40" />
+                  <Input
+                    id="search"
+                    placeholder="Número, nome, email..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="bg-gray-900 border-white/20 pl-9"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="status">Filtrar por Status</Label>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="bg-gray-900 border-white/20">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-900 border-white/20">
+                    <SelectItem value="all">Todos ({getStatusCount("all")})</SelectItem>
+                    <SelectItem value="pending">Pendentes ({getStatusCount("pending")})</SelectItem>
+                    <SelectItem value="paid">Pagos ({getStatusCount("paid")})</SelectItem>
+                    <SelectItem value="shipped">Enviados ({getStatusCount("shipped")})</SelectItem>
+                    <SelectItem value="delivered">Entregues ({getStatusCount("delivered")})</SelectItem>
+                    <SelectItem value="cancelled">Cancelados ({getStatusCount("cancelled")})</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="bg-gray-900 border-white/20">
-                  <SelectValue placeholder="Filter by status" />
-                </SelectTrigger>
-                <SelectContent className="bg-gray-900 border-white/20">
-                  <SelectItem value="all">All Orders</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="paid">Paid</SelectItem>
-                  <SelectItem value="processing">Processing</SelectItem>
-                  <SelectItem value="shipped">Shipped</SelectItem>
-                  <SelectItem value="delivered">Delivered</SelectItem>
-                  <SelectItem value="cancelled">Cancelled</SelectItem>
-                  <SelectItem value="refunded">Refunded</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <div className="text-right">
-                <p className="text-sm text-white/60">
-                  Showing {filteredOrders.length} of {orders.length} orders
-                </p>
+              <div className="flex items-end">
+                <Button 
+                  variant="outline" 
+                  className="w-full border-white/20"
+                  onClick={() => {
+                    setStatusFilter("all")
+                    setSearchQuery("")
+                  }}
+                >
+                  <Filter className="mr-2 h-4 w-4" />
+                  Limpar Filtros
+                </Button>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Orders Table */}
-        <Card className="bg-black border-white/10">
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-white/5">
-                  <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Order #</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Customer</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Date</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Total</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Status</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Payment</th>
-                    <th className="px-6 py-4 text-right text-sm font-semibold">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/10">
-                  {filteredOrders.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="px-6 py-12 text-center text-white/60">
-                        No orders found
-                      </td>
+        <Card className="bg-white/5 border-white/10">
+          <CardHeader>
+            <CardTitle>Pedidos ({filteredOrders.length})</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {filteredOrders.length === 0 ? (
+              <div className="text-center py-12 text-white/60">
+                <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p>Nenhum pedido encontrado</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left p-4 text-sm font-semibold">Pedido</th>
+                      <th className="text-left p-4 text-sm font-semibold">Cliente</th>
+                      <th className="text-left p-4 text-sm font-semibold">Data</th>
+                      <th className="text-left p-4 text-sm font-semibold">Total</th>
+                      <th className="text-left p-4 text-sm font-semibold">Status</th>
+                      <th className="text-left p-4 text-sm font-semibold">Tracking</th>
+                      <th className="text-right p-4 text-sm font-semibold">Ações</th>
                     </tr>
-                  ) : (
-                    filteredOrders.map((order) => (
-                      <tr key={order.id} className="hover:bg-white/5">
-                        <td className="px-6 py-4 font-mono text-sm">{order.order_number}</td>
-                        <td className="px-6 py-4">
-                          <div>
-                            <p className="font-medium">{order.shipping_name}</p>
-                            <p className="text-sm text-white/60">{order.shipping_email}</p>
+                  </thead>
+                  <tbody>
+                    {filteredOrders.map((order) => (
+                      <motion.tr 
+                        key={order.id}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                      >
+                        <td className="p-4">
+                          <div className="font-mono text-sm">{order.order_number}</div>
+                          <div className="text-xs text-white/40">
+                            {order.order_items?.length || 0} item(s)
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-sm text-white/70">
-                          {new Date(order.created_at).toLocaleDateString()}
+                        <td className="p-4">
+                          <div className="font-medium">{order.shipping_name}</div>
+                          <div className="text-sm text-white/60">{order.shipping_email}</div>
                         </td>
-                        <td className="px-6 py-4 font-semibold">${order.total.toFixed(2)}</td>
-                        <td className="px-6 py-4">{getStatusBadge(order.status)}</td>
-                        <td className="px-6 py-4">{getPaymentStatusBadge(order.payment_status)}</td>
-                        <td className="px-6 py-4 text-right">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleViewOrder(order)}
-                          >
-                            <Eye className="h-3 w-3 mr-1" />
-                            View
-                          </Button>
+                        <td className="p-4">
+                          <div className="text-sm">
+                            {new Date(order.created_at).toLocaleDateString('pt-PT')}
+                          </div>
+                          <div className="text-xs text-white/40">
+                            {new Date(order.created_at).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}
+                          </div>
                         </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                        <td className="p-4">
+                          <div className="font-semibold">€{order.total.toFixed(2)}</div>
+                        </td>
+                        <td className="p-4">
+                          {getStatusBadge(order.status)}
+                        </td>
+                        <td className="p-4">
+                          {order.tracking_number ? (
+                            <div>
+                              <div className="text-sm font-mono">{order.tracking_number}</div>
+                              <div className="text-xs text-white/40">{order.carrier}</div>
+                            </div>
+                          ) : (
+                            <span className="text-white/40 text-sm">-</span>
+                          )}
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center justify-end gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="border-white/20"
+                              onClick={() => handleOpenDetailsDialog(order)}
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                            {order.status === 'paid' && (
+                              <Button
+                                size="sm"
+                                className="bg-green-600 hover:bg-green-700"
+                                onClick={() => handleOpenShipDialog(order)}
+                              >
+                                <Truck className="h-4 w-4 mr-1" />
+                                Enviar
+                              </Button>
+                            )}
+                          </div>
+                        </td>
+                      </motion.tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </CardContent>
         </Card>
 
-        {/* Order Details Dialog */}
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="bg-black border-white/20 text-white max-w-4xl max-h-[90vh] overflow-y-auto">
+        {/* Dialog: Order Details */}
+        <Dialog open={isDetailsDialogOpen} onOpenChange={setIsDetailsDialogOpen}>
+          <DialogContent className="bg-black border-white/20 text-white max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Detalhes do Pedido</DialogTitle>
+              <DialogDescription>
+                {selectedOrder?.order_number}
+              </DialogDescription>
+            </DialogHeader>
+            
             {selectedOrder && (
-              <>
-                <DialogHeader>
-                  <DialogTitle>Order Details - {selectedOrder.order_number}</DialogTitle>
-                  <DialogDescription>
-                    View and update order information
-                  </DialogDescription>
-                </DialogHeader>
+              <div className="space-y-6">
+                {/* Status */}
+                <div>
+                  <h3 className="font-semibold mb-2">Status</h3>
+                  {getStatusBadge(selectedOrder.status)}
+                </div>
 
-                <div className="space-y-6">
-                  {/* Order Items */}
-                  <div>
-                    <h3 className="font-semibold mb-3">Order Items</h3>
-                    <div className="space-y-3 bg-white/5 p-4 rounded-lg">
-                      {selectedOrder.items?.map((item) => (
-                        <div key={item.id} className="flex items-center gap-4">
-                          {item.product_image_url && (
-                            <img
-                              src={item.product_image_url}
-                              alt={item.product_name}
-                              className="w-16 h-16 object-cover rounded"
-                            />
-                          )}
-                          <div className="flex-1">
-                            <p className="font-medium">{item.product_name}</p>
-                            <p className="text-sm text-white/60">
-                              Qty: {item.quantity} × ${item.unit_price.toFixed(2)}
-                            </p>
-                          </div>
-                          <p className="font-semibold">${item.subtotal.toFixed(2)}</p>
-                        </div>
-                      ))}
-                      <Separator className="my-2" />
-                      <div className="flex justify-between text-sm">
-                        <span>Subtotal:</span>
-                        <span>${selectedOrder.subtotal.toFixed(2)}</span>
+                {/* Customer Info */}
+                <div className="bg-white/5 p-4 rounded-lg">
+                  <h3 className="font-semibold mb-3">Informações do Cliente</h3>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <span className="text-white/60">Nome:</span>
+                      <div className="font-medium">{selectedOrder.shipping_name}</div>
+                    </div>
+                    <div>
+                      <span className="text-white/60">Email:</span>
+                      <div className="font-medium">{selectedOrder.shipping_email}</div>
+                    </div>
+                    {selectedOrder.shipping_phone && (
+                      <div>
+                        <span className="text-white/60">Telefone:</span>
+                        <div className="font-medium">{selectedOrder.shipping_phone}</div>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span>Shipping:</span>
-                        <span>${selectedOrder.shipping_cost.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between font-bold">
-                        <span>Total:</span>
-                        <span>${selectedOrder.total.toFixed(2)}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Shipping Address */}
-                  <div>
-                    <h3 className="font-semibold mb-3">Shipping Address</h3>
-                    <div className="bg-white/5 p-4 rounded-lg text-sm">
-                      <p className="font-medium">{selectedOrder.shipping_name}</p>
-                      <p className="text-white/70 mt-1">{selectedOrder.shipping_address_line1}</p>
-                      {selectedOrder.shipping_address_line2 && (
-                        <p className="text-white/70">{selectedOrder.shipping_address_line2}</p>
-                      )}
-                      <p className="text-white/70">
-                        {selectedOrder.shipping_city}, {selectedOrder.shipping_state} {selectedOrder.shipping_postal_code}
-                      </p>
-                      <p className="text-white/70">{selectedOrder.shipping_country}</p>
-                      {selectedOrder.shipping_phone && (
-                        <p className="text-white/70 mt-2">Phone: {selectedOrder.shipping_phone}</p>
-                      )}
-                      <p className="text-white/70">Email: {selectedOrder.shipping_email}</p>
-                    </div>
-                  </div>
-
-                  {/* Update Form */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="status">Order Status</Label>
-                      <Select value={updateData.status} onValueChange={(value) => setUpdateData({ ...updateData, status: value })}>
-                        <SelectTrigger className="bg-gray-900 border-white/20 mt-1">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-gray-900 border-white/20">
-                          <SelectItem value="pending">Pending</SelectItem>
-                          <SelectItem value="paid">Paid</SelectItem>
-                          <SelectItem value="processing">Processing</SelectItem>
-                          <SelectItem value="shipped">Shipped</SelectItem>
-                          <SelectItem value="delivered">Delivered</SelectItem>
-                          <SelectItem value="cancelled">Cancelled</SelectItem>
-                          <SelectItem value="refunded">Refunded</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="payment_status">Payment Status</Label>
-                      <Select value={updateData.payment_status} onValueChange={(value) => setUpdateData({ ...updateData, payment_status: value })}>
-                        <SelectTrigger className="bg-gray-900 border-white/20 mt-1">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-gray-900 border-white/20">
-                          <SelectItem value="pending">Pending</SelectItem>
-                          <SelectItem value="paid">Paid</SelectItem>
-                          <SelectItem value="failed">Failed</SelectItem>
-                          <SelectItem value="refunded">Refunded</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="tracking_number">Tracking Number</Label>
-                      <Input
-                        id="tracking_number"
-                        value={updateData.tracking_number}
-                        onChange={(e) => setUpdateData({ ...updateData, tracking_number: e.target.value })}
-                        className="bg-gray-900 border-white/20 mt-1"
-                        placeholder="Enter tracking number"
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="tracking_url">Tracking URL</Label>
-                      <Input
-                        id="tracking_url"
-                        value={updateData.tracking_url}
-                        onChange={(e) => setUpdateData({ ...updateData, tracking_url: e.target.value })}
-                        className="bg-gray-900 border-white/20 mt-1"
-                        placeholder="https://..."
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="notes">Internal Notes</Label>
-                    <Input
-                      id="notes"
-                      value={updateData.notes}
-                      onChange={(e) => setUpdateData({ ...updateData, notes: e.target.value })}
-                      className="bg-gray-900 border-white/20 mt-1"
-                      placeholder="Add notes about this order..."
-                    />
+                    )}
                   </div>
                 </div>
 
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleUpdateOrder}
-                    disabled={isUpdating}
-                    className="bg-white text-black hover:bg-white/90"
-                  >
-                    {isUpdating ? 'Updating...' : 'Update Order'}
-                  </Button>
-                </DialogFooter>
-              </>
+                {/* Shipping Address */}
+                <div className="bg-white/5 p-4 rounded-lg">
+                  <h3 className="font-semibold mb-3">Endereço de Envio</h3>
+                  <div className="text-sm">
+                    <div>{selectedOrder.shipping_address_line1}</div>
+                    {selectedOrder.shipping_address_line2 && <div>{selectedOrder.shipping_address_line2}</div>}
+                    <div>{selectedOrder.shipping_city}, {selectedOrder.shipping_state} {selectedOrder.shipping_postal_code}</div>
+                    <div className="font-medium mt-1">{selectedOrder.shipping_country}</div>
+                  </div>
+                </div>
+
+                {/* Items */}
+                <div>
+                  <h3 className="font-semibold mb-3">Itens do Pedido</h3>
+                  <div className="space-y-3">
+                    {selectedOrder.order_items?.map((item, index) => (
+                      <div key={index} className="flex gap-3 bg-white/5 p-3 rounded-lg">
+                        {item.product_image_url && (
+                          <img 
+                            src={item.product_image_url} 
+                            alt={item.product_name}
+                            className="w-16 h-16 object-cover rounded"
+                          />
+                        )}
+                        <div className="flex-1">
+                          <div className="font-medium">{item.product_name}</div>
+                          <div className="text-sm text-white/60">
+                            {item.size && <span>Size: {item.size} </span>}
+                            {item.color && <span>• {item.color}</span>}
+                          </div>
+                          <div className="text-sm">Qtd: {item.quantity} × €{item.unit_price.toFixed(2)}</div>
+                        </div>
+                        <div className="font-semibold">
+                          €{(item.quantity * item.unit_price).toFixed(2)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Totals */}
+                <div className="bg-white/5 p-4 rounded-lg">
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-white/60">Subtotal:</span>
+                      <span>€{selectedOrder.subtotal.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-white/60">Envio:</span>
+                      <span>€{selectedOrder.shipping_cost.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between font-bold text-lg pt-2 border-t border-white/10">
+                      <span>Total:</span>
+                      <span>€{selectedOrder.total.toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tracking */}
+                {selectedOrder.tracking_number && (
+                  <div className="bg-green-500/10 border border-green-500/20 p-4 rounded-lg">
+                    <h3 className="font-semibold mb-2 text-green-300">Informações de Rastreamento</h3>
+                    <div className="text-sm space-y-1">
+                      <div><span className="text-white/60">Número:</span> <span className="font-mono">{selectedOrder.tracking_number}</span></div>
+                      {selectedOrder.carrier && <div><span className="text-white/60">Transportadora:</span> {selectedOrder.carrier}</div>}
+                      {selectedOrder.tracking_url && (
+                        <div>
+                          <a href={selectedOrder.tracking_url} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
+                            Rastrear Encomenda →
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Dialog: Mark as Shipped */}
+        <Dialog open={isShipDialogOpen} onOpenChange={setIsShipDialogOpen}>
+          <DialogContent className="bg-black border-white/20 text-white">
+            <DialogHeader>
+              <DialogTitle>Marcar como Enviado</DialogTitle>
+              <DialogDescription>
+                Pedido {selectedOrder?.order_number}
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="carrier">Transportadora *</Label>
+                <Select 
+                  value={trackingData.carrier} 
+                  onValueChange={(value) => setTrackingData({ ...trackingData, carrier: value })}
+                >
+                  <SelectTrigger className="bg-gray-900 border-white/20">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-900 border-white/20">
+                    <SelectItem value="DHL">DHL Express</SelectItem>
+                    <SelectItem value="FedEx">FedEx</SelectItem>
+                    <SelectItem value="CTT">CTT Correios</SelectItem>
+                    <SelectItem value="UPS">UPS</SelectItem>
+                    <SelectItem value="GLS">GLS</SelectItem>
+                    <SelectItem value="Chronopost">Chronopost</SelectItem>
+                    <SelectItem value="Other">Outra</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="trackingNumber">Número de Rastreamento</Label>
+                <Input
+                  id="trackingNumber"
+                  placeholder="Ex: 1234567890"
+                  value={trackingData.trackingNumber}
+                  onChange={(e) => setTrackingData({ ...trackingData, trackingNumber: e.target.value })}
+                  className="bg-gray-900 border-white/20"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="trackingUrl">URL de Rastreamento</Label>
+                <Input
+                  id="trackingUrl"
+                  placeholder="https://track.dhl.com/..."
+                  value={trackingData.trackingUrl}
+                  onChange={(e) => setTrackingData({ ...trackingData, trackingUrl: e.target.value })}
+                  className="bg-gray-900 border-white/20"
+                />
+                <p className="text-xs text-white/40 mt-1">
+                  URL completa para o cliente rastrear a encomenda
+                </p>
+              </div>
+
+              <div className="bg-blue-500/10 border border-blue-500/20 p-3 rounded-lg text-sm">
+                <p className="text-blue-300">
+                  ℹ️ Ao marcar como enviado, um email será automaticamente enviado ao cliente com as informações de rastreamento.
+                </p>
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button 
+                variant="outline" 
+                onClick={() => setIsShipDialogOpen(false)}
+                className="border-white/20"
+              >
+                Cancelar
+              </Button>
+              <Button 
+                onClick={handleMarkAsShipped}
+                disabled={isShipping || !trackingData.carrier}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                <Truck className="mr-2 h-4 w-4" />
+                {isShipping ? 'Enviando...' : 'Marcar como Enviado'}
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
     </div>
   )
 }
-
-
-
 
