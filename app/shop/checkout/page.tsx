@@ -11,8 +11,111 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/components/ui/use-toast"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { motion } from "framer-motion"
 import type { Product, CartItem as CartItemType } from "@/lib/database.types"
+
+// Lista completa de indicativos telefônicos
+const COUNTRY_CODES = [
+  { code: "+351", country: "Portugal", flag: "🇵🇹" },
+  { code: "+1", country: "United States / Canada", flag: "🇺🇸" },
+  { code: "+44", country: "United Kingdom", flag: "🇬🇧" },
+  { code: "+33", country: "France", flag: "🇫🇷" },
+  { code: "+49", country: "Germany", flag: "🇩🇪" },
+  { code: "+34", country: "Spain", flag: "🇪🇸" },
+  { code: "+39", country: "Italy", flag: "🇮🇹" },
+  { code: "+31", country: "Netherlands", flag: "🇳🇱" },
+  { code: "+32", country: "Belgium", flag: "🇧🇪" },
+  { code: "+41", country: "Switzerland", flag: "🇨🇭" },
+  { code: "+43", country: "Austria", flag: "🇦🇹" },
+  { code: "+45", country: "Denmark", flag: "🇩🇰" },
+  { code: "+46", country: "Sweden", flag: "🇸🇪" },
+  { code: "+47", country: "Norway", flag: "🇳🇴" },
+  { code: "+358", country: "Finland", flag: "🇫🇮" },
+  { code: "+353", country: "Ireland", flag: "🇮🇪" },
+  { code: "+30", country: "Greece", flag: "🇬🇷" },
+  { code: "+48", country: "Poland", flag: "🇵🇱" },
+  { code: "+420", country: "Czech Republic", flag: "🇨🇿" },
+  { code: "+36", country: "Hungary", flag: "🇭🇺" },
+  { code: "+40", country: "Romania", flag: "🇷🇴" },
+  { code: "+359", country: "Bulgaria", flag: "🇧🇬" },
+  { code: "+385", country: "Croatia", flag: "🇭🇷" },
+  { code: "+386", country: "Slovenia", flag: "🇸🇮" },
+  { code: "+421", country: "Slovakia", flag: "🇸🇰" },
+  { code: "+370", country: "Lithuania", flag: "🇱🇹" },
+  { code: "+371", country: "Latvia", flag: "🇱🇻" },
+  { code: "+372", country: "Estonia", flag: "🇪🇪" },
+  { code: "+352", country: "Luxembourg", flag: "🇱🇺" },
+  { code: "+356", country: "Malta", flag: "🇲🇹" },
+  { code: "+357", country: "Cyprus", flag: "🇨🇾" },
+  { code: "+7", country: "Russia", flag: "🇷🇺" },
+  { code: "+380", country: "Ukraine", flag: "🇺🇦" },
+  { code: "+90", country: "Turkey", flag: "🇹🇷" },
+  { code: "+20", country: "Egypt", flag: "🇪🇬" },
+  { code: "+27", country: "South Africa", flag: "🇿🇦" },
+  { code: "+234", country: "Nigeria", flag: "🇳🇬" },
+  { code: "+254", country: "Kenya", flag: "🇰🇪" },
+  { code: "+233", country: "Ghana", flag: "🇬🇭" },
+  { code: "+212", country: "Morocco", flag: "🇲🇦" },
+  { code: "+213", country: "Algeria", flag: "🇩🇿" },
+  { code: "+216", country: "Tunisia", flag: "🇹🇳" },
+  { code: "+244", country: "Angola", flag: "🇦🇴" },
+  { code: "+258", country: "Mozambique", flag: "🇲🇿" },
+  { code: "+81", country: "Japan", flag: "🇯🇵" },
+  { code: "+82", country: "South Korea", flag: "🇰🇷" },
+  { code: "+86", country: "China", flag: "🇨🇳" },
+  { code: "+91", country: "India", flag: "🇮🇳" },
+  { code: "+92", country: "Pakistan", flag: "🇵🇰" },
+  { code: "+880", country: "Bangladesh", flag: "🇧🇩" },
+  { code: "+63", country: "Philippines", flag: "🇵🇭" },
+  { code: "+84", country: "Vietnam", flag: "🇻🇳" },
+  { code: "+66", country: "Thailand", flag: "🇹🇭" },
+  { code: "+65", country: "Singapore", flag: "🇸🇬" },
+  { code: "+60", country: "Malaysia", flag: "🇲🇾" },
+  { code: "+62", country: "Indonesia", flag: "🇮🇩" },
+  { code: "+61", country: "Australia", flag: "🇦🇺" },
+  { code: "+64", country: "New Zealand", flag: "🇳🇿" },
+  { code: "+55", country: "Brazil", flag: "🇧🇷" },
+  { code: "+54", country: "Argentina", flag: "🇦🇷" },
+  { code: "+56", country: "Chile", flag: "🇨🇱" },
+  { code: "+57", country: "Colombia", flag: "🇨🇴" },
+  { code: "+51", country: "Peru", flag: "🇵🇪" },
+  { code: "+52", country: "Mexico", flag: "🇲🇽" },
+  { code: "+58", country: "Venezuela", flag: "🇻🇪" },
+  { code: "+593", country: "Ecuador", flag: "🇪🇨" },
+  { code: "+502", country: "Guatemala", flag: "🇬🇹" },
+  { code: "+506", country: "Costa Rica", flag: "🇨🇷" },
+  { code: "+507", country: "Panama", flag: "🇵🇦" },
+  { code: "+503", country: "El Salvador", flag: "🇸🇻" },
+  { code: "+504", country: "Honduras", flag: "🇭🇳" },
+  { code: "+505", country: "Nicaragua", flag: "🇳🇮" },
+  { code: "+53", country: "Cuba", flag: "🇨🇺" },
+  { code: "+1-809", country: "Dominican Republic", flag: "🇩🇴" },
+  { code: "+1-876", country: "Jamaica", flag: "🇯🇲" },
+  { code: "+1-868", country: "Trinidad and Tobago", flag: "🇹🇹" },
+  { code: "+972", country: "Israel", flag: "🇮🇱" },
+  { code: "+971", country: "United Arab Emirates", flag: "🇦🇪" },
+  { code: "+966", country: "Saudi Arabia", flag: "🇸🇦" },
+  { code: "+974", country: "Qatar", flag: "🇶🇦" },
+  { code: "+965", country: "Kuwait", flag: "🇰🇼" },
+  { code: "+973", country: "Bahrain", flag: "🇧🇭" },
+  { code: "+968", country: "Oman", flag: "🇴🇲" },
+  { code: "+961", country: "Lebanon", flag: "🇱🇧" },
+  { code: "+962", country: "Jordan", flag: "🇯🇴" },
+  { code: "+963", country: "Syria", flag: "🇸🇾" },
+  { code: "+964", country: "Iraq", flag: "🇮🇶" },
+  { code: "+98", country: "Iran", flag: "🇮🇷" },
+  { code: "+93", country: "Afghanistan", flag: "🇦🇫" },
+  { code: "+977", country: "Nepal", flag: "🇳🇵" },
+  { code: "+94", country: "Sri Lanka", flag: "🇱🇰" },
+  { code: "+95", country: "Myanmar", flag: "🇲🇲" },
+  { code: "+855", country: "Cambodia", flag: "🇰🇭" },
+  { code: "+856", country: "Laos", flag: "🇱🇦" },
+  { code: "+976", country: "Mongolia", flag: "🇲🇳" },
+  { code: "+852", country: "Hong Kong", flag: "🇭🇰" },
+  { code: "+853", country: "Macau", flag: "🇲🇴" },
+  { code: "+886", country: "Taiwan", flag: "🇹🇼" },
+].sort((a, b) => a.country.localeCompare(b.country))
 
 export default function CheckoutPage() {
   const router = useRouter()
@@ -31,11 +134,13 @@ export default function CheckoutPage() {
     customerName: '',
     customerEmail: '',
     customerPhone: '',
+    customerPhoneCode: '+351',
     
     // Shipping info
     shippingName: '',
     shippingEmail: '',
     shippingPhone: '',
+    shippingPhoneCode: '+351',
     addressLine1: '',
     addressLine2: '',
     city: '',
@@ -157,7 +262,8 @@ export default function CheckoutPage() {
       ...formData,
       shippingName: formData.customerName,
       shippingEmail: formData.customerEmail,
-      shippingPhone: formData.customerPhone
+      shippingPhone: formData.customerPhone,
+      shippingPhoneCode: formData.customerPhoneCode
     })
   }
 
@@ -181,12 +287,12 @@ export default function CheckoutPage() {
         customer: {
           name: formData.customerName,
           email: formData.customerEmail,
-          phone: formData.customerPhone
+          phone: `${formData.customerPhoneCode} ${formData.customerPhone}`
         },
         shipping: {
           name: formData.shippingName,
           email: formData.shippingEmail,
-          phone: formData.shippingPhone,
+          phone: `${formData.shippingPhoneCode} ${formData.shippingPhone}`,
           addressLine1: formData.addressLine1,
           addressLine2: formData.addressLine2,
           city: formData.city,
@@ -322,13 +428,31 @@ export default function CheckoutPage() {
                     
                     <div>
                       <Label htmlFor="customerPhone">Phone</Label>
-                      <Input
-                        id="customerPhone"
-                        type="tel"
-                        value={formData.customerPhone}
-                        onChange={(e) => setFormData({ ...formData, customerPhone: e.target.value })}
-                        className="bg-gray-900 border-white/20"
-                      />
+                      <div className="flex gap-2">
+                        <Select 
+                          value={formData.customerPhoneCode} 
+                          onValueChange={(value) => setFormData({ ...formData, customerPhoneCode: value })}
+                        >
+                          <SelectTrigger className="bg-gray-900 border-white/20 w-[180px]">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="bg-gray-900 border-white/20 max-h-[300px]">
+                            {COUNTRY_CODES.map((country) => (
+                              <SelectItem key={country.code} value={country.code}>
+                                {country.flag} {country.code}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Input
+                          id="customerPhone"
+                          type="tel"
+                          placeholder="912345678"
+                          value={formData.customerPhone}
+                          onChange={(e) => setFormData({ ...formData, customerPhone: e.target.value })}
+                          className="bg-gray-900 border-white/20 flex-1"
+                        />
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -408,14 +532,32 @@ export default function CheckoutPage() {
                       
                       <div>
                         <Label htmlFor="shippingPhone">Phone *</Label>
-                        <Input
-                          id="shippingPhone"
-                          type="tel"
-                          value={formData.shippingPhone}
-                          onChange={(e) => setFormData({ ...formData, shippingPhone: e.target.value })}
-                          className="bg-gray-900 border-white/20"
-                          required
-                        />
+                        <div className="flex gap-2">
+                          <Select 
+                            value={formData.shippingPhoneCode} 
+                            onValueChange={(value) => setFormData({ ...formData, shippingPhoneCode: value })}
+                          >
+                            <SelectTrigger className="bg-gray-900 border-white/20 w-[180px]">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="bg-gray-900 border-white/20 max-h-[300px]">
+                              {COUNTRY_CODES.map((country) => (
+                                <SelectItem key={country.code} value={country.code}>
+                                  {country.flag} {country.code}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <Input
+                            id="shippingPhone"
+                            type="tel"
+                            placeholder="912345678"
+                            value={formData.shippingPhone}
+                            onChange={(e) => setFormData({ ...formData, shippingPhone: e.target.value })}
+                            className="bg-gray-900 border-white/20 flex-1"
+                            required
+                          />
+                        </div>
                       </div>
                       
                       <div>

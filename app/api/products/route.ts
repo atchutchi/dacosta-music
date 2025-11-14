@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
     }
     
     if (search) {
-      query = query.or(`name.ilike.%${search}%,description.ilike.%${search}%`);
+      query = query.or(`name.ilike.%${search}%,description.ilike.%${search}%,slug.ilike.%${search}%`);
     }
     
     // Aplicar ordenação e paginação

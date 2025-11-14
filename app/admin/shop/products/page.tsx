@@ -354,7 +354,7 @@ export default function AdminProductsPage() {
               <CardContent className="p-4">
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="font-bold text-sm">{product.name}</h3>
-                  <span className="text-sm font-bold">${product.price}</span>
+                  <span className="text-sm font-bold">€{product.price}</span>
                 </div>
                 <p className="text-xs text-white/60 mb-2">{product.category}</p>
                 <p className="text-xs text-white/60 mb-3">
@@ -451,7 +451,7 @@ export default function AdminProductsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="price">Price (USD) *</Label>
+                  <Label htmlFor="price">Price (EUR) *</Label>
                   <Input
                     id="price"
                     type="number"
