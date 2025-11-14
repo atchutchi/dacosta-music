@@ -405,79 +405,79 @@ export default function ShopPage() {
                             <span className="font-semibold">€{product.price.toFixed(2)}</span>
                           </div>
                           <Link href={`/shop/product/${product.slug}`}>
-                            <h3 className="text-xl font-bold mb-4 hover:text-white/80 transition-colors cursor-pointer">{product.name}</h3>
+                            <h3 className="text-lg font-bold mb-3 hover:text-white/80 transition-colors cursor-pointer">{product.name}</h3>
                           </Link>
                           
-                          {/* Size Selection */}
-                          {product.sizes && product.sizes.length > 0 && (
-                            <div className="mb-3">
-                              <label className="text-xs text-white/60 mb-1 block">Size</label>
-                              <Select 
-                                value={productSelections[product.id]?.size || product.sizes[0]} 
-                                onValueChange={(value) => updateProductSelection(product.id, 'size', value)}
-                              >
-                                <SelectTrigger className="bg-gray-900 border-white/20 h-9 text-sm">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-gray-900 border-white/20">
-                                  {product.sizes.map((size) => (
-                                    <SelectItem key={size} value={size}>{size}</SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                          {/* Size and Color Selection - Compact Row */}
+                          {((product.sizes && product.sizes.length > 0) || (product.colors && product.colors.length > 0)) && (
+                            <div className="grid grid-cols-2 gap-2 mb-3">
+                              {product.sizes && product.sizes.length > 0 && (
+                                <div>
+                                  <label className="text-xs text-white/60 mb-1 block">Size</label>
+                                  <Select 
+                                    value={productSelections[product.id]?.size || product.sizes[0]} 
+                                    onValueChange={(value) => updateProductSelection(product.id, 'size', value)}
+                                  >
+                                    <SelectTrigger className="bg-gray-900 border-white/20 h-8 text-xs">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-gray-900 border-white/20">
+                                      {product.sizes.map((size) => (
+                                        <SelectItem key={size} value={size}>{size}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              )}
+                              
+                              {product.colors && product.colors.length > 0 && (
+                                <div>
+                                  <label className="text-xs text-white/60 mb-1 block">Color</label>
+                                  <Select 
+                                    value={productSelections[product.id]?.color || product.colors[0]} 
+                                    onValueChange={(value) => updateProductSelection(product.id, 'color', value)}
+                                  >
+                                    <SelectTrigger className="bg-gray-900 border-white/20 h-8 text-xs">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-gray-900 border-white/20">
+                                      {product.colors.map((color) => (
+                                        <SelectItem key={color} value={color}>{color}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              )}
                             </div>
                           )}
                           
-                          {/* Color Selection */}
-                          {product.colors && product.colors.length > 0 && (
-                            <div className="mb-3">
-                              <label className="text-xs text-white/60 mb-1 block">Color</label>
-                              <Select 
-                                value={productSelections[product.id]?.color || product.colors[0]} 
-                                onValueChange={(value) => updateProductSelection(product.id, 'color', value)}
-                              >
-                                <SelectTrigger className="bg-gray-900 border-white/20 h-9 text-sm">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-gray-900 border-white/20">
-                                  {product.colors.map((color) => (
-                                    <SelectItem key={color} value={color}>{color}</SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          )}
-                          
-                          {/* Quantity Selection */}
-                          <div className="mb-4">
-                            <label className="text-xs text-white/60 mb-1 block">Quantidade</label>
-                            <div className="flex items-center gap-2">
+                          {/* Quantity Selection - Compact */}
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="text-xs text-white/60">Qty:</span>
+                            <div className="flex items-center gap-1">
                               <Button
                                 type="button"
                                 variant="outline"
                                 size="sm"
-                                className="h-9 w-9 p-0 border-white/20"
+                                className="h-7 w-7 p-0 border-white/20"
                                 onClick={() => decrementQuantity(product.id)}
                                 disabled={productSelections[product.id]?.quantity <= 1}
                               >
                                 <Minus className="h-3 w-3" />
                               </Button>
-                              <span className="text-sm font-semibold w-8 text-center">
+                              <span className="text-sm font-semibold w-6 text-center">
                                 {productSelections[product.id]?.quantity || 1}
                               </span>
                               <Button
                                 type="button"
                                 variant="outline"
                                 size="sm"
-                                className="h-9 w-9 p-0 border-white/20"
+                                className="h-7 w-7 p-0 border-white/20"
                                 onClick={() => incrementQuantity(product.id)}
                                 disabled={productSelections[product.id]?.quantity >= product.stock_quantity}
                               >
                                 <Plus className="h-3 w-3" />
                               </Button>
-                              <span className="text-xs text-white/40 ml-2">
-                                {product.stock_quantity} disponíveis
-                              </span>
                             </div>
                           </div>
                           
