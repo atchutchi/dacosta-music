@@ -8,7 +8,10 @@ import { motion } from "framer-motion"
 
 interface CartItem {
   id: string
+  productId: string
   quantity: number
+  size?: string
+  color?: string
 }
 
 interface Product {
@@ -64,13 +67,21 @@ export default function CartPage() {
     loadCartAndProducts()
   }, [])
 
-  const updateQuantity = (id: string, newQuantity: number) => {
+  const getItemKey = (item: CartItem) => {
+    return `${item.productId}-${item.size || 'no-size'}-${item.color || 'no-color'}`
+  }
+
+  const updateQuantity = (item: CartItem, newQuantity: number) => {
     if (newQuantity < 1) {
-      removeFromCart(id)
+      removeFromCart(item)
       return
     }
 
-    const updatedCart = cartItems.map((item) => (item.id === id ? { ...item, quantity: newQuantity } : item))
+    const updatedCart = cartItems.map((cartItem) => 
+      getItemKey(cartItem) === getItemKey(item) 
+        ? { ...cartItem, quantity: newQuantity } 
+        : cartItem
+    )
 
     setCartItems(updatedCart)
     localStorage.setItem("dacosta-cart", JSON.stringify(updatedCart))
@@ -79,8 +90,8 @@ export default function CartPage() {
     window.dispatchEvent(new Event("storage"))
   }
 
-  const removeFromCart = (id: string) => {
-    const updatedCart = cartItems.filter((item) => item.id !== id)
+  const removeFromCart = (item: CartItem) => {
+    const updatedCart = cartItems.filter((cartItem) => getItemKey(cartItem) !== getItemKey(item))
     setCartItems(updatedCart)
     localStorage.setItem("dacosta-cart", JSON.stringify(updatedCart))
 
@@ -185,14 +196,14 @@ export default function CartPage() {
                 </div>
 
                 <div className="divide-y divide-white/10">
-                  {cartItems.map((item) => {
-                    const itemId = (item as any).productId || item.id
+                  {cartItems.map((item, index) => {
+                    const itemId = item.productId || item.id
                     const product = products.find(p => p.id === itemId)
                     if (!product) return null
 
                     return (
                       <motion.div
-                        key={itemId}
+                        key={`${getItemKey(item)}-${index}`}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
@@ -211,6 +222,20 @@ export default function CartPage() {
                             <div>
                               <h4 className="font-medium">{product.name}</h4>
                               <p className="text-sm text-white/60">{product.category}</p>
+                              {(item.size || item.color) && (
+                                <div className="flex gap-2 mt-1">
+                                  {item.size && (
+                                    <span className="text-xs bg-white/10 px-2 py-0.5 rounded">
+                                      Size: {item.size}
+                                    </span>
+                                  )}
+                                  {item.color && (
+                                    <span className="text-xs bg-white/10 px-2 py-0.5 rounded">
+                                      {item.color}
+                                    </span>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           </div>
                           <div className="col-span-2 text-center">
@@ -219,14 +244,14 @@ export default function CartPage() {
                           <div className="col-span-2 flex items-center justify-center">
                             <div className="flex items-center border border-white/20 rounded-md">
                               <button
-                                onClick={() => updateQuantity(itemId, item.quantity - 1)}
+                                onClick={() => updateQuantity(item, item.quantity - 1)}
                                 className="px-2 py-1 hover:bg-white/10"
                               >
                                 <Minus className="h-4 w-4" />
                               </button>
                               <span className="px-3">{item.quantity}</span>
                               <button
-                                onClick={() => updateQuantity(itemId, item.quantity + 1)}
+                                onClick={() => updateQuantity(item, item.quantity + 1)}
                                 className="px-2 py-1 hover:bg-white/10"
                               >
                                 <Plus className="h-4 w-4" />
@@ -235,7 +260,7 @@ export default function CartPage() {
                           </div>
                           <div className="col-span-2 text-right flex items-center justify-end">
                             <span className="mr-4">€{(product.price * item.quantity).toFixed(2)}</span>
-                            <button onClick={() => removeFromCart(itemId)} className="text-white/60 hover:text-white">
+                            <button onClick={() => removeFromCart(item)} className="text-white/60 hover:text-white">
                               <Trash2 className="h-4 w-4" />
                             </button>
                           </div>
