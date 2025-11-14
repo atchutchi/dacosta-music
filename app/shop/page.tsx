@@ -1,15 +1,18 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ShoppingBag, ArrowRight, Filter, X, ChevronDown, ChevronUp } from "lucide-react"
+import { ShoppingBag, ArrowRight, Filter, X, ChevronDown, ChevronUp, Plus, Minus } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Slider } from "@/components/ui/slider"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { motion } from "framer-motion"
+import { useToast } from "@/components/ui/use-toast"
 import type { Product } from "@/lib/database.types"
 
 export default function ShopPage() {
+  const { toast } = useToast()
   const [products, setProducts] = useState<Product[]>([])
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<string[]>([])
@@ -22,6 +25,15 @@ export default function ShopPage() {
   const [cart, setCart] = useState<{ id: string; quantity: number }[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  
+  // Estado para cada produto: size, color, quantity
+  const [productSelections, setProductSelections] = useState<{
+    [productId: string]: {
+      size?: string
+      color?: string
+      quantity: number
+    }
+  }>({})
 
   // Carregar produtos do Supabase
   useEffect(() => {
@@ -45,6 +57,17 @@ export default function ShopPage() {
         if (data.products) {
           setProducts(data.products)
           setFilteredProducts(data.products)
+          
+          // Inicializar seleções para cada produto
+          const initialSelections: any = {}
+          data.products.forEach((product: Product) => {
+            initialSelections[product.id] = {
+              size: product.sizes && product.sizes.length > 0 ? product.sizes[0] : undefined,
+              color: product.colors && product.colors.length > 0 ? product.colors[0] : undefined,
+              quantity: 1
+            }
+          })
+          setProductSelections(initialSelections)
           
           // Extrair categorias únicas
           const uniqueCategories = [...new Set(data.products.map((p: Product) => p.category))]
@@ -88,20 +111,81 @@ export default function ShopPage() {
   }, [priceRange, products])
 
   const addToCart = (productId: string) => {
-    const existingItem = cart.find((item) => item.id === productId)
-
-    let newCart
-    if (existingItem) {
-      newCart = cart.map((item) => (item.id === productId ? { ...item, quantity: item.quantity + 1 } : item))
-    } else {
-      newCart = [...cart, { id: productId, productId: productId, quantity: 1 }]
+    const product = products.find(p => p.id === productId)
+    if (!product) return
+    
+    const selection = productSelections[productId]
+    if (!selection) return
+    
+    const cartItem = {
+      id: productId,
+      productId: productId,
+      quantity: selection.quantity,
+      size: selection.size,
+      color: selection.color
     }
 
-    setCart(newCart)
-    localStorage.setItem("dacosta-cart", JSON.stringify(newCart))
+    const savedCart = localStorage.getItem('dacosta-cart')
+    const cart = savedCart ? JSON.parse(savedCart) : []
+    
+    // Verificar se item já existe com mesma size/color
+    const existingIndex = cart.findIndex((item: any) => 
+      item.productId === productId && 
+      item.size === selection.size && 
+      item.color === selection.color
+    )
+
+    if (existingIndex > -1) {
+      cart[existingIndex].quantity += selection.quantity
+    } else {
+      cart.push(cartItem)
+    }
+
+    localStorage.setItem('dacosta-cart', JSON.stringify(cart))
     
     // Disparar evento para atualizar navbar
     window.dispatchEvent(new Event("storage"))
+    
+    // Reset quantity to 1 after adding
+    setProductSelections({
+      ...productSelections,
+      [productId]: {
+        ...productSelections[productId],
+        quantity: 1
+      }
+    })
+    
+    toast({
+      title: "Adicionado ao carrinho",
+      description: `${product.name} foi adicionado ao seu carrinho`,
+    })
+  }
+  
+  const updateProductSelection = (productId: string, field: 'size' | 'color' | 'quantity', value: any) => {
+    setProductSelections({
+      ...productSelections,
+      [productId]: {
+        ...productSelections[productId],
+        [field]: value
+      }
+    })
+  }
+  
+  const incrementQuantity = (productId: string) => {
+    const product = products.find(p => p.id === productId)
+    if (!product) return
+    
+    const currentQty = productSelections[productId]?.quantity || 1
+    if (currentQty < product.stock_quantity) {
+      updateProductSelection(productId, 'quantity', currentQty + 1)
+    }
+  }
+  
+  const decrementQuantity = (productId: string) => {
+    const currentQty = productSelections[productId]?.quantity || 1
+    if (currentQty > 1) {
+      updateProductSelection(productId, 'quantity', currentQty - 1)
+    }
   }
 
   const containerVariants = {
@@ -323,6 +407,80 @@ export default function ShopPage() {
                           <Link href={`/shop/product/${product.slug}`}>
                             <h3 className="text-xl font-bold mb-4 hover:text-white/80 transition-colors cursor-pointer">{product.name}</h3>
                           </Link>
+                          
+                          {/* Size Selection */}
+                          {product.sizes && product.sizes.length > 0 && (
+                            <div className="mb-3">
+                              <label className="text-xs text-white/60 mb-1 block">Size</label>
+                              <Select 
+                                value={productSelections[product.id]?.size || product.sizes[0]} 
+                                onValueChange={(value) => updateProductSelection(product.id, 'size', value)}
+                              >
+                                <SelectTrigger className="bg-gray-900 border-white/20 h-9 text-sm">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="bg-gray-900 border-white/20">
+                                  {product.sizes.map((size) => (
+                                    <SelectItem key={size} value={size}>{size}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          )}
+                          
+                          {/* Color Selection */}
+                          {product.colors && product.colors.length > 0 && (
+                            <div className="mb-3">
+                              <label className="text-xs text-white/60 mb-1 block">Color</label>
+                              <Select 
+                                value={productSelections[product.id]?.color || product.colors[0]} 
+                                onValueChange={(value) => updateProductSelection(product.id, 'color', value)}
+                              >
+                                <SelectTrigger className="bg-gray-900 border-white/20 h-9 text-sm">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="bg-gray-900 border-white/20">
+                                  {product.colors.map((color) => (
+                                    <SelectItem key={color} value={color}>{color}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          )}
+                          
+                          {/* Quantity Selection */}
+                          <div className="mb-4">
+                            <label className="text-xs text-white/60 mb-1 block">Quantidade</label>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="h-9 w-9 p-0 border-white/20"
+                                onClick={() => decrementQuantity(product.id)}
+                                disabled={productSelections[product.id]?.quantity <= 1}
+                              >
+                                <Minus className="h-3 w-3" />
+                              </Button>
+                              <span className="text-sm font-semibold w-8 text-center">
+                                {productSelections[product.id]?.quantity || 1}
+                              </span>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="h-9 w-9 p-0 border-white/20"
+                                onClick={() => incrementQuantity(product.id)}
+                                disabled={productSelections[product.id]?.quantity >= product.stock_quantity}
+                              >
+                                <Plus className="h-3 w-3" />
+                              </Button>
+                              <span className="text-xs text-white/40 ml-2">
+                                {product.stock_quantity} disponíveis
+                              </span>
+                            </div>
+                          </div>
+                          
                           <Button
                             className="w-full bg-white text-black hover:bg-white/90"
                             onClick={() => addToCart(product.id)}
