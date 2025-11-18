@@ -134,15 +134,29 @@ export async function POST(request: NextRequest) {
                 }
               };
 
-              // Enviar emails (não bloquear o webhook se falhar)
-              fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://192.168.22.202:3000'}/api/emails/send-order-confirmation`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(emailData)
-              }).catch(err => console.error('Failed to send confirmation emails:', err));
+              // Enviar emails de forma assíncrona
+              console.log('📧 Preparando envio de emails para:', orderDetails.shipping_email);
+              
+              try {
+                const emailResponse = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://192.168.22.202:3000'}/api/emails/send-order-confirmation`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(emailData)
+                });
+                
+                const emailResult = await emailResponse.json();
+                
+                if (emailResponse.ok) {
+                  console.log('✅ Emails enviados com sucesso:', emailResult);
+                } else {
+                  console.error('❌ Erro ao enviar emails:', emailResult);
+                }
+              } catch (fetchError) {
+                console.error('❌ Erro no fetch de emails:', fetchError);
+              }
             }
           } catch (emailError) {
-            console.error('Error preparing confirmation email:', emailError);
+            console.error('❌ Error preparing confirmation email:', emailError);
             // Não falhar o webhook se o email falhar
           }
         }
