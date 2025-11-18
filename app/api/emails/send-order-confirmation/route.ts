@@ -17,8 +17,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Email do remetente (deve ser verificado no Resend)
-    const fromEmail = process.env.EMAIL_FROM || 'orders@dacosta-music.com';
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@dacosta-music.com';
+    const fromEmail = process.env.EMAIL_FROM || 'bookings@dacosta-music.com';
+    
+    // Emails dos admins (múltiplos destinatários via variáveis de ambiente)
+    const adminEmailsString = process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'admin@dacosta-music.com';
+    const adminEmails = adminEmailsString.split(',').map(email => email.trim()).filter(Boolean);
 
     try {
       // 1. Enviar email de confirmação ao cliente
@@ -29,17 +32,17 @@ export async function POST(request: NextRequest) {
         html: getOrderConfirmationEmailHTML(body),
       });
 
-      console.log('Customer email sent:', customerEmail);
+      console.log('✅ Customer email sent:', customerEmail.data?.id);
 
-      // 2. Enviar notificação ao admin
+      // 2. Enviar notificação para múltiplos admins
       const adminEmailResult = await resend.emails.send({
         from: `Da Costa Music Shop <${fromEmail}>`,
-        to: [adminEmail],
+        to: adminEmails,
         subject: `🔔 New Order #${body.orderNumber}`,
         html: getAdminNewOrderEmailHTML(body),
       });
 
-      console.log('Admin email sent:', adminEmailResult);
+      console.log('✅ Admin emails sent to:', adminEmails.join(', '), '| ID:', adminEmailResult.data?.id);
 
       return NextResponse.json({ 
         success: true,
