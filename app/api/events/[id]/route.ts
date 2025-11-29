@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server"
 import { createServerClient } from "@/lib/supabase/server"
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createServerClient()
-  const { id } = params
+  const { id } = await params
 
   const { data, error } = await supabase
     .from("events")
@@ -29,9 +29,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
   return NextResponse.json(data)
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createServerClient()
-  const { id } = params
+  const { id } = await params
   const data = await request.json()
 
   // Extrair artistas antes de atualizar o evento
@@ -71,9 +71,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   return NextResponse.json(event)
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createServerClient()
-  const { id } = params
+  const { id } = await params
 
   // Primeiro, remover relacionamentos
   const { error: relationError } = await supabase.from("event_artists").delete().eq("event_id", id)

@@ -13,6 +13,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle, Info } from "lucide-react"
+import { logger } from "@/lib/logger"
 
 function LoginForm() {
   const [email, setEmail] = useState("")
@@ -51,11 +52,11 @@ function LoginForm() {
       }
 
       if (data?.user) {
-        console.log("Login bem-sucedido:", data.user)
+        logger.log("Login bem-sucedido:", data.user)
 
         // Redirecionar para a página original ou admin
         const destination = redirectTo || '/admin'
-        console.log("Redirecting to:", destination)
+        logger.log("Redirecting to:", destination)
 
         // Use both router.push and window.location for more reliable redirection
         router.push(destination)
@@ -67,7 +68,7 @@ function LoginForm() {
       }
     } catch (err) {
       setError("Ocorreu um erro ao fazer login. Tente novamente.")
-      console.error(err)
+      logger.error(err)
     } finally {
       setLoading(false)
     }

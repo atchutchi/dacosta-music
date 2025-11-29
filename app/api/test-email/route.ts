@@ -1,17 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { logger } from '@/lib/logger';
 
 // API de teste para verificar se Resend está funcionando
 export async function GET(request: NextRequest) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
     
-    // Log para debug (remover em produção)
-    console.log('🧪 Testing Resend configuration...');
-    console.log('API Key exists:', !!process.env.RESEND_API_KEY);
-    console.log('API Key starts with:', process.env.RESEND_API_KEY?.substring(0, 7));
-    console.log('EMAIL_FROM:', process.env.EMAIL_FROM);
-    console.log('ADMIN_EMAIL:', process.env.ADMIN_EMAIL);
+    // Log para debug (apenas em desenvolvimento)
+    logger.log('🧪 Testing Resend configuration...');
+    logger.log('API Key exists:', !!process.env.RESEND_API_KEY);
+    logger.log('API Key starts with:', process.env.RESEND_API_KEY?.substring(0, 7));
+    logger.log('EMAIL_FROM:', process.env.EMAIL_FROM);
+    logger.log('ADMIN_EMAIL:', process.env.ADMIN_EMAIL);
     
     const testEmail = await resend.emails.send({
       from: `Da Costa Music <${process.env.EMAIL_FROM || 'bookings@dacosta-music.com'}>`,
@@ -38,7 +39,7 @@ export async function GET(request: NextRequest) {
       from: process.env.EMAIL_FROM
     });
   } catch (error: any) {
-    console.error('❌ Erro ao enviar email de teste:', error);
+    logger.error('❌ Erro ao enviar email de teste:', error);
     
     return NextResponse.json({
       success: false,
@@ -53,4 +54,3 @@ export async function GET(request: NextRequest) {
     }, { status: 500 });
   }
 }
-

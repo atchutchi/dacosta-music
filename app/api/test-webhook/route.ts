@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
+import { logger } from '@/lib/logger';
 
 // API para testar o fluxo completo de envio de emails
 export async function POST(request: NextRequest) {
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) {
       }
     };
 
-    console.log('📧 Testando envio de emails para pedido:', orderDetails.order_number);
+    logger.log('📧 Testando envio de emails para pedido:', orderDetails.order_number);
     
     // Chamar API de emails
     const emailResponse = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://192.168.22.202:3000'}/api/emails/send-order-confirmation`, {
@@ -89,11 +90,10 @@ export async function POST(request: NextRequest) {
       }
     });
   } catch (error: any) {
-    console.error('❌ Erro no teste:', error);
+    logger.error('❌ Erro no teste:', error);
     return NextResponse.json({
       success: false,
       error: error.message
     }, { status: 500 });
   }
 }
-

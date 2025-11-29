@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { motion } from "framer-motion"
 import emailjs from '@emailjs/browser'
+import { logger } from '@/lib/logger'
 
 export default function ContactSection() {
   const formRef = useRef<HTMLFormElement>(null)
@@ -26,13 +27,11 @@ export default function ContactSection() {
 
   // Log de depuração para as variáveis de ambiente no cliente (apenas em desenvolvimento)
   useEffect(() => {
-    if (process.env.NODE_ENV === "development") {
-      console.log("EmailJS Environment Variables (dev only):", {
-        serviceId: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
-        templateId: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
-        publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY ? "Definido" : "Não definido",
-      });
-    }
+    logger.debug("EmailJS Environment Variables:", {
+      serviceId: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+      templateId: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+      publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY ? "Definido" : "Não definido",
+    });
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -146,13 +145,11 @@ export default function ContactSection() {
     }
 
     try {
-      console.log("Enviando formulário com EmailJS...");
+      logger.log("Enviando formulário com EmailJS...");
       
       // Log do conteúdo do formulário
-      if (process.env.NODE_ENV === "development") {
-        const formData = new FormData(formRef.current);
-        console.log("Form data:", Object.fromEntries(formData.entries()));
-      }
+      const formData = new FormData(formRef.current);
+      logger.debug("Form data:", Object.fromEntries(formData.entries()));
       
       // Send email directly using EmailJS on the client side
       const result = await emailjs.sendForm(
@@ -162,27 +159,27 @@ export default function ContactSection() {
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
       )
 
-      console.log("EmailJS result:", result);
+      logger.log("EmailJS result:", result);
 
       if (result.status === 200) {
         // Show success message
         setIsSubmitted(true)
         setFormData({ name: "", email: "", title: "", message: "", selectedArtists: [] })
       } else {
-        console.error("EmailJS returned non-200 status:", result);
+        logger.error("EmailJS returned non-200 status:", result);
         throw new Error(`Failed to send email: Status ${result.status} - ${result.text}`)
       }
     } catch (error: any) {
-      console.error("Error submitting form:", error);
+      logger.error("Error submitting form:", error);
       
       // Verificar especificamente o erro de reCAPTCHA
       if (error.text && error.text.includes("g-recaptcha-response")) {
-        console.error("reCAPTCHA error detected - You need to disable reCAPTCHA in EmailJS dashboard");
+        logger.error("reCAPTCHA error detected - You need to disable reCAPTCHA in EmailJS dashboard");
         setErrors({
           form: "Error: reCAPTCHA validation failed. Please contact the administrator to disable reCAPTCHA in the EmailJS dashboard."
         });
       } else if (error.text) {
-        console.error("EmailJS error details:", error.text);
+        logger.error("EmailJS error details:", error.text);
         setErrors({
           form: `Error: ${error.text}`
         });

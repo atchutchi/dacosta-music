@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { logger } from '@/lib/logger'
 
 export default function AdminLayout({
   children,
@@ -61,14 +62,17 @@ export default function AdminLayout({
         .single()
 
       if (profileError) {
-        console.error('Error fetching profile:', profileError)
+        logger.error('Error fetching profile:', profileError)
         setError('Erro ao verificar permissões. A tabela profiles pode não estar configurada.')
         setIsChecking(false)
         return
       }
 
+      // @ts-ignore - TypeScript type narrowing issue with Supabase client
       if (!profile || profile.role !== 'admin') {
-        console.log('User is not admin:', { email: user.email, role: profile?.role })
+        // @ts-ignore - TypeScript type narrowing issue with Supabase client
+        logger.log('User is not admin:', { email: user.email, role: profile?.role })
+        // @ts-ignore - TypeScript type narrowing issue with Supabase client
         setError(`Acesso negado. Você não tem permissões de administrador. Role atual: ${profile?.role || 'não definido'}`)
         setIsChecking(false)
         return

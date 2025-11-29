@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
+import { logger } from '@/lib/logger';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createServerClient();
-    const { id } = params;
+    const { id } = await params;
     
     // Fetch order
     const { data: order, error: orderError } = await supabase
@@ -30,12 +31,12 @@ export async function GET(
       .eq('order_id', id);
     
     if (itemsError) {
-      console.error('Error fetching order items:', itemsError);
+      logger.error('Error fetching order items:', itemsError);
     }
     
     return NextResponse.json({ order, items: items || [] });
   } catch (error) {
-    console.error('Error fetching order:', error);
+    logger.error('Error fetching order:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -46,11 +47,11 @@ export async function GET(
 // Update order (Admin only)
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createServerClient();
-    const { id } = params;
+    const { id } = await params;
     
     // Verify admin access
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -86,7 +87,7 @@ export async function PUT(
       .single();
     
     if (error) {
-      console.error('Error updating order:', error);
+      logger.error('Error updating order:', error);
       return NextResponse.json(
         { error: 'Failed to update order' },
         { status: 500 }
@@ -95,14 +96,10 @@ export async function PUT(
     
     return NextResponse.json({ order: data });
   } catch (error) {
-    console.error('Error updating order:', error);
+    logger.error('Error updating order:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
     );
   }
 }
-
-
-
-
