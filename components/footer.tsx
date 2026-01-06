@@ -140,6 +140,11 @@ export default function Footer() {
                   Enoo Napa
                 </Link>
               </li>
+              <li>
+                <Link href="/artists/djeff" className="text-white/70 hover:text-white">
+                  DJEFF
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

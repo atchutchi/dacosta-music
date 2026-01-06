@@ -31,6 +31,12 @@ export default function ArtistsPage() {
       image: "/images/Enoo-Napa0374.svg",
       bio: "Delivering cutting-edge Afro-Electronic music with a signature edge, Enoo Napa brings raw energy and futuristic sounds to the collective.",
     },
+    {
+      id: "djeff",
+      name: "DJEFF",
+      image: "/images/Djeff_profile_photo.svg",
+      bio: "DJEFF is a DJ and producer born in Lisbon to Angolan and Cape Verdean roots, known for blending African heritage with forward-thinking electronic music and house.",
+    },
   ]
 
   return (
@@ -43,7 +49,7 @@ export default function ArtistsPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           {artists.map((artist) => (
             <div key={artist.id} className="group">
               <div className="overflow-hidden rounded-lg mb-4 aspect-square relative">
@@ -64,7 +70,9 @@ export default function ArtistsPage() {
                       ? "/images/caiiro-logo-branco.webp"
                       : artist.id === "dacapo"
                         ? "/images/logo-branco-da-capo.webp"
-                        : "/images/enoo_napa_logotipo.svg"
+                        : artist.id === "djeff"
+                          ? "/images/logo_djeff.svg"
+                          : "/images/enoo_napa_logotipo.svg"
                   }
                   alt={`${artist.name} logo`}
                   width={200}

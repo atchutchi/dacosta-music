@@ -3,7 +3,16 @@ import { createServerClient } from '@/lib/supabase/server';
 import { logger } from '@/lib/logger';
 
 // API para testar o fluxo completo de envio de emails
+// APENAS disponível em desenvolvimento
 export async function POST(request: NextRequest) {
+  // Bloquear em produção
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json(
+      { error: 'Este endpoint não está disponível em produção' },
+      { status: 403 }
+    );
+  }
+
   try {
     const { orderId } = await request.json();
     

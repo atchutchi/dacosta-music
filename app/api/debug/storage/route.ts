@@ -2,7 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
 
 // Debug endpoint para verificar storage
+// APENAS disponível em desenvolvimento
 export async function GET(request: NextRequest) {
+  // Bloquear em produção
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json(
+      { error: 'Este endpoint não está disponível em produção' },
+      { status: 403 }
+    );
+  }
+
   try {
     const supabase = await createServerClient();
     

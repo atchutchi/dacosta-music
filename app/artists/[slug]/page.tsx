@@ -249,6 +249,64 @@ export default function ArtistPage() {
             "/images/enoo-napa-i.webp",
           ],
         },
+        {
+          id: "djeff",
+          name: "DJEFF",
+          logo: "/images/logo_djeff.svg",
+          image: "/images/Djeff_profile_photo.svg",
+          secondaryImage: "/images/djdjeff_1.svg",
+          bio: "DJEFF is a DJ and producer born in Lisbon to Angolan and Cape Verdean roots, known for blending African heritage with forward-thinking electronic music and house.",
+          longBio:
+            "DJEFF is a DJ and producer born in Lisbon to Angolan and Cape Verdean roots, known for blending African heritage with forward-thinking electronic music and house. Founder of Kazukuta Records, Angola's first electronic-focused label, he has released on Spinnin' Deep, Watergate Records, Deeproot and MoBlack, with support from Pete Tong on BBC Radio 1.\n\nIn 2025, he closed the year with the Lost Tapes EP and a sold-out edition of his event concept Odyssey in Luanda. DJEFF has performed at Tomorrowland, Hï Ibiza, Fabric London and Savaya Bali, and is currently preparing his next studio album for release in 2026.",
+          genres: ["Afro House", "Electronic", "House"],
+          stats: {
+            streams: "13M",
+            youtube: "8M",
+            subscribers: "25K",
+            followers: {
+              instagram: "197K",
+              twitter: "19K",
+            },
+          },
+          discography: {
+            albums: [
+              { title: "Enlightened Path", year: "2020" },
+            ],
+            eps: [
+              { title: "Lost Tapes EP", year: "2025" },
+            ],
+            tracks: [
+              { title: "Zugu Zugu" },
+              { title: "Metamorfose" },
+              { title: "Alegria" },
+            ],
+          },
+          liveSets: [
+            { title: "DJEFF at Odyssey Luanda", url: "https://www.youtube.com/user/DJDJEFFTV" },
+          ],
+          socials: {
+            instagram: "https://instagram.com/officialdjeff/",
+            twitter: "https://x.com/DjeffOfficial",
+            website: "https://www.officialdjeff.com",
+            facebook: "https://www.facebook.com/DJEFFOfficial/",
+            spotify: "https://spoti.fi/3cryGoz",
+            soundcloud: "https://soundcloud.com/officialdjeffmusic",
+            youtube: "https://www.youtube.com/user/DJDJEFFTV"
+          },
+          tracks: [
+            { id: "track16", title: "Zugu Zugu", duration: "6:30" },
+            { id: "track17", title: "Metamorfose", duration: "7:15" },
+            { id: "track18", title: "Alegria", duration: "6:45" },
+            { id: "track19", title: "Lost Tapes", duration: "7:00" },
+            { id: "track20", title: "Odyssey", duration: "8:20" },
+          ],
+          gallery: [
+            "/images/Djeff_profile_photo.svg",
+            "/images/djdjeff_1.svg",
+            "/images/djdjeff_2.svg",
+            "/images/djdjeff_3.svg",
+          ],
+        },
       ]
 
       const foundArtist = artists.find((a) => a.id === artistSlug)
@@ -338,7 +396,9 @@ export default function ArtistPage() {
                   ? "/images/caiiro-logo-branco.webp"
                   : params.slug === "dacapo"
                     ? "/images/logo-branco-da-capo.webp"
-                    : "/images/enoo_napa_logotipo.svg"
+                    : params.slug === "djeff"
+                      ? "/images/logo_djeff.svg"
+                      : "/images/enoo_napa_logotipo.svg"
               }
               alt={`${artist.name} logo`}
               width={250}

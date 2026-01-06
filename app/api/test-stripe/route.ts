@@ -2,7 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
 // Endpoint de teste do Stripe
+// APENAS disponível em desenvolvimento
 export async function GET(request: NextRequest) {
+  // Bloquear em produção
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json(
+      { error: 'Este endpoint não está disponível em produção' },
+      { status: 403 }
+    );
+  }
+
   try {
     // Verificar se as variáveis de ambiente estão configuradas
     const hasSecretKey = !!process.env.STRIPE_SECRET_KEY;

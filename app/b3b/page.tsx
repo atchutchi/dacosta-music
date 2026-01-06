@@ -202,7 +202,7 @@ export default function B3BPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-8"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
             >
               <div className="bg-white/5 p-6 rounded-lg">
                 <div className="aspect-square overflow-hidden rounded-lg mb-4">
@@ -265,6 +265,28 @@ export default function B3BPage() {
                   futuristic sounds to the collective.
                 </p>
                 <Link href="/artists/enoonapa">
+                  <Button variant="link" className="p-0 h-auto text-white hover:text-white/80">
+                    View Profile
+                  </Button>
+                </Link>
+              </div>
+              <div className="bg-white/5 p-6 rounded-lg">
+                <div className="aspect-square overflow-hidden rounded-lg mb-4">
+                  <img
+                    src="/images/Djeff_profile_photo.svg"
+                    alt="DJEFF"
+                    className="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <div className="h-12 flex items-center mb-4">
+                  <img src="/images/logo_djeff.svg" alt="DJEFF" className="h-full object-contain" />
+                </div>
+                {/* Nome removido */}
+                <p className="text-white/80 mb-4">
+                  DJEFF is a DJ and producer born in Lisbon to Angolan and Cape Verdean roots, blending African heritage
+                  with forward-thinking electronic music and house.
+                </p>
+                <Link href="/artists/djeff">
                   <Button variant="link" className="p-0 h-auto text-white hover:text-white/80">
                     View Profile
                   </Button>
@@ -390,7 +412,7 @@ export default function B3BPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           <div className="text-center">
             <div className="h-16 mb-4 flex items-center justify-center">
               <img src="/images/caiiro-logo-branco.webp" alt="Caiiro" className="h-full object-contain" />
@@ -408,6 +430,12 @@ export default function B3BPage() {
               <img src="/images/enoo_napa_logotipo.svg" alt="Enoo Napa" className="h-full object-contain" />
             </div>
             <p className="text-white/70">Raw energy and futuristic sounds with a signature edge</p>
+          </div>
+          <div className="text-center">
+            <div className="h-16 mb-4 flex items-center justify-center">
+              <img src="/images/logo_djeff.svg" alt="DJEFF" className="h-full object-contain" />
+            </div>
+            <p className="text-white/70">African heritage with forward-thinking electronic music and house</p>
           </div>
         </div>
       </div>

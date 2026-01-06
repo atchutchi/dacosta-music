@@ -396,7 +396,7 @@ export default function ContactSection() {
                       Select Artist(s)
                     </label>
                     <div className="space-y-2 bg-white/5 border border-white/10 rounded-md p-4">
-                      {["B3B", "B2B", "Caiiro", "Da Capo", "Enoo Napa"].map((artist) => (
+                      {["B3B", "B2B", "Caiiro", "Da Capo", "Enoo Napa", "DJEFF"].map((artist) => (
                         <label key={artist} className="flex items-center space-x-2 cursor-pointer">
                           <input
                             type="checkbox"

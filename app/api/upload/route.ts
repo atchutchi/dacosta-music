@@ -1,8 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
 import { uploadFile, checkBuckets, BUCKET_IMAGES, BUCKET_VIDEOS, BUCKET_EVENTS, BUCKET_ARTISTS, BUCKET_MEDIA } from "@/lib/supabase/storage";
+import { createServerClient } from "@/lib/supabase/server";
 
 export async function POST(request: NextRequest) {
   try {
+    // Verificar autenticação - apenas admins podem fazer upload
+    const supabase = await createServerClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: "Não autenticado. Faça login para fazer upload." },
+        { status: 401 }
+      );
+    }
+
+    // Verificar se é admin
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (profile?.role !== 'admin') {
+      return NextResponse.json(
+        { error: "Acesso negado. Apenas administradores podem fazer upload." },
+        { status: 403 }
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
     const bucket = formData.get("bucket") as string | null;

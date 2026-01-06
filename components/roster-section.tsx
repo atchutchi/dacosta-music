@@ -67,6 +67,20 @@ export default function RosterSection() {
         website: "https://enoonapa.com",
       },
     },
+    {
+      id: "djeff",
+      name: "DJEFF",
+      logo: "/images/logo_djeff.svg",
+      image: "/images/Djeff_profile_photo.svg",
+      bio: "DJEFF is a DJ and producer born in Lisbon to Angolan and Cape Verdean roots, known for blending African heritage with forward-thinking electronic music and house. Founder of Kazukuta Records, Angola's first electronic-focused label.",
+      socials: {
+        instagram: "https://instagram.com/officialdjeff/",
+        facebook: "https://www.facebook.com/DJEFFOfficial/",
+        twitter: "https://x.com/DjeffOfficial",
+        youtube: "https://www.youtube.com/user/DJDJEFFTV",
+        website: "https://www.officialdjeff.com",
+      },
+    },
   ]
 
   // Animation variants
@@ -137,7 +151,7 @@ export default function RosterSection() {
           </TabsList>
 
           <TabsContent value="artists" className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {artists.map((artist) => (
                 <div key={artist.id} className="group">
                   <div className="overflow-hidden rounded-lg mb-4 aspect-square relative">
@@ -158,7 +172,9 @@ export default function RosterSection() {
                           ? "/images/caiiro-logo-branco.webp"
                           : artist.id === "dacapo"
                             ? "/images/logo-branco-da-capo.webp"
-                            : "/images/enoo_napa_logotipo.svg"
+                            : artist.id === "djeff"
+                              ? "/images/logo_djeff.svg"
+                              : "/images/enoo_napa_logotipo.svg"
                       }
                       alt={`${artist.name} logo`}
                       width={200}

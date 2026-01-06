@@ -39,20 +39,16 @@ const nextConfig = {
   // Production optimizations
   productionBrowserSourceMaps: false,
   
-  // Simplified webpack configuration
-  webpack: (config) => {
-    return config
-  },
+  // Turbopack configuration (Next.js 16 default bundler)
+  turbopack: {},
   
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  // TypeScript configuration
   typescript: {
     ignoreBuildErrors: true,
   },
   
   env: {
-    CSRF_SECRET: process.env.CSRF_SECRET || 'da-costa-music-csrf-secret-key',
+    CSRF_SECRET: process.env.CSRF_SECRET,
     NEXT_PUBLIC_BIT_APP_ID_CAIRO: process.env.NEXT_PUBLIC_BIT_APP_ID_CAIRO,
   },
 }

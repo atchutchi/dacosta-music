@@ -3,7 +3,16 @@ import { Resend } from 'resend';
 import { logger } from '@/lib/logger';
 
 // API de teste para verificar se Resend está funcionando
+// APENAS disponível em desenvolvimento
 export async function GET(request: NextRequest) {
+  // Bloquear em produção
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json(
+      { error: 'Este endpoint não está disponível em produção' },
+      { status: 403 }
+    );
+  }
+
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
     
