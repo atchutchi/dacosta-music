@@ -70,9 +70,10 @@ INSTRUCOES_*.md
 PLANO_*.md
 LOJA_README.md
 
-# Scripts SQL temporários com dados sensíveis
+# Scripts SQL com dados sensíveis (credenciais, emails admin)
 scripts/fix-*.sql
 scripts/setup-admin-*.sql
+scripts/create-admin-*.sql
 scripts/corrigir-*.sql
 scripts/diagnostico-*.sql
 scripts/debug-*.sql

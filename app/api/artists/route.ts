@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { createServerClient } from "@/lib/supabase/server"
+import { requireAdmin } from "@/lib/auth"
 
 export async function GET() {
   const supabase = await createServerClient()
@@ -15,6 +16,12 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const supabase = await createServerClient()
+
+  const auth = await requireAdmin(supabase)
+  if (!auth.authorized) {
+    return NextResponse.json({ error: auth.message }, { status: auth.status })
+  }
+
   const data = await request.json()
 
   const { data: artist, error } = await supabase.from("artists").insert([data]).select().single()

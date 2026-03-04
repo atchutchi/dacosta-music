@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { createServerClient } from "@/lib/supabase/server"
+import { requireAdmin } from "@/lib/auth"
 
 export async function GET() {
   const supabase = await createServerClient()
@@ -15,16 +16,20 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const supabase = await createServerClient()
+
+  const auth = await requireAdmin(supabase)
+  if (!auth.authorized) {
+    return NextResponse.json({ error: auth.message }, { status: auth.status })
+  }
+
   const data = await request.json()
 
-  // Inserir evento
   const { data: event, error } = await supabase.from("events").insert([data]).select().single()
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  // Se houver artistas associados, inserir na tabela de relacionamento
   if (data.artists && data.artists.length > 0 && event) {
     const eventArtists = data.artists.map((artistId: string) => ({
       event_id: event.id,

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { createServerClient } from "@/lib/supabase/server"
+import { requireAdmin } from "@/lib/auth"
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createServerClient()
@@ -31,10 +32,15 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createServerClient()
+
+  const auth = await requireAdmin(supabase)
+  if (!auth.authorized) {
+    return NextResponse.json({ error: auth.message }, { status: auth.status })
+  }
+
   const { id } = await params
   const data = await request.json()
 
-  // Extrair artistas antes de atualizar o evento
   const { artists, ...eventData } = data
 
   // Atualizar evento
@@ -73,9 +79,13 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createServerClient()
-  const { id } = await params
 
-  // Primeiro, remover relacionamentos
+  const auth = await requireAdmin(supabase)
+  if (!auth.authorized) {
+    return NextResponse.json({ error: auth.message }, { status: auth.status })
+  }
+
+  const { id } = await params
   const { error: relationError } = await supabase.from("event_artists").delete().eq("event_id", id)
 
   if (relationError) {

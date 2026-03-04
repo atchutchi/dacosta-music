@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
+import { requireAdmin } from '@/lib/auth';
 import { logger } from '@/lib/logger';
 
 export async function GET(
@@ -8,9 +9,17 @@ export async function GET(
 ) {
   try {
     const supabase = await createServerClient();
+
+    const auth = await requireAdmin(supabase);
+    if (!auth.authorized) {
+      return NextResponse.json(
+        { error: auth.message },
+        { status: auth.status }
+      );
+    }
+
     const { id } = await params;
     
-    // Fetch order
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .select('*')
@@ -24,7 +33,6 @@ export async function GET(
       );
     }
     
-    // Fetch order items
     const { data: items, error: itemsError } = await supabase
       .from('order_items')
       .select('*')
