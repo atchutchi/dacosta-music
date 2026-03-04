@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
 
 // PayPal API base URL (sandbox or production)
 const PAYPAL_API = process.env.PAYPAL_MODE === 'production'
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = await createServerClient();
+    const supabase = createServiceClient();
 
     // Create customer in database
     const { data: customerData, error: customerError } = await supabase

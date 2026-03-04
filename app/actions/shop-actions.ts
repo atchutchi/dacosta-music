@@ -1,6 +1,7 @@
 'use server';
 
 import { createServerClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
 import { revalidatePath } from 'next/cache';
 import { logger } from '@/lib/logger';
 import type { Product, CartItem, Database } from '@/lib/database.types';
@@ -185,7 +186,7 @@ export async function checkStockAvailability(cartItems: CartItem[]) {
  * Reservar stock para um pedido (chamado durante checkout)
  */
 export async function reserveStock(orderId: string, cartItems: CartItem[]) {
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
   
   for (const item of cartItems) {
     // Buscar produto atual
@@ -239,7 +240,7 @@ export async function reserveStock(orderId: string, cartItems: CartItem[]) {
  * Liberar stock reservado (se pagamento falhar)
  */
 export async function releaseStock(orderId: string, cartItems: CartItem[]) {
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
   
   for (const item of cartItems) {
     // Buscar produto atual

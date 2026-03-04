@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { createServerClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
 import { headers } from 'next/headers';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = await createServerClient();
+    const supabase = createServiceClient();
 
     // Handle the event
     switch (event.type) {

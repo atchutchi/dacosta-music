@@ -243,8 +243,7 @@ CREATE POLICY "admin_delete" ON public.stock_history FOR DELETE TO authenticated
 -- Leitura: público (apenas is_public=true) | Escrita: apenas admin
 -- ============================================
 
-CREATE POLICY "public_read" ON public.settings FOR SELECT USING (is_public = true);
-CREATE POLICY "admin_read_all" ON public.settings FOR SELECT TO authenticated USING (public.is_admin());
+CREATE POLICY "public_read" ON public.settings FOR SELECT USING (true);
 CREATE POLICY "admin_insert" ON public.settings FOR INSERT TO authenticated WITH CHECK (public.is_admin());
 CREATE POLICY "admin_update" ON public.settings FOR UPDATE TO authenticated USING (public.is_admin());
 CREATE POLICY "admin_delete" ON public.settings FOR DELETE TO authenticated USING (public.is_admin());
