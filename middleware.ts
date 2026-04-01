@@ -1,9 +1,21 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
+import { checkApiRateLimit } from "@/lib/rate-limit"
 
 export async function middleware(request: NextRequest) {
   const { protocol, host, pathname, search } = request.nextUrl
-  
+
+  if (pathname.startsWith("/api/")) {
+    const { success } = await checkApiRateLimit(request)
+    if (!success) {
+      return NextResponse.json(
+        { error: "Too many requests" },
+        { status: 429, headers: { "Retry-After": "60" } }
+      )
+    }
+    return NextResponse.next()
+  }
+
   // Force HTTPS redirect (except for localhost in development)
   if (protocol === 'http:' && !host.includes('localhost') && !host.includes('127.0.0.1')) {
     const httpsUrl = `https://${host}${pathname}${search}`
@@ -88,15 +100,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - sw.js (service worker)
-     * - manifest.json (PWA manifest)
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico|sw.js|manifest.json).*)',
+    "/api/:path*",
+    "/((?!api|_next/static|_next/image|favicon.ico|sw.js|manifest.json).*)",
   ],
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createServiceClient } from '@/lib/supabase/service';
+import { buildInternalEmailHeaders } from '@/lib/internal-api-auth';
 import { headers } from 'next/headers';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -138,18 +139,24 @@ export async function POST(request: NextRequest) {
               console.log('📧 Preparando envio de emails para:', orderDetails.shipping_email);
               
               try {
-                const emailResponse = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://192.168.22.202:3000'}/api/emails/send-order-confirmation`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(emailData)
-                });
-                
-                const emailResult = await emailResponse.json();
-                
-                if (emailResponse.ok) {
-                  console.log('✅ Emails enviados com sucesso:', emailResult);
+                const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dacosta-music.com"
+                const emailHeaders = buildInternalEmailHeaders()
+                if (!emailHeaders) {
+                  console.error("INTERNAL_API_SECRET not set; cannot call send-order-confirmation")
                 } else {
-                  console.error('❌ Erro ao enviar emails:', emailResult);
+                  const emailResponse = await fetch(`${baseUrl}/api/emails/send-order-confirmation`, {
+                    method: "POST",
+                    headers: emailHeaders,
+                    body: JSON.stringify(emailData),
+                  })
+
+                  const emailResult = await emailResponse.json()
+
+                  if (emailResponse.ok) {
+                    console.log("✅ Emails enviados com sucesso:", emailResult)
+                  } else {
+                    console.error("❌ Erro ao enviar emails:", emailResult)
+                  }
                 }
               } catch (fetchError) {
                 console.error('❌ Erro no fetch de emails:', fetchError);

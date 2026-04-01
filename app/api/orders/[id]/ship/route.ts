@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
+import { buildInternalEmailHeaders } from '@/lib/internal-api-auth';
 
 export async function POST(
   request: NextRequest,
@@ -89,12 +90,17 @@ export async function POST(
         trackingUrl
       };
 
-      // Enviar email de forma assíncrona (não bloquear)
-      fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://192.168.22.202:3000'}/api/emails/send-order-shipped`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(emailData)
-      }).catch(err => console.error('Failed to send shipping email:', err));
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dacosta-music.com"
+      const emailHeaders = buildInternalEmailHeaders()
+      if (emailHeaders) {
+        fetch(`${baseUrl}/api/emails/send-order-shipped`, {
+          method: "POST",
+          headers: emailHeaders,
+          body: JSON.stringify(emailData),
+        }).catch((err) => console.error("Failed to send shipping email:", err))
+      } else {
+        console.error("INTERNAL_API_SECRET not set; skipped send-order-shipped")
+      }
     } catch (emailError) {
       console.error('Error sending shipping notification:', emailError);
       // Não falhar a operação se o email falhar

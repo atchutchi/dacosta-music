@@ -157,8 +157,8 @@ export async function POST(request: NextRequest) {
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://192.168.50.93:3000'}/shop/order/${orderData.id}?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://192.168.50.93:3000'}/shop/checkout?cancelled=true`,
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://dacosta-music.com"}/shop/order/${orderData.id}?success=true`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://dacosta-music.com"}/shop/checkout?cancelled=true`,
       customer_email: customer.email,
       billing_address_collection: 'auto',
       shipping_address_collection: {

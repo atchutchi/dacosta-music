@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { getOrderConfirmationEmailHTML, getAdminNewOrderEmailHTML, OrderEmailData } from '@/lib/email-templates';
+import { assertEmailApiAuthorized } from '@/lib/internal-api-auth';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
+    const authError = await assertEmailApiAuthorized(request);
+    if (authError) return authError;
+
     const body: OrderEmailData = await request.json();
     
     // Validar dados obrigatórios
