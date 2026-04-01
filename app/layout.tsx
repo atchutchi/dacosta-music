@@ -1,11 +1,13 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
+import { headers } from "next/headers"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { Toaster } from "@/components/ui/toaster"
+import { CsrfBootstrap } from "@/components/csrf-bootstrap"
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -68,11 +70,13 @@ export const viewport: Viewport = {
   themeColor: '#000000',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const nonce = (await headers()).get("x-nonce") ?? ""
+
   return (
     <html lang="en" className="dark">
       <head>
@@ -87,7 +91,12 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
         
         {/* Spotify Embed Script */}
-        <script async src="https://open.spotify.com/embed/iframe-api/v1" charSet="utf-8"></script>
+        <script
+          async
+          src="https://open.spotify.com/embed/iframe-api/v1"
+          charSet="utf-8"
+          nonce={nonce}
+        />
         
         {/* Preconnect to important origins */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -104,6 +113,7 @@ export default function RootLayout({
         
         {/* Service Worker Registration - Optimized */}
         <script
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
@@ -136,6 +146,7 @@ export default function RootLayout({
         {/* Critical CSS inlining hint */}
       </head>
       <body className={`${inter.className} ${inter.variable} min-h-screen bg-black text-white antialiased`}>
+        <CsrfBootstrap />
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <Navbar />
           <main className="flex-1">{children}</main>

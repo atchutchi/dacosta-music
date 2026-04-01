@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { getOrderConfirmationEmailHTML, getAdminNewOrderEmailHTML, OrderEmailData } from '@/lib/email-templates';
 import { assertEmailApiAuthorized } from '@/lib/internal-api-auth';
+import { orderEmailPayloadSchema } from '@/lib/validations/email';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -10,15 +11,15 @@ export async function POST(request: NextRequest) {
     const authError = await assertEmailApiAuthorized(request);
     if (authError) return authError;
 
-    const body: OrderEmailData = await request.json();
-    
-    // Validar dados obrigatórios
-    if (!body.customerEmail || !body.orderNumber) {
+    const raw = await request.json();
+    const parsed = orderEmailPayloadSchema.safeParse(raw);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Invalid email payload', details: parsed.error.flatten() },
         { status: 400 }
       );
     }
+    const body = parsed.data as OrderEmailData;
 
     // Email do remetente (deve ser verificado no Resend)
     const fromEmail = process.env.EMAIL_FROM || 'bookings@dacosta-music.com';

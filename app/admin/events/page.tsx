@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";import Link from "next/link";import {   ArrowLeft,   Calendar,   MapPin,   Link as LinkIcon,   Save,   Plus,   Trash,   ImagePlus,  Upload} from "lucide-react";import { Button } from "@/components/ui/button";import { Input } from "@/components/ui/input";import { Label } from "@/components/ui/label";import { Textarea } from "@/components/ui/textarea";import {   Select,   SelectContent,   SelectItem,   SelectTrigger,   SelectValue } from "@/components/ui/select";import { useToast } from "@/components/ui/use-toast";import { FileUploader } from "@/components/ui/file-uploader";import { BUCKET_EVENTS } from "@/lib/supabase/storage";
+import { useState, useEffect } from "react";import Link from "next/link";import {   ArrowLeft,   Calendar,   MapPin,   Link as LinkIcon,   Save,   Plus,   Trash,   ImagePlus,  Upload} from "lucide-react";import { Button } from "@/components/ui/button";import { Input } from "@/components/ui/input";import { Label } from "@/components/ui/label";import { Textarea } from "@/components/ui/textarea";import {   Select,   SelectContent,   SelectItem,   SelectTrigger,   SelectValue } from "@/components/ui/select";import { useToast } from "@/components/ui/use-toast";import { withCsrfHeaders } from "@/lib/fetch-with-csrf";import { FileUploader } from "@/components/ui/file-uploader";import { BUCKET_EVENTS } from "@/lib/supabase/storage";
 
 interface Event {
   id: string;
@@ -156,21 +156,25 @@ export default function AdminEventsPage() {
       if (isSupabase) {
         // Try to save to Supabase
         try {
-          const res = await fetch('/api/events', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              title: eventToAdd.title,
-              start_date: eventToAdd.start_date || new Date(eventToAdd.date || "").toISOString(),
-              location: eventToAdd.location,
-              ticket_url: eventToAdd.ticket_url,
-              image_url: eventToAdd.image_url,
-              description: eventToAdd.description,
-              artists: eventToAdd.artistId ? [eventToAdd.artistId] : []
-            }),
-          });
+          await fetch("/api/csrf", { credentials: "include" });
+          const res = await fetch(
+            '/api/events',
+            withCsrfHeaders({
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                title: eventToAdd.title,
+                start_date: eventToAdd.start_date || new Date(eventToAdd.date || "").toISOString(),
+                location: eventToAdd.location,
+                ticket_url: eventToAdd.ticket_url,
+                image_url: eventToAdd.image_url,
+                description: eventToAdd.description,
+                artists: eventToAdd.artistId ? [eventToAdd.artistId] : []
+              }),
+            })
+          );
           
           if (!res.ok) {
             throw new Error('Failed to save to Supabase');
@@ -248,21 +252,25 @@ export default function AdminEventsPage() {
       if (isSupabase) {
         // Try to update in Supabase
         try {
-          const res = await fetch(`/api/events/${editingId}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              title: updatedEvent.title,
-              start_date: updatedEvent.start_date || new Date(updatedEvent.date || "").toISOString(),
-              location: updatedEvent.location,
-              ticket_url: updatedEvent.ticket_url,
-              image_url: updatedEvent.image_url,
-              description: updatedEvent.description,
-              artists: updatedEvent.artistId ? [updatedEvent.artistId] : []
-            }),
-          });
+          await fetch("/api/csrf", { credentials: "include" });
+          const res = await fetch(
+            `/api/events/${editingId}`,
+            withCsrfHeaders({
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                title: updatedEvent.title,
+                start_date: updatedEvent.start_date || new Date(updatedEvent.date || "").toISOString(),
+                location: updatedEvent.location,
+                ticket_url: updatedEvent.ticket_url,
+                image_url: updatedEvent.image_url,
+                description: updatedEvent.description,
+                artists: updatedEvent.artistId ? [updatedEvent.artistId] : []
+              }),
+            })
+          );
           
           if (!res.ok) {
             throw new Error('Failed to update in Supabase');
@@ -313,9 +321,11 @@ export default function AdminEventsPage() {
         if (isSupabase) {
           // Try to delete from Supabase
           try {
-            const res = await fetch(`/api/events/${id}`, {
-              method: 'DELETE'
-            });
+            await fetch("/api/csrf", { credentials: "include" });
+            const res = await fetch(
+              `/api/events/${id}`,
+              withCsrfHeaders({ method: 'DELETE' })
+            );
             
             if (!res.ok) {
               throw new Error('Failed to delete from Supabase');

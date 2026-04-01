@@ -14,6 +14,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { motion } from "framer-motion"
 import type { Product, CartItem as CartItemType } from "@/lib/database.types"
+import { withCsrfHeaders } from "@/lib/fetch-with-csrf"
 
 // Lista completa de indicativos telefônicos
 const COUNTRY_CODES = [
@@ -281,6 +282,8 @@ export default function CheckoutPage() {
     setIsSubmitting(true)
     
     try {
+      await fetch("/api/csrf", { credentials: "include" })
+
       // Create order first
       const orderData = {
         items: cartItems,
@@ -309,11 +312,14 @@ export default function CheckoutPage() {
 
       // Redirect to payment gateway
       // Create Stripe checkout session
-      const response = await fetch('/api/checkout/stripe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData)
-      })
+      const response = await fetch(
+        '/api/checkout/stripe',
+        withCsrfHeaders({
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderData),
+        })
+      )
       
       const data = await response.json()
       

@@ -58,6 +58,7 @@ export interface Database {
           featured?: boolean
           active?: boolean
         }
+        Relationships: []
       }
       customers: {
         Row: {
@@ -87,6 +88,37 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          id: string
+          role: string
+          email: string | null
+          full_name: string | null
+          avatar_url: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          role?: string
+          email?: string | null
+          full_name?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          role?: string
+          email?: string | null
+          full_name?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       orders: {
         Row: {
@@ -185,6 +217,15 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "orders_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       order_items: {
         Row: {
@@ -226,6 +267,15 @@ export interface Database {
           subtotal?: number
           created_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       stock_history: {
         Row: {
@@ -261,6 +311,7 @@ export interface Database {
           created_by?: string | null
           created_at?: string
         }
+        Relationships: []
       }
       artists: {
         Row: {
@@ -302,6 +353,7 @@ export interface Database {
           social_website?: string | null
           featured?: boolean
         }
+        Relationships: []
       }
       events: {
         Row: {
@@ -340,6 +392,22 @@ export interface Database {
           ticket_url?: string | null
           featured?: boolean
         }
+        Relationships: []
+      }
+      event_artists: {
+        Row: {
+          event_id: string
+          artist_id: string
+        }
+        Insert: {
+          event_id: string
+          artist_id: string
+        }
+        Update: {
+          event_id?: string
+          artist_id?: string
+        }
+        Relationships: []
       }
       albums: {
         Row: {
@@ -372,6 +440,7 @@ export interface Database {
           description?: string | null
           featured?: boolean
         }
+        Relationships: []
       }
       tracks: {
         Row: {
@@ -407,6 +476,7 @@ export interface Database {
           track_number?: number | null
           featured?: boolean
         }
+        Relationships: []
       }
       live_sets: {
         Row: {
@@ -448,13 +518,33 @@ export interface Database {
           description?: string | null
           featured?: boolean
         }
+        Relationships: []
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_order_number: {
+        Args: Record<string, never>
+        Returns: string
+      }
+      get_shop_statistics: {
+        Args: Record<string, never>
+        Returns: Json
+      }
+      get_top_selling_products: {
+        Args: { limit_count: number }
+        Returns: Json
+      }
+      get_monthly_sales: {
+        Args: { months_back: number }
+        Returns: Json
+      }
+      get_low_stock_products: {
+        Args: Record<string, never>
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never

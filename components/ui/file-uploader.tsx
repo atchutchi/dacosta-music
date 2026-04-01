@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
+import { withCsrfHeaders } from "@/lib/fetch-with-csrf"
 import Link from "next/link"
 import { BUCKET_IMAGES, BUCKET_VIDEOS, BUCKET_EVENTS, BUCKET_ARTISTS, BUCKET_MEDIA } from "@/lib/supabase/storage"
 
@@ -81,6 +82,8 @@ export function FileUploader({
   const uploadFile = async (file: File) => {
     setIsUploading(true)
     try {
+      await fetch("/api/csrf", { credentials: "include" })
+
       const formData = new FormData()
       formData.append("file", file)
       formData.append("bucket", bucket)
@@ -88,10 +91,13 @@ export function FileUploader({
         formData.append("folder", folder)
       }
 
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      })
+      const response = await fetch(
+        "/api/upload",
+        withCsrfHeaders({
+          method: "POST",
+          body: formData,
+        })
+      )
 
       if (!response.ok) {
         const errorData = await response.json()

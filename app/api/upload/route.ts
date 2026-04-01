@@ -42,6 +42,55 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Bucket não especificado" }, { status: 400 });
     }
 
+    const extLower = (file.name.split(".").pop() || "").toLowerCase();
+    const isSvg =
+      file.type === "image/svg+xml" || extLower === "svg";
+    if (isSvg) {
+      const buf = await file.arrayBuffer();
+      const svgText = new TextDecoder().decode(buf).toLowerCase();
+      if (
+        /<script[\s>]|<foreignobject|on\w+\s*=/i.test(svgText)
+      ) {
+        return NextResponse.json(
+          {
+            error:
+              "SVG rejeitado: conteúdo potencialmente inseguro (script, event handlers ou foreignObject).",
+            code: "SVG_REJECTED",
+          },
+          { status: 400 }
+        );
+      }
+      const safeFile = new File([buf], file.name, {
+        type: file.type || "image/svg+xml",
+      });
+      const timestamp = new Date().getTime();
+      const originalName = safeFile.name;
+      const fileExt = originalName.split(".").pop() || "";
+      const cleanName = originalName
+        .replace(/\.[^/.]+$/, "")
+        .replace(/[^a-z0-9]/gi, "-")
+        .toLowerCase();
+      const filePath = folder
+        ? `${folder}/${cleanName}-${timestamp}.${fileExt}`
+        : `${cleanName}-${timestamp}.${fileExt}`;
+      const fileUrl = await uploadFile(bucket, safeFile, filePath);
+      if (!fileUrl) {
+        return NextResponse.json(
+          {
+            error:
+              "Falha ao fazer upload do arquivo. Verifique se o bucket existe e se você tem permissões suficientes.",
+            code: "UPLOAD_FAILED",
+          },
+          { status: 500 }
+        );
+      }
+      return NextResponse.json({
+        url: fileUrl,
+        path: filePath,
+        bucket: bucket,
+      });
+    }
+
     // Valida o bucket para garantir que é um dos permitidos
     const validBuckets = [BUCKET_IMAGES, BUCKET_VIDEOS, BUCKET_EVENTS, BUCKET_ARTISTS, BUCKET_MEDIA];
     if (!validBuckets.includes(bucket)) {

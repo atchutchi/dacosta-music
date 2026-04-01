@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
+import { productCreateSchema } from '@/lib/validations/product';
 
 // GET /api/products - Listar produtos (com filtros)
 export async function GET(request: NextRequest) {
@@ -149,32 +150,32 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    const body = await request.json();
-    
-    // Validar campos obrigatórios
-    if (!body.name || !body.slug || !body.price || !body.category) {
+    const raw = await request.json();
+    const parsed = productCreateSchema.safeParse(raw);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: 'Missing required fields: name, slug, price, category' },
+        { error: 'Invalid product payload', details: parsed.error.flatten() },
         { status: 400 }
       );
     }
-    
+    const body = parsed.data;
+
     // Inserir produto
     const { data, error } = await supabase
       .from('products')
       .insert([{
         name: body.name,
         slug: body.slug,
-        description: body.description || null,
-        price: parseFloat(body.price),
+        description: body.description ?? null,
+        price: body.price,
         category: body.category,
-        artist_id: body.artist_id || null,
-        sizes: body.sizes || null,
-        colors: body.colors || null,
-        stock_quantity: parseInt(body.stock_quantity) || 0,
-        low_stock_threshold: parseInt(body.low_stock_threshold) || 5,
-        image_urls: body.image_urls || null,
-        featured: body.featured || false,
+        artist_id: body.artist_id ?? null,
+        sizes: body.sizes ?? null,
+        colors: body.colors ?? null,
+        stock_quantity: body.stock_quantity ?? 0,
+        low_stock_threshold: body.low_stock_threshold ?? 5,
+        image_urls: body.image_urls ?? null,
+        featured: body.featured ?? false,
         active: body.active !== false
       }])
       .select()

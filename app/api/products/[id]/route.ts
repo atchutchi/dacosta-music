@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
+import { productUpdateSchema } from '@/lib/validations/product';
 
 // GET /api/products/[id] - Obter detalhes de um produto
 export async function GET(
@@ -74,24 +75,37 @@ export async function PUT(
       );
     }
     
-    const body = await request.json();
-    
-    // Preparar dados para atualização
-    const updateData: any = {};
-    
+    const raw = await request.json();
+    const parsed = productUpdateSchema.safeParse(raw);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Invalid product payload', details: parsed.error.flatten() },
+        { status: 400 }
+      );
+    }
+    const body = parsed.data;
+
+    const updateData: Record<string, unknown> = {};
     if (body.name !== undefined) updateData.name = body.name;
     if (body.slug !== undefined) updateData.slug = body.slug;
     if (body.description !== undefined) updateData.description = body.description;
-    if (body.price !== undefined) updateData.price = parseFloat(body.price);
+    if (body.price !== undefined) updateData.price = body.price;
     if (body.category !== undefined) updateData.category = body.category;
     if (body.artist_id !== undefined) updateData.artist_id = body.artist_id;
     if (body.sizes !== undefined) updateData.sizes = body.sizes;
     if (body.colors !== undefined) updateData.colors = body.colors;
-    if (body.stock_quantity !== undefined) updateData.stock_quantity = parseInt(body.stock_quantity);
-    if (body.low_stock_threshold !== undefined) updateData.low_stock_threshold = parseInt(body.low_stock_threshold);
+    if (body.stock_quantity !== undefined) updateData.stock_quantity = body.stock_quantity;
+    if (body.low_stock_threshold !== undefined) updateData.low_stock_threshold = body.low_stock_threshold;
     if (body.image_urls !== undefined) updateData.image_urls = body.image_urls;
     if (body.featured !== undefined) updateData.featured = body.featured;
     if (body.active !== undefined) updateData.active = body.active;
+
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json(
+        { error: 'No valid fields to update' },
+        { status: 400 }
+      );
+    }
     
     // Atualizar produto
     const { data, error } = await supabase

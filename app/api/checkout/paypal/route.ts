@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/service';
+import { checkoutBodySchema } from '@/lib/validations/order';
 
 // PayPal API base URL (sandbox or production)
 const PAYPAL_API = process.env.PAYPAL_MODE === 'production'
@@ -27,15 +28,15 @@ async function getPayPalAccessToken() {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { items, customer, shipping, shippingMethod, subtotal, shippingCost, total } = body;
-
-    if (!items || items.length === 0) {
+    const raw = await request.json();
+    const parsed = checkoutBodySchema.safeParse(raw);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: 'No items in cart' },
+        { error: 'Invalid checkout payload', details: parsed.error.flatten() },
         { status: 400 }
       );
     }
+    const { items, customer, shipping, shippingMethod, subtotal, shippingCost, total } = parsed.data;
 
     const supabase = createServiceClient();
 

@@ -1,22 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createServiceClient } from '@/lib/supabase/service';
+import { checkoutBodySchema } from '@/lib/validations/order';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2025-10-29.clover',
 });
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { items, customer, shipping, shippingMethod, subtotal, shippingCost, total } = body;
-
-    if (!items || items.length === 0) {
+    const raw = await request.json();
+    const parsed = checkoutBodySchema.safeParse(raw);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: 'No items in cart' },
+        { error: 'Invalid checkout payload', details: parsed.error.flatten() },
         { status: 400 }
       );
     }
+    const { items, customer, shipping, shippingMethod, subtotal, shippingCost, total } = parsed.data;
 
     const supabase = createServiceClient();
 
@@ -144,6 +145,7 @@ export async function POST(request: NextRequest) {
           currency: 'eur', // Mudado para EUR
           product_data: {
             name: 'Shipping',
+            images: [],
             description: shippingMethod === 'dhl' ? 'DHL Express' : shippingMethod === 'fedex' ? 'FedEx Priority' : 'Standard Shipping'
           },
           unit_amount: Math.round(shippingCost * 100),

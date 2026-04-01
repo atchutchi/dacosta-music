@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
+import DOMPurify from "isomorphic-dompurify"
 import { ArrowLeft, Calendar, User, Share2, Facebook, Twitter, Link2 } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
@@ -26,6 +27,11 @@ export default function BlogPostPage() {
   const [post, setPost] = useState<BlogPost | null>(null)
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([])
   const [isLoading, setIsLoading] = useState(true)
+
+  const safeContent = useMemo(() => {
+    if (!post?.content) return ""
+    return DOMPurify.sanitize(post.content)
+  }, [post?.content])
 
   useEffect(() => {
     // Simulate fetching blog post data
@@ -272,7 +278,7 @@ export default function BlogPostPage() {
             />
             <div
               className="prose prose-invert max-w-none prose-lg"
-              dangerouslySetInnerHTML={{ __html: post.content }}
+              dangerouslySetInnerHTML={{ __html: safeContent }}
             />
           </div>
 

@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/components/ui/use-toast"
+import { withCsrfHeaders } from "@/lib/fetch-with-csrf"
 import { motion } from "framer-motion"
 
 interface Order {
@@ -138,11 +139,16 @@ export default function AdminOrdersPage() {
     
     setIsShipping(true)
     try {
-      const response = await fetch(`/api/orders/${selectedOrder.id}/ship`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(trackingData)
-      })
+      await fetch("/api/csrf", { credentials: "include" })
+
+      const response = await fetch(
+        `/api/orders/${selectedOrder.id}/ship`,
+        withCsrfHeaders({
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(trackingData),
+        })
+      )
       
       if (response.ok) {
         toast({

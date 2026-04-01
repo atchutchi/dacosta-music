@@ -31,9 +31,7 @@ const nextConfig = {
     minimumCacheTTL: 31536000, // 1 ano
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    dangerouslyAllowSVG: true,
     contentDispositionType: 'inline',
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   
   // Production optimizations
@@ -41,11 +39,6 @@ const nextConfig = {
   
   // Turbopack configuration (Next.js 16 default bundler)
   turbopack: {},
-  
-  // TypeScript configuration
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   
   env: {
     CSRF_SECRET: process.env.CSRF_SECRET,

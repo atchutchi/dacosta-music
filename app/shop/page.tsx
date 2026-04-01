@@ -55,12 +55,13 @@ export default function ShopPage() {
         const data = await response.json()
         
         if (data.products) {
-          setProducts(data.products)
-          setFilteredProducts(data.products)
+          const list = data.products as Product[]
+          setProducts(list)
+          setFilteredProducts(list)
           
           // Inicializar seleções para cada produto
           const initialSelections: any = {}
-          data.products.forEach((product: Product) => {
+          list.forEach((product: Product) => {
             initialSelections[product.id] = {
               size: product.sizes && product.sizes.length > 0 ? product.sizes[0] : undefined,
               color: product.colors && product.colors.length > 0 ? product.colors[0] : undefined,
@@ -70,11 +71,13 @@ export default function ShopPage() {
           setProductSelections(initialSelections)
           
           // Extrair categorias únicas
-          const uniqueCategories = [...new Set(data.products.map((p: Product) => p.category))]
+          const uniqueCategories: string[] = [
+            ...new Set(list.map((p) => p.category)),
+          ]
           setCategories(uniqueCategories)
           
           // Calcular preço máximo
-          const prices = data.products.map((p: Product) => p.price)
+          const prices = list.map((p) => p.price)
           const max = Math.max(...prices, 200)
           setMaxPrice(Math.ceil(max / 10) * 10) // Arredondar para cima
           

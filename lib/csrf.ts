@@ -1,5 +1,10 @@
 import { randomBytes, createHash } from "crypto"
-import { cookies } from "next/headers"
+
+/**
+ * Tokens assinados (CSRF_SECRET) para formulários legacy (ex.: newsletter).
+ * Rotas API mutáveis usam double-submit: cookie `csrf_token` + header `x-csrf-token`
+ * (ver `app/api/csrf`, `middleware.ts`, `withCsrfHeaders`).
+ */
 
 // Get the CSRF secret from environment variables
 const CSRF_SECRET = process.env.CSRF_SECRET

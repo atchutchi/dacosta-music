@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useToast } from "@/components/ui/use-toast"
+import { withCsrfHeaders } from "@/lib/fetch-with-csrf"
 import { Switch } from "@/components/ui/switch"
 import { uploadFile, BUCKET_PRODUCTS } from "@/lib/supabase/storage"
 import type { Product } from "@/lib/database.types"
@@ -204,6 +205,8 @@ export default function AdminProductsPage() {
     setIsSubmitting(true)
 
     try {
+      await fetch("/api/csrf", { credentials: "include" })
+
       // Upload images first
       const imageUrls = await uploadImages()
 
@@ -222,11 +225,14 @@ export default function AdminProductsPage() {
       
       const method = editingProduct ? 'PUT' : 'POST'
 
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
+      const response = await fetch(
+        url,
+        withCsrfHeaders({
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+      )
 
       const data = await response.json()
 
@@ -255,9 +261,12 @@ export default function AdminProductsPage() {
     if (!confirm('Are you sure you want to delete this product?')) return
 
     try {
-      const response = await fetch(`/api/products/${productId}`, {
-        method: 'DELETE'
-      })
+      await fetch("/api/csrf", { credentials: "include" })
+
+      const response = await fetch(
+        `/api/products/${productId}`,
+        withCsrfHeaders({ method: 'DELETE' })
+      )
 
       if (response.ok) {
         toast({

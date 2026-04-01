@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/service';
-import { headers } from 'next/headers';
 
 const PAYPAL_API = process.env.PAYPAL_MODE === 'production'
   ? 'https://api-m.paypal.com'
@@ -48,29 +47,35 @@ async function verifyPayPalWebhook(webhookId: string, headers: any, body: any) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const headersList = headers();
-    
-    // Optional: Verify webhook signature for production
-    if (process.env.PAYPAL_WEBHOOK_ID && process.env.NODE_ENV === 'production') {
-      const isValid = await verifyPayPalWebhook(
-        process.env.PAYPAL_WEBHOOK_ID,
-        {
-          'paypal-transmission-id': headersList.get('paypal-transmission-id'),
-          'paypal-transmission-time': headersList.get('paypal-transmission-time'),
-          'paypal-cert-url': headersList.get('paypal-cert-url'),
-          'paypal-auth-algo': headersList.get('paypal-auth-algo'),
-          'paypal-transmission-sig': headersList.get('paypal-transmission-sig')
-        },
-        body
+    const webhookId = process.env.PAYPAL_WEBHOOK_ID;
+    if (!webhookId) {
+      console.error("PayPal webhook: PAYPAL_WEBHOOK_ID is not configured");
+      return NextResponse.json(
+        { error: "PayPal webhook not configured" },
+        { status: 500 }
       );
+    }
 
-      if (!isValid) {
-        return NextResponse.json(
-          { error: 'Invalid webhook signature' },
-          { status: 400 }
-        );
-      }
+    const body = await request.json();
+    const h = request.headers;
+
+    const isValid = await verifyPayPalWebhook(
+      webhookId,
+      {
+        "paypal-transmission-id": h.get("paypal-transmission-id"),
+        "paypal-transmission-time": h.get("paypal-transmission-time"),
+        "paypal-cert-url": h.get("paypal-cert-url"),
+        "paypal-auth-algo": h.get("paypal-auth-algo"),
+        "paypal-transmission-sig": h.get("paypal-transmission-sig"),
+      },
+      body
+    );
+
+    if (!isValid) {
+      return NextResponse.json(
+        { error: "Invalid webhook signature" },
+        { status: 400 }
+      );
     }
 
     const supabase = createServiceClient();
