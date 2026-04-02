@@ -570,14 +570,14 @@ export default function ArtistPage() {
             {/* Right Column - Images */}
             <div className="grid grid-cols-2 gap-4">
               {[0, 1, 2, 3].map((index) => (
-                <div key={index} className="aspect-square overflow-hidden rounded-lg bg-white/5 relative">
+                <div key={index} className="aspect-[3/4] overflow-hidden rounded-lg bg-white/5 relative">
                   {!imageError[index] && artist.gallery[index] ? (
                     <Image
                       src={artist.gallery[index]}
                       alt={`${artist.name} - Image ${index + 1}`}
                       fill
                       sizes="(max-width: 768px) 50vw, 25vw"
-                      className="object-cover"
+                      className="object-cover object-top"
                       loading={index < 2 ? "eager" : "lazy"}
                       quality={85}
                       onError={() => handleImageError(index)}
