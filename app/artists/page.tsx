@@ -37,6 +37,12 @@ export default function ArtistsPage() {
       image: "/images/Djeff_profile_photo.svg",
       bio: "DJEFF is a DJ and producer born in Lisbon to Angolan and Cape Verdean roots, known for blending African heritage with forward-thinking electronic music and house.",
     },
+    {
+      id: "breyth",
+      name: "BREYTH",
+      image: "/images/breyth-photo-main.svg",
+      bio: "An established name in the Afro House scene, BREYTH blends charisma and raw energy into every set. Born in Angola, forged in Lisbon — his sound reaches over 27 million streams across all digital platforms.",
+    },
   ]
 
   return (
@@ -49,7 +55,7 @@ export default function ArtistsPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-16">
           {artists.map((artist) => (
             <div key={artist.id} className="group">
               <div className="overflow-hidden rounded-lg mb-4 aspect-square relative">
@@ -72,7 +78,9 @@ export default function ArtistsPage() {
                         ? "/images/logo-branco-da-capo.webp"
                         : artist.id === "djeff"
                           ? "/images/logo_djeff.svg"
-                          : "/images/enoo_napa_logotipo.svg"
+                          : artist.id === "breyth"
+                            ? "/images/logo_breyth_white.svg"
+                            : "/images/enoo_napa_logotipo.svg"
                   }
                   alt={`${artist.name} logo`}
                   width={200}

@@ -145,6 +145,11 @@ export default function Footer() {
                   DJEFF
                 </Link>
               </li>
+              <li>
+                <Link href="/artists/breyth" className="text-white/70 hover:text-white">
+                  BREYTH
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

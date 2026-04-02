@@ -81,6 +81,20 @@ export default function RosterSection() {
         website: "https://www.officialdjeff.com",
       },
     },
+    {
+      id: "breyth",
+      name: "BREYTH",
+      logo: "/images/logo_breyth_white.svg",
+      image: "/images/breyth-photo-main.svg",
+      bio: "An established name in the Afro House scene, BREYTH blends charisma and raw energy into every set. Born in Angola, forged in Lisbon — his sound reaches over 27 million streams across all digital platforms.",
+      socials: {
+        instagram: "https://www.instagram.com/breyth_/",
+        twitter: "https://www.instagram.com/breyth_/",
+        facebook: "https://www.facebook.com/breythofficial",
+        youtube: "https://www.youtube.com/@breyth",
+        website: "https://open.spotify.com/artist/1ASRVb6tSo0Pdb6yEKZhmx",
+      },
+    },
   ]
 
   // Animation variants
@@ -151,7 +165,7 @@ export default function RosterSection() {
           </TabsList>
 
           <TabsContent value="artists" className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
               {artists.map((artist) => (
                 <div key={artist.id} className="group">
                   <div className="overflow-hidden rounded-lg mb-4 aspect-square relative">
@@ -167,15 +181,7 @@ export default function RosterSection() {
                   </div>
                   <div className="h-12 mb-4 flex items-center justify-start relative">
                     <Image
-                      src={
-                        artist.id === "caiiro"
-                          ? "/images/caiiro-logo-branco.webp"
-                          : artist.id === "dacapo"
-                            ? "/images/logo-branco-da-capo.webp"
-                            : artist.id === "djeff"
-                              ? "/images/logo_djeff.svg"
-                              : "/images/enoo_napa_logotipo.svg"
-                      }
+                      src={artist.logo || "/placeholder.svg"}
                       alt={`${artist.name} logo`}
                       width={200}
                       height={48}

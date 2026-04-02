@@ -1,198 +1,130 @@
-# Da Costa Music Website
+# Da Costa Music
 
 ![Da Costa Music](public/images/logo-branco-dacosta.webp)
 
-A modern, responsive website for Da Costa Music, a creative agency and talent management company representing a new era of electronic music.
+A modern, high-performance website for **Da Costa Music** — a creative agency and talent management company representing the next generation of African electronic music worldwide.
 
-🌐 **Live Website**: [https://www.dacosta-music.com](https://www.dacosta-music.com)
+**Live:** [dacosta-music.com](https://www.dacosta-music.com)
+
+---
 
 ## Table of Contents
 
 - [Overview](#overview)
+- [Artist Roster](#artist-roster)
 - [Features](#features)
 - [Technology Stack](#technology-stack)
 - [Project Structure](#project-structure)
 - [Database Schema](#database-schema)
-- [Setup Instructions](#setup-instructions)
+- [Getting Started](#getting-started)
 - [Environment Variables](#environment-variables)
-- [Security Considerations](#security-considerations)
-- [Proposed Improvements](#proposed-improvements)
+- [Security](#security)
+- [Deployment](#deployment)
 - [License](#license)
 
 ## Overview
 
-Da Costa Music é uma agência criativa e empresa de gestão de talentos que representa uma nova era da música eletrônica. O website serve como plataforma digital para a agência mostrar seus artistas, música, eventos e serviços. O site apresenta um design moderno e responsivo com foco em apelo visual e experiência do usuário, oferecendo funcionalidades completas para gestão de artistas, e-commerce, blog e eventos.
+Da Costa Music is a creative agency and talent management company representing a new era of African electronic music. The website serves as the digital platform for the agency — showcasing artists, music, events and services. Built with a modern stack, it features a fully responsive design, integrated e-commerce, blog, event management, and a secure admin dashboard.
+
+## Artist Roster
+
+The agency currently represents **5 artists**:
+
+| Artist | Genres | Highlights |
+|--------|--------|------------|
+| **Caiiro** | Afro House, Deep Tech, Afro Tech | 90M+ streams, performed in 30+ countries |
+| **Da Capo** | Afro House, Deep House, Electronic | 85M+ streams, platinum-certified singles |
+| **Enoo Napa** | Afro Tech, Tribal House, Progressive | Featured at Hï Ibiza, Circoloco, Scorpios Mykonos |
+| **DJEFF** | Afro House, Electronic, House | Founder of Kazukuta Records, performed at Tomorrowland & Hï Ibiza |
+| **BREYTH** | Afro House, Electronic, Deep House | 27M+ streams, creator of the 'Atmosphere' concept |
 
 ## Features
 
-### Páginas Públicas
+### Public Pages
 
-- **Home Page**: 
-  - Hero section dinâmico com vídeo de fundo
-  - Seção "About Us" com missão e ethos da agência
-  - Roster de artistas (Caiiro, Da Capo, Enoo Napa)
-  - Player de música integrado
-  - Formulário de contato com validação e reCAPTCHA
-  - Newsletter subscription
+- **Home** — Hero video, about section, artist roster grid (5 columns on desktop), music player, contact form
+- **Artists** — Listing page with responsive grid + individual profile pages with full bio, gallery, stats, social links and live sets
+- **B3B Concept** — Dedicated page for the Back-to-Back-to-Back performance format
+- **Blog** — Full blog system with categories and rich formatting
+- **Events** — Interactive calendar, show listings, ticket links
+- **Services** — Turnkey Service, Worldwide Booking, Travel & Logistics, Artist Management, Branding, Finance & Admin
+- **Shop** — Full e-commerce with Stripe/PayPal integration, cart, guest checkout, inventory management, admin panel
+- **Legal** — Privacy Policy, Terms of Service
 
-- **Artists Page**: 
-  - Listagem de todos os artistas do roster
-  - Páginas individuais detalhadas para cada artista com:
-    - Biografia completa
-    - Galeria de fotos
-    - Redes sociais integradas
-    - Próximos eventos
-    - Música e sets ao vivo
+### Technical Capabilities
 
-- **B3B Concept Page**: 
-  - Página dedicada ao conceito único Back-to-Back-to-Back
-  - Explicação detalhada da filosofia B3B
-  - Showcase de eventos B3B
-  - Galeria visual
-
-- **Blog**: 
-  - Sistema de blog completo com artigos e notícias
-  - Páginas individuais para cada post
-  - Categorização de conteúdo
-  - Imagens e formatação rica
-
-- **Events Page**: 
-  - Calendário de eventos interativo
-  - Listagem de shows e performances
-  - Páginas detalhadas para cada evento
-  - Integração com informações de artistas
-  - Links para compra de ingressos
-
-- **Services Page**: 
-  - Serviços completos oferecidos:
-    - Turnkey Service (Soluções completas)
-    - Worldwide Booking (Reservas globais)
-    - Travel & Logistics Management
-    - Artist Management
-    - Artist Image & Branding
-    - Artist Finance & Administrative Organization
-
-- **Shop**: 
-  - E-commerce completo para merchandise e música
-  - Sistema de produtos com Supabase Database
-  - Filtros por categoria e preço
-  - Ordenação de produtos
-  - Sistema de carrinho de compras
-  - Guest checkout (compra sem cadastro)
-  - Integração Stripe para pagamentos
-  - Controle automático de stock
-  - Admin panel para gestão de produtos e pedidos
-  - Upload de imagens para Supabase Storage
-  - Produtos: camisas, acessórios, música, eletrônicos
-  - Interface responsiva com animações
-  
-  📖 **Ver documentação completa:** `LOJA_README.md`
-
-- **Legal Pages**:
-  - Página de Termos de Serviço
-  - Página de Política de Privacidade
-
-### Funcionalidades Técnicas
-
-- **Authentication System**: 
-  - Registro e login de usuários
-  - Sistema de autenticação via Supabase Auth
-  - Área de admin protegida
-
-- **Admin Dashboard**: 
-  - Gerenciamento de eventos
-  - Upload de vídeos e mídia
-  - Configurações do site
-  - Acesso restrito por autenticação
-
-- **Media Storage**: 
-  - Integração com Supabase Storage
-  - Buckets organizados: images, artists, events, videos
-  - Upload e gerenciamento de arquivos
-
-- **Security Features**:
-  - CSRF Protection em formulários
-  - reCAPTCHA para proteção contra bots
-  - Row Level Security (RLS) no banco de dados
-  - Validação de formulários client-side e server-side
-
-- **SEO & Performance**:
-  - Sitemap.xml dinâmico
-  - Meta tags otimizadas
-  - Imagens otimizadas em WebP
-  - Lazy loading de componentes
-  - Service Worker para PWA
-  - Manifest.json configurado
-
-- **Responsive Design**: 
-  - Mobile-first approach
-  - Design totalmente responsivo
-  - Animações suaves com Framer Motion
-  - UI moderna com shadcn/ui components
+- **Authentication** — Supabase Auth with protected admin area
+- **Admin Dashboard** — Event management, media uploads, shop/order management, site settings
+- **Media Storage** — Supabase Storage with organised buckets (images, artists, events, videos)
+- **Contact Form** — EmailJS integration with artist booking checkboxes, subject selection, validation
+- **Security** — CSRF double-submit tokens, CSP nonce headers, rate limiting, Zod API validation, RLS policies, SVG sanitisation
+- **SEO & Performance** — Dynamic sitemap, optimised meta tags, WebP/SVG images, lazy loading, PWA manifest
+- **Responsive Design** — Mobile-first with Framer Motion animations and shadcn/ui components
 
 ## Technology Stack
 
-- **Frontend**:
-  - Next.js 14 (App Router)
-  - React 18
-  - TypeScript
-  - Tailwind CSS
-  - Framer Motion (animations)
-  - Lucide React (icons)
-  - shadcn/ui (UI components)
-
-- **Backend**:
-  - Next.js API Routes
-  - Server Components and Server Actions
-  - Supabase (PostgreSQL database)
-  - Supabase Auth
-  - Supabase Storage (media files)
-
-- **Deployment**:
-  - Vercel (recommended)
+| Layer | Technologies |
+|-------|-------------|
+| **Framework** | Next.js 16 (App Router) |
+| **UI** | React 19, TypeScript 5, Tailwind CSS 3, shadcn/ui, Framer Motion 12 |
+| **Backend** | Next.js API Routes, Server Components, Server Actions |
+| **Database** | Supabase (PostgreSQL), Supabase Auth, Supabase Storage |
+| **Payments** | Stripe, PayPal |
+| **Email** | EmailJS (contact form) |
+| **Icons** | Lucide React |
+| **Deployment** | Vercel |
 
 ## Project Structure
 
-\`\`\`
-da-costa-music/
-├── app/                  # Next.js App Router pages and API routes
-│   ├── actions/          # Server actions
-│   ├── admin/            # Admin dashboard pages
-│   ├── api/              # API routes
-│   ├── artists/          # Artist pages
-│   ├── b3b/              # B3B concept page
-│   ├── blog/             # Blog pages
-│   ├── events/           # Events pages
-│   ├── login/            # Authentication pages
-│   ├── register/         # User registration
-│   ├── shop/             # E-commerce pages
-│   └── layout.tsx        # Root layout
-├── components/           # React components
-│   ├── calendar/         # Calendar components
-│   ├── ui/               # UI components (shadcn/ui)
-│   └── [feature].tsx     # Feature-specific components
-├── lib/                  # Utility functions and configurations
-│   ├── database.types.ts # Supabase database types
-│   ├── supabase/         # Supabase client configurations
-│   └── utils.ts          # Helper functions
-├── public/               # Static assets
-│   ├── images/           # Image files
-│   └── videos/           # Video files
-├── scripts/              # Database scripts
-├── next.config.mjs       # Next.js configuration
-├── tailwind.config.ts    # Tailwind CSS configuration
-└── package.json          # Project dependencies
-\`\`\`
+```
+dacosta-music/
+├── app/                    # Next.js App Router
+│   ├── actions/            # Server actions
+│   ├── admin/              # Admin dashboard (protected)
+│   ├── api/                # API routes (artists, checkout, orders, webhooks, etc.)
+│   ├── artists/            # Artist listing + [slug] profile pages
+│   ├── b3b/                # B3B concept page
+│   ├── blog/               # Blog listing + [slug] post pages
+│   ├── events/             # Events listing + [id] detail pages
+│   ├── shop/               # E-commerce (products, cart, checkout, orders)
+│   ├── login/              # Authentication
+│   ├── register/           # User registration
+│   ├── privacy/            # Privacy policy
+│   ├── terms/              # Terms of service
+│   ├── layout.tsx          # Root layout
+│   └── page.tsx            # Home page
+├── components/             # React components
+│   ├── ui/                 # shadcn/ui primitives
+│   ├── calendar/           # Calendar components
+│   ├── roster-section.tsx  # Artist roster grid (home page)
+│   ├── contact-section.tsx # Contact form with artist booking
+│   ├── footer.tsx          # Site footer with artist links
+│   └── ...                 # Feature-specific components
+├── lib/                    # Utilities and configuration
+│   ├── supabase/           # Supabase client setup
+│   ├── database.types.ts   # Generated Supabase types
+│   ├── logger.ts           # Logging utility
+│   └── utils.ts            # Helper functions
+├── public/
+│   ├── images/             # Static images (artist photos, logos, SVGs)
+│   └── videos/             # Video assets
+├── scripts/                # Database migration scripts
+├── middleware.ts            # Edge middleware (proxy)
+├── next.config.mjs         # Next.js configuration
+├── tailwind.config.ts      # Tailwind CSS configuration
+└── package.json
+```
 
 ## Database Schema
 
-The application uses Supabase (PostgreSQL) with the following schema:
+The application uses Supabase (PostgreSQL) with Row Level Security enabled on all tables.
 
-### Artists Table
-\`\`\`sql
+### Core Tables
+
+```sql
+-- Artists
 CREATE TABLE artists (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   name VARCHAR(255) NOT NULL,
   slug VARCHAR(255) UNIQUE NOT NULL,
   bio TEXT,
@@ -201,264 +133,179 @@ CREATE TABLE artists (
   social_instagram TEXT,
   social_twitter TEXT,
   social_website TEXT,
-  featured BOOLEAN DEFAULT false
+  featured BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
-\`\`\`
 
-### Events Table
-\`\`\`sql
+-- Events
 CREATE TABLE events (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   title VARCHAR(255) NOT NULL,
   description TEXT,
   location VARCHAR(255) NOT NULL,
-  start_date TIMESTAMP WITH TIME ZONE NOT NULL,
-  end_date TIMESTAMP WITH TIME ZONE,
+  start_date TIMESTAMPTZ NOT NULL,
+  end_date TIMESTAMPTZ,
   image_url TEXT,
   ticket_url TEXT,
-  featured BOOLEAN DEFAULT false
+  featured BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
-\`\`\`
 
-### Event Artists (Junction Table)
-\`\`\`sql
+-- Event ↔ Artist (junction)
 CREATE TABLE event_artists (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   event_id UUID REFERENCES events(id) ON DELETE CASCADE,
   artist_id UUID REFERENCES artists(id) ON DELETE CASCADE,
   UNIQUE(event_id, artist_id)
 );
-\`\`\`
 
-### Albums Table
-\`\`\`sql
+-- Albums
 CREATE TABLE albums (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   title VARCHAR(255) NOT NULL,
   artist_id UUID REFERENCES artists(id) ON DELETE CASCADE,
   release_date DATE NOT NULL,
   cover_url TEXT,
   description TEXT,
-  featured BOOLEAN DEFAULT false
+  featured BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
-\`\`\`
 
-### Tracks Table
-\`\`\`sql
+-- Tracks
 CREATE TABLE tracks (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   title VARCHAR(255) NOT NULL,
   album_id UUID REFERENCES albums(id) ON DELETE SET NULL,
   artist_id UUID REFERENCES artists(id) ON DELETE CASCADE,
-  duration INTEGER NOT NULL, -- Duration in seconds
+  duration INTEGER NOT NULL,
   audio_url TEXT,
   track_number INTEGER,
-  featured BOOLEAN DEFAULT false
+  featured BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
-\`\`\`
 
-### Live Sets Table
-\`\`\`sql
+-- Live Sets
 CREATE TABLE live_sets (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   title VARCHAR(255) NOT NULL,
   artist_id UUID REFERENCES artists(id) ON DELETE CASCADE,
   event_id UUID REFERENCES events(id) ON DELETE SET NULL,
   date DATE NOT NULL,
-  duration INTEGER NOT NULL, -- Duration in seconds
+  duration INTEGER NOT NULL,
   audio_url TEXT,
   cover_url TEXT,
   description TEXT,
-  featured BOOLEAN DEFAULT false
+  featured BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
-\`\`\`
 
-### User Profiles Table
-\`\`\`sql
+-- User Profiles
 CREATE TABLE profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   email TEXT UNIQUE NOT NULL,
   role TEXT NOT NULL DEFAULT 'user',
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-\`\`\`
+```
 
-## Setup Instructions
+## Getting Started
 
 ### Prerequisites
 
-- Node.js 18.x or later
+- Node.js 18+
 - npm or pnpm
-- Supabase account
+- Supabase project
 
 ### Installation
 
-1. Clone the repository:
-\`\`\`bash
-git clone https://github.com/your-username/da-costa-music.git
-cd da-costa-music
-\`\`\`
-
-2. Install dependencies:
-\`\`\`bash
+```bash
+git clone https://github.com/atchutchi/dacosta-music.git
+cd dacosta-music
 npm install
-# or
-pnpm install
-\`\`\`
+```
 
-3. Set up environment variables:
-   - Create a `.env.local` file in the root directory
-   - Add the required environment variables (see [Environment Variables](#environment-variables))
+### Configuration
 
-4. Set up the database:
-   - Create a new Supabase project
-   - Run the database setup scripts from the `scripts` directory
-   - Configure Row Level Security (RLS) policies
+1. Copy `.env.local.example` to `.env.local` and fill in the values (see [Environment Variables](#environment-variables))
+2. Set up the Supabase database using the scripts in `/scripts`
+3. Configure Row Level Security policies
 
-5. Start the development server:
-\`\`\`bash
+### Development
+
+```bash
 npm run dev
-# or
-pnpm dev
-\`\`\`
+```
 
-6. Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000).
 
-### Building for Production
+### Production Build
 
-\`\`\`bash
+```bash
 npm run build
-# or
-pnpm build
-\`\`\`
+npm start
+```
 
 ## Environment Variables
 
-Create a `.env.local` file with the following variables:
+Create a `.env.local` file in the project root:
 
-\`\`\`
+```env
 # Supabase
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-SUPABASE_JWT_SECRET=your_supabase_jwt_secret
-
-# reCAPTCHA
-NEXT_PUBLIC_RECAPTCHA_SITE_KEY=your_recaptcha_public_key
-RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+SUPABASE_JWT_SECRET=
 
 # CSRF Protection
-CSRF_SECRET=your_csrf_secret_a_random_string_min_32_chars
+CSRF_SECRET=                          # Random string, min 32 chars
 
-# EmailJS for contact form
-NEXT_PUBLIC_EMAILJS_SERVICE_ID=your_emailjs_service_id
-NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=your_emailjs_template_id
-NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=your_emailjs_public_key
+# EmailJS (contact form)
+NEXT_PUBLIC_EMAILJS_SERVICE_ID=
+NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=
+NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=
 
-# Admin contact emails
-ADMIN_EMAIL=admin@yourdomain.com
-EMAIL_FROM=no-reply@yourdomain.com
-CONTACT_EMAIL=contact@yourdomain.com
-\`\`\`
+# Stripe (payments)
+STRIPE_SECRET_KEY=
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+STRIPE_WEBHOOK_SECRET=
 
-> **Important Security Note:** Never commit your `.env.local` file or any file containing sensitive credentials to your repository. Make sure `setup-env.js` and all environment files are included in your `.gitignore` file.
+# PayPal (payments)
+PAYPAL_CLIENT_ID=
+PAYPAL_SECRET=
+NEXT_PUBLIC_PAYPAL_CLIENT_ID=
 
-## Security Considerations
+# Admin
+ADMIN_EMAIL=
+EMAIL_FROM=
+CONTACT_EMAIL=
+```
 
-The current implementation includes several security measures:
+> **Security:** Never commit `.env.local` or files containing credentials. Ensure all env files are in `.gitignore`.
 
-1. **Authentication**: Supabase Auth for user authentication
-2. **Row Level Security (RLS)**: Database-level security policies
-3. **Form Validation**: Client-side and server-side validation
-4. **reCAPTCHA**: Protection against bots for the contact form
-5. **Environment Variables**: Sensitive information stored in environment variables
-6. **CSRF Protection**: Implementation of CSRF tokens for forms
+## Security
 
-## Proposed Improvements
+The application implements multiple layers of security:
 
-### Security Improvements
+- **CSRF Protection** — Double-submit cookie pattern on all form submissions
+- **Content Security Policy** — Nonce-based CSP headers via middleware
+- **Rate Limiting** — Applied to API routes and email endpoints
+- **Input Validation** — Zod schemas on all API routes; client-side validation on forms
+- **Authentication** — Supabase Auth with protected admin routes
+- **Database Security** — Row Level Security (RLS) enabled on all 21 public tables
+- **SVG Sanitisation** — Guard against malicious SVG uploads
+- **Webhook Verification** — Stripe and PayPal webhook signature validation
 
-1. **Content Security Policy (CSP)**: Implement a strict CSP to prevent XSS attacks
-2. **Rate Limiting**: Add rate limiting to API routes to prevent abuse
-3. **Input Sanitization**: Add server-side input sanitization for all user inputs
-4. **Two-Factor Authentication (2FA)**: Add 2FA for admin users
-5. **Audit Logging**: Implement comprehensive logging for security events
-6. **Regular Security Audits**: Schedule regular security audits of the codebase
+## Deployment
 
-### Functional Improvements
+The project is optimised for **Vercel**:
 
-1. **SEO Optimization**:
-   - Add dynamic meta tags for better SEO
-   - Implement structured data (JSON-LD)
-   - Create a sitemap.xml and robots.txt
-
-2. **Performance Optimization**:
-   - Implement image optimization with Next.js Image component
-   - Add lazy loading for images and components
-   - Implement code splitting and bundle optimization
-
-3. **Enhanced User Experience**:
-   - Add dark/light mode toggle
-   - Implement skeleton loading states
-   - Add more animations and transitions
-   - Improve accessibility (ARIA attributes, keyboard navigation)
-
-4. **Content Management**:
-   - Develop a full-featured CMS for content editors
-   - Add rich text editing for blog posts
-   - Implement media library for images and videos
-
-5. **E-commerce Enhancements**:
-   - Integrate a payment gateway (Stripe, PayPal)
-   - Add order management system
-   - Implement inventory management
-   - Add product reviews and ratings
-
-6. **Social Features**:
-   - Add social sharing buttons
-   - Implement comments on blog posts
-   - Create user profiles for fans
-   - Add event RSVPs and reminders
-
-7. **Analytics and Insights**:
-   - Integrate Google Analytics or Plausible
-   - Add custom dashboards for artist performance
-   - Implement event tracking
-   - Create automated reports
-
-8. **Multilingual Support**:
-   - Add internationalization (i18n)
-   - Implement language switcher
-   - Create translated content
-
-9. **Mobile App**:
-   - Develop a companion mobile app using React Native
-   - Add push notifications for events and releases
-   - Implement offline access to purchased music
-
-10. **API Improvements**:
-    - Create a comprehensive API documentation
-    - Implement API versioning
-    - Add GraphQL support for more flexible queries
+1. Connect the GitHub repository to Vercel
+2. Configure environment variables in the Vercel dashboard
+3. Deploy — Vercel automatically detects Next.js and applies optimal settings
 
 ## License
 
-This project is proprietary and confidential. All rights reserved by Da Costa Music.
+This project is proprietary and confidential. All rights reserved.
 
-© 2023-2024 Da Costa Music
-
-## Storage Structure
-
-The application uses Supabase Storage with the following bucket organization:
-
-- **images**: General purpose images
-- **artists**: Artist photos and logos
-- **events**: Event images and promotional materials
-- **videos**: Video content and media files
-
-Each bucket is configured with appropriate permissions and public access settings through Supabase's Row Level Security (RLS) policies.
+© 2023–2025 Da Costa Music | Developed by [ABIPTOM](https://www.abiptom.gw)

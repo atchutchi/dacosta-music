@@ -307,6 +307,59 @@ export default function ArtistPage() {
             "/images/djdjeff_3.svg",
           ],
         },
+        {
+          id: "breyth",
+          name: "BREYTH",
+          logo: "/images/logo_breyth_white.svg",
+          image: "/images/breyth-photo-main.svg",
+          secondaryImage: "/images/breyth-photo-page1.svg",
+          bio: "An established name in the Afro House scene, BREYTH blends charisma and raw energy into every set. Born in Angola, forged in Lisbon — his sound reaches over 27 million streams across all digital platforms.",
+          longBio:
+            "BREYTH is already an established name in the Afro House scene, which is making waves across the world. Cledy Figueira was born in Angola, but it is in Lisbon that he became BREYTH.\n\nSupported by Shimza, Major Lazer, Seth Troxler, DJEFF, Pablo Fierro and Alex Wann, tracks such as 12 Bells, Vuwani, Retroxpetiva, Bansuri, Indra, Tundavala, Supernova and Alegria have reached a combined total of 27 million streams across all digital platforms.\n\nAs a DJ he adds charisma and great vibes to each show, filling it with personal edits, unreleased music and versions that you'll never hear anywhere else. Touring across Europe, South America, Asia and Africa at big festivals such as Brunch Electronik, RFM Somnii and Spektrum, and clubs like Viertel Klub Basel, Lux Lisbon, Blue Marlin Ibiza and Egg London. Recently created the 'Atmosphere' concept — starting with a monthly radio show and producing events throughout the year in venues that fit the concept.",
+          genres: ["Afro House", "Electronic", "Deep House"],
+          stats: {
+            streams: "27M",
+            followers: {},
+          },
+          discography: {
+            tracks: [
+              { title: "12 Bells" },
+              { title: "Vuwani" },
+              { title: "Retroxpetiva" },
+              { title: "Bansuri" },
+              { title: "Indra" },
+              { title: "Tundavala" },
+              { title: "Supernova" },
+              { title: "Alegria" },
+            ],
+          },
+          liveSets: [
+            { title: "ZAZU | ADE 2024", url: "http://surl.li/ujxnux" },
+            { title: "TUARI | Portugal", url: "http://surl.li/dygdhi" },
+            { title: "Baile Sagrado Festival | Colombia", url: "http://surl.li/xagwyr" },
+          ],
+          socials: {
+            instagram: "https://www.instagram.com/breyth_/",
+            twitter: "https://www.instagram.com/breyth_/",
+            facebook: "https://www.facebook.com/breythofficial",
+            youtube: "https://www.youtube.com/@breyth",
+            spotify: "https://open.spotify.com/artist/1ASRVb6tSo0Pdb6yEKZhmx",
+            website: "https://open.spotify.com/artist/1ASRVb6tSo0Pdb6yEKZhmx",
+          },
+          tracks: [
+            { id: "breyth-track1", title: "12 Bells", duration: "7:12" },
+            { id: "breyth-track2", title: "Vuwani", duration: "6:45" },
+            { id: "breyth-track3", title: "Retroxpetiva", duration: "7:30" },
+            { id: "breyth-track4", title: "Bansuri", duration: "6:18" },
+            { id: "breyth-track5", title: "Tundavala", duration: "7:55" },
+          ],
+          gallery: [
+            "/images/breyth-photo-page1.svg",
+            "/images/breyth-photo-page2.svg",
+            "/images/breyth-photo-page3.svg",
+            "/images/breyth-photo-page4.svg",
+          ],
+        },
       ]
 
       const foundArtist = artists.find((a) => a.id === artistSlug)
@@ -391,15 +444,7 @@ export default function ArtistPage() {
           {/* Artist Logo */}
           <div className="mb-10 flex justify-center h-16 relative">
             <Image
-              src={
-                params.slug === "caiiro"
-                  ? "/images/caiiro-logo-branco.webp"
-                  : params.slug === "dacapo"
-                    ? "/images/logo-branco-da-capo.webp"
-                    : params.slug === "djeff"
-                      ? "/images/logo_djeff.svg"
-                      : "/images/enoo_napa_logotipo.svg"
-              }
+              src={artist.logo || "/placeholder.svg"}
               alt={`${artist.name} logo`}
               width={250}
               height={64}
