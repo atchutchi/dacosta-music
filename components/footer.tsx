@@ -149,8 +149,24 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-white/60 text-sm">© {new Date().getFullYear()} Da Costa Music. All rights reserved.</p>
+        <div className="border-t border-white/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col gap-1 text-center md:text-left">
+            <p className="text-white/60 text-sm">
+              © {new Date().getFullYear()} Da Costa Music. All rights reserved.
+            </p>
+            <p className="text-white/50 text-xs">
+              Developed by{" "}
+              <Link
+                href="https://www.abiptom.gw"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white/60 hover:text-white underline-offset-2 hover:underline"
+              >
+                Abiptom (www.abiptom.gw)
+              </Link>
+              .
+            </p>
+          </div>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link href="/privacy" className="text-white/60 hover:text-white text-sm">
               Privacy Policy
