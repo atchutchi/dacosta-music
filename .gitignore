@@ -87,6 +87,10 @@ DEPLOY_*.md
 MIGRACAO_*.md
 SEGURANCA.md
 SEGURANCA_*.md
+
+# Auditoria e prompts de correção só para uso local (não publicar no GitHub)
+SECURITY_AUDIT_*.docx
+SECURITY_FIX_PROMPT.md
 OTIMIZACOES_*.md
 IMPLEMENTACOES_*.md
 ATUALIZACOES_*.md
