@@ -162,7 +162,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="text-white/60 hover:text-white underline-offset-2 hover:underline"
               >
-                Abiptom (www.abiptom.gw)
+                ABIPTOM
               </Link>
               .
             </p>
