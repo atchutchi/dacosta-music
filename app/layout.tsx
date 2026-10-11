@@ -8,6 +8,7 @@ import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { Toaster } from "@/components/ui/toaster"
 import { CsrfBootstrap } from "@/components/csrf-bootstrap"
+import MarketingConsent from "@/components/marketing-consent"
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -90,14 +91,6 @@ export default async function RootLayout({
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
         
-        {/* Spotify Embed Script */}
-        <script
-          async
-          src="https://open.spotify.com/embed/iframe-api/v1"
-          charSet="utf-8"
-          nonce={nonce}
-        />
-        
         {/* Preconnect to important origins */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -147,11 +140,12 @@ export default async function RootLayout({
       </head>
       <body className={`${inter.className} ${inter.variable} min-h-screen bg-black text-white antialiased`}>
         <CsrfBootstrap />
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem nonce={nonce}>
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
           <Toaster />
+          <MarketingConsent nonce={nonce} />
         </ThemeProvider>
       </body>
     </html>

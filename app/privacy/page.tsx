@@ -86,6 +86,16 @@ export default function PrivacyPage() {
               We implement appropriate technical and organizational measures to protect your personal data against unauthorized access, alteration, disclosure, or destruction.
             </p>
           </section>
+
+          <section>
+            <h2 className="text-xl font-semibold mb-3">Marketing Cookies and Meta Pixel</h2>
+            <p>
+              Essential browser storage keeps your shopping cart available. If you accept marketing cookies, we load the Meta Pixel to measure page visits and advertising performance on Facebook and Instagram. Meta receives browsing data, including page URLs, browser information and cookie identifiers. We do not load the Pixel before you accept marketing cookies.
+            </p>
+            <p className="mt-3">
+              You can reject marketing cookies or withdraw your consent through Cookie settings in the website footer. Rejecting marketing cookies does not prevent you from using the shop.
+            </p>
+          </section>
           
           <section>
             <h2 className="text-xl font-semibold mb-3">7. Data Retention</h2>
@@ -119,4 +129,4 @@ export default function PrivacyPage() {
       </div>
     </div>
   );
-} 
+}

@@ -1,3 +1,5 @@
+'use client'
+
 import Link from "next/link"
 import Image from "next/image"
 import { Instagram, Facebook, Youtube } from "lucide-react"
@@ -173,6 +175,9 @@ export default function Footer() {
             </p>
           </div>
           <div className="flex space-x-6 mt-4 md:mt-0">
+            <button type="button" onClick={() => window.dispatchEvent(new Event('dacosta-cookie-settings'))} className="text-white/60 hover:text-white text-sm">
+              Cookie settings
+            </button>
             <Link href="/privacy" className="text-white/60 hover:text-white text-sm">
               Privacy Policy
             </Link>

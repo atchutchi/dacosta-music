@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { motion } from "framer-motion"
 import { useToast } from "@/components/ui/use-toast"
 import type { Product } from "@/lib/database.types"
+import { availableStock } from "@/lib/product-selection"
 
 export default function ShopPage() {
   const { toast } = useToast()
@@ -44,7 +45,7 @@ export default function ShopPage() {
           page: currentPage.toString(),
           limit: '12',
           sortBy: sortBy === 'featured' ? 'featured' : sortBy === 'newest' ? 'created_at' : 'price',
-          sortOrder: sortBy === 'price-high' ? 'desc' : 'asc'
+          sortOrder: sortBy === 'price-low' ? 'asc' : 'desc'
         })
         
         if (activeCategory !== 'all') {
@@ -63,7 +64,7 @@ export default function ShopPage() {
           const initialSelections: any = {}
           list.forEach((product: Product) => {
             initialSelections[product.id] = {
-              size: product.sizes && product.sizes.length > 0 ? product.sizes[0] : undefined,
+              size: product.sizes?.find(size => availableStock(product, size) > 0) ?? product.sizes?.[0],
               color: product.colors && product.colors.length > 0 ? product.colors[0] : undefined,
               quantity: 1
             }
@@ -130,6 +131,12 @@ export default function ShopPage() {
 
     const savedCart = localStorage.getItem('dacosta-cart')
     const cart = savedCart ? JSON.parse(savedCart) : []
+    const alreadyInCart = cart.filter((item: any) => item.productId === productId && (!product.stock_by_size || item.size === selection.size))
+      .reduce((total: number, item: any) => total + item.quantity, 0)
+    if (selection.quantity + alreadyInCart > availableStock(product, selection.size)) {
+      toast({ title: 'Stock limit reached', description: 'Please reduce the quantity for this size.', variant: 'destructive' })
+      return
+    }
     
     // Verificar se item já existe com mesma size/color
     const existingIndex = cart.findIndex((item: any) => 
@@ -169,7 +176,8 @@ export default function ShopPage() {
       ...productSelections,
       [productId]: {
         ...productSelections[productId],
-        [field]: value
+        [field]: value,
+        ...(field === 'size' ? { quantity: 1 } : {})
       }
     })
   }
@@ -179,7 +187,7 @@ export default function ShopPage() {
     if (!product) return
     
     const currentQty = productSelections[productId]?.quantity || 1
-    if (currentQty < product.stock_quantity) {
+    if (currentQty < availableStock(product, productSelections[productId]?.size)) {
       updateProductSelection(productId, 'quantity', currentQty + 1)
     }
   }
@@ -407,6 +415,7 @@ export default function ShopPage() {
                             <span className="text-sm text-white/60">{product.category}</span>
                             <span className="font-semibold">€{product.price.toFixed(2)}</span>
                           </div>
+                          {product.slug === 'akhet-ade-2026-limited-edition-oversized-t-shirt' && <p className="mb-3 text-xs text-white/60">VAT included</p>}
                           <Link href={`/shop/product/${product.slug}`}>
                             <h3 className="text-lg font-bold mb-3 hover:text-white/80 transition-colors cursor-pointer">{product.name}</h3>
                           </Link>
@@ -426,7 +435,7 @@ export default function ShopPage() {
                                     </SelectTrigger>
                                     <SelectContent className="bg-gray-900 border-white/20">
                                       {product.sizes.map((size) => (
-                                        <SelectItem key={size} value={size}>{size}</SelectItem>
+                                        <SelectItem key={size} value={size} disabled={availableStock(product, size) === 0}>{size}</SelectItem>
                                       ))}
                                     </SelectContent>
                                   </Select>
@@ -477,7 +486,7 @@ export default function ShopPage() {
                                 size="sm"
                                 className="h-7 w-7 p-0 border-white/20"
                                 onClick={() => incrementQuantity(product.id)}
-                                disabled={productSelections[product.id]?.quantity >= product.stock_quantity}
+                                disabled={productSelections[product.id]?.quantity >= availableStock(product, productSelections[product.id]?.size)}
                               >
                                 <Plus className="h-3 w-3" />
                               </Button>
@@ -487,10 +496,10 @@ export default function ShopPage() {
                           <Button
                             className="w-full bg-white text-black hover:bg-white/90"
                             onClick={() => addToCart(product.id)}
-                            disabled={product.stock_quantity === 0}
+                            disabled={availableStock(product, productSelections[product.id]?.size) === 0}
                           >
                             <ShoppingBag className="mr-2 h-4 w-4" />
-                            {product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
+                            {availableStock(product, productSelections[product.id]?.size) === 0 ? 'Out of Stock' : 'Add to Cart'}
                           </Button>
                         </CardContent>
                       </Card>

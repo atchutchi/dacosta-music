@@ -1,11 +1,10 @@
-const CACHE_NAME = 'da-costa-music-v3'
-const STATIC_CACHE = 'da-costa-static-v3'
-const IMAGES_CACHE = 'da-costa-images-v3'
-const API_CACHE = 'da-costa-api-v2'
+const CACHE_NAME = 'da-costa-music-v4'
+const STATIC_CACHE = 'da-costa-static-v4'
+const IMAGES_CACHE = 'da-costa-images-v4'
+const API_CACHE = 'da-costa-api-v4'
 
 // Critical resources to cache immediately
 const CRITICAL_ASSETS = [
-  '/',
   '/images/whiteICON.png',
   '/images/club-view.webp',
   '/manifest.json'
@@ -63,8 +62,9 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // Skip service worker for admin routes
-  if (url.pathname.startsWith('/admin/')) {
+  // Tokens, encomendas, stock e páginas com nonce devem vir sempre da rede.
+  if (url.pathname.startsWith('/api/') || url.pathname === '/admin' || url.pathname.startsWith('/admin/') ||
+      request.mode === 'navigate' || request.headers.get('rsc') === '1') {
     return
   }
 
@@ -75,14 +75,7 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // Strategy 2: Network First for API calls
-  if (url.pathname.includes('/api/')) {
-    event.respondWith(networkFirst(request, API_CACHE))
-    return
-  }
-
-  // Strategy 3: Stale While Revalidate for pages
-  event.respondWith(staleWhileRevalidate(request))
+  // Restantes pedidos usam a rede sem guardar dados pessoais em cache.
 })
 
 // Cache First Strategy - for static assets
@@ -228,4 +221,4 @@ async function cleanupOldCacheEntries() {
       }
     }
   }
-} 
+}

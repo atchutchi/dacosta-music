@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Resend } from 'resend';
-import { getOrderConfirmationEmailHTML, getAdminNewOrderEmailHTML, OrderEmailData } from '@/lib/email-templates';
+import type { OrderEmailData } from '@/lib/email-templates';
+import { sendOrderConfirmation } from '@/lib/send-order-confirmation';
 import { assertEmailApiAuthorized } from '@/lib/internal-api-auth';
 import { orderEmailPayloadSchema } from '@/lib/validations/email';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,39 +19,9 @@ export async function POST(request: NextRequest) {
     }
     const body = parsed.data as OrderEmailData;
 
-    // Email do remetente (deve ser verificado no Resend)
-    const fromEmail = process.env.EMAIL_FROM || 'bookings@dacosta-music.com';
-    
-    // Emails dos admins (múltiplos destinatários via variáveis de ambiente)
-    const adminEmailsString = process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'admin@dacosta-music.com';
-    const adminEmails = adminEmailsString.split(',').map(email => email.trim()).filter(Boolean);
-
     try {
-      // 1. Enviar email de confirmação ao cliente
-      const customerEmail = await resend.emails.send({
-        from: `Da Costa Music <${fromEmail}>`,
-        to: [body.customerEmail],
-        subject: `Order Confirmation - #${body.orderNumber}`,
-        html: getOrderConfirmationEmailHTML(body),
-      });
-
-      console.log('✅ Customer email sent:', customerEmail.data?.id);
-
-      // 2. Enviar notificação para múltiplos admins
-      const adminEmailResult = await resend.emails.send({
-        from: `Da Costa Music Shop <${fromEmail}>`,
-        to: adminEmails,
-        subject: `🔔 New Order #${body.orderNumber}`,
-        html: getAdminNewOrderEmailHTML(body),
-      });
-
-      console.log('✅ Admin emails sent to:', adminEmails.join(', '), '| ID:', adminEmailResult.data?.id);
-
-      return NextResponse.json({ 
-        success: true,
-        customerEmailId: customerEmail.data?.id,
-        adminEmailId: adminEmailResult.data?.id
-      });
+      const result = await sendOrderConfirmation(body);
+      return NextResponse.json({ success: true, ...result });
     } catch (emailError: any) {
       console.error('Resend email error:', emailError);
       

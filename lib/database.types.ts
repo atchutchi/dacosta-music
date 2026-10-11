@@ -17,6 +17,7 @@ export interface Database {
           sizes: string[] | null
           colors: string[] | null
           stock_quantity: number
+          stock_by_size?: Record<string, number> | null
           low_stock_threshold: number
           image_urls: string[] | null
           featured: boolean
@@ -35,6 +36,7 @@ export interface Database {
           sizes?: string[] | null
           colors?: string[] | null
           stock_quantity?: number
+          stock_by_size?: Record<string, number> | null
           low_stock_threshold?: number
           image_urls?: string[] | null
           featured?: boolean
@@ -53,6 +55,7 @@ export interface Database {
           sizes?: string[] | null
           colors?: string[] | null
           stock_quantity?: number
+          stock_by_size?: Record<string, number> | null
           low_stock_threshold?: number
           image_urls?: string[] | null
           featured?: boolean
@@ -143,6 +146,9 @@ export interface Database {
           payment_method: string | null
           payment_status: string
           payment_intent_id: string | null
+          stripe_checkout_session_id?: string | null
+          stock_reserved?: boolean
+          notification_sent_at?: string | null
           paypal_order_id: string | null
           shipping_method: string | null
           tracking_number: string | null
@@ -175,6 +181,9 @@ export interface Database {
           payment_method?: string | null
           payment_status?: string
           payment_intent_id?: string | null
+          stripe_checkout_session_id?: string | null
+          stock_reserved?: boolean
+          notification_sent_at?: string | null
           paypal_order_id?: string | null
           shipping_method?: string | null
           tracking_number?: string | null
@@ -207,6 +216,9 @@ export interface Database {
           payment_method?: string | null
           payment_status?: string
           payment_intent_id?: string | null
+          stripe_checkout_session_id?: string | null
+          stock_reserved?: boolean
+          notification_sent_at?: string | null
           paypal_order_id?: string | null
           shipping_method?: string | null
           tracking_number?: string | null
@@ -525,6 +537,18 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      apply_order_stock: {
+        Args: { p_order_id: string; p_action: string }
+        Returns: boolean
+      }
+      complete_stripe_order: {
+        Args: { p_order_id: string; p_session_id: string; p_payment_intent: string; p_amount_total: number; p_currency: string }
+        Returns: boolean
+      }
+      cancel_stripe_order: {
+        Args: { p_order_id: string; p_session_id: string }
+        Returns: boolean
+      }
       generate_order_number: {
         Args: Record<string, never>
         Returns: string

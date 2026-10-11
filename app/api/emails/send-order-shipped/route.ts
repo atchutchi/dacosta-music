@@ -4,12 +4,12 @@ import { getOrderShippedEmailHTML, OrderEmailData } from '@/lib/email-templates'
 import { assertEmailApiAuthorized } from '@/lib/internal-api-auth';
 import { orderEmailPayloadSchema } from '@/lib/validations/email';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(request: NextRequest) {
   try {
     const authError = await assertEmailApiAuthorized(request);
     if (authError) return authError;
+    if (!process.env.RESEND_API_KEY) return NextResponse.json({ error: 'Order email is not configured' }, { status: 503 });
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     const raw = await request.json();
     const parsed = orderEmailPayloadSchema.safeParse(raw);
