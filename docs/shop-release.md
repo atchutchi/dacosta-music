@@ -1,6 +1,6 @@
 # Loja DaCosta: preparação de lançamento
 
-Estado em 11 de Outubro de 2026. As alterações ainda não foram publicadas em produção.
+Estado em 11 de Outubro de 2026. Catálogo e alterações publicados em produção. Pagamentos reais indisponíveis enquanto a nova conta Stripe não estiver activada e ligada.
 
 ## Configuração confirmada pelo titular
 
@@ -18,19 +18,21 @@ Produto criado no catálogo de teste: prod_VQ9J4Lx4qswBiG. Preço avulso de 25 E
 
 Adicionada também a Caiiro London 2025 Limited Edition Oversized T-Shirt, com preço avulso de 40 EUR, imagem existente e referência caiiro_london_2025_eur. Produto de teste prod_VQ9ZZ0hfWKU5cV e preço price_1UPJFz3ZXz9VpYdevZS8aM85. O catálogo Stripe de teste tem os dois modelos conhecidos.
 
-A loja pública www.dacosta-music.com/shop, o endpoint público com limite de 100 produtos e a consulta à base de dados com permissões de serviço foram verificados em 11 de Outubro de 2026. Apenas a Caiiro London aparece no catálogo remoto, com 95 unidades totais e tamanhos S, M, L e XL. O titular afirma que todos os artigos da loja devem constar na Stripe. Está pendente identificar eventuais outros modelos ausentes do catálogo consultado.
+A loja pública www.dacosta-music.com/shop e ambos os domínios www.dacosta-music.com e dacosta-music.com foram verificados em 11 de Outubro de 2026. O catálogo público contém a AKHET por 25 EUR com as 100 unidades confirmadas e a Caiiro London por 40 EUR, com as 95 unidades existentes e tamanhos S, M, L e XL. Não foram encontrados outros produtos na base de dados antes desta publicação.
 
-A autorização da ferramenta oficial Stripe CLI está pendente de confirmação do titular. O email foi verificado. A conta de produção acct_1UPIsMKjA5qPbVh5 está na activação, com o tipo de empresa ainda por confirmar. Identidade, dados fiscais, conta bancária de recebimento e aceitação de termos devem ser concluídos pelo titular directamente na Stripe. Não foram utilizados dados de cartão.
+A autorização da ferramenta oficial Stripe CLI está pendente de confirmação do titular. O email foi verificado. A conta de produção acct_1UPIsMKjA5qPbVh5 está na activação. O titular confirmou sociedade por quotas com vários sócios, sede fiscal e IBAN empresarial. Nome jurídico, nome comercial, NIF, sede e telefone foram guardados na Stripe. A página actual pede a identificação pessoal do representante com poderes para assinar pela empresa. Identidade e submissão final de abertura da conta devem ser concluídas pelo titular directamente na Stripe. Não foram utilizados dados de cartão.
 
 O checkout do site usa preços do catálogo local, recalculados no servidor. A reserva de stock ocorre antes de abrir a sessão de pagamento. A sessão expira após 30 minutos. A confirmação de pagamento valida a sessão, o montante e a moeda. Eventos repetidos não descontam stock novamente. O serviço de email usa identificadores de idempotência e uma marca de confirmação enviada.
 
 ## Validação e publicação
 
-Testes de regras de preços, inventário PostgreSQL, emails com transporte simulado, consentimento Meta e configuração de segurança. Compilação de produção e TypeScript verificados localmente. O roteiro scripts/qa-shop-browser.js usa produtos e resposta de checkout simulados no browser. Não cria encomendas, pagamentos nem emails na base de dados de produção.
+27 testes de regras de preços, inventário PostgreSQL, emails com transporte simulado, consentimento Meta e configuração de segurança passaram. Compilação de produção e TypeScript verificados localmente e na Vercel. O roteiro scripts/qa-shop-browser.js usa produtos e resposta de checkout simulados no browser. O roteiro scripts/qa-public-shop.js confirmou os dois produtos, subtotal de 65 EUR, fotografias, stock por tamanho, visualização móvel e consentimento Meta no domínio público, sem erros de execução no navegador. Nenhum destes roteiros cria encomendas, pagamentos ou emails na base de dados de produção.
 
-Ainda é necessário testar uma compra no ambiente Stripe de teste, os webhooks assinados e a entrega de emails. A migração scripts/migrations/2026-10-11-merch-inventory.sql foi testada num PostgreSQL descartável e aplicada à base de dados remota. O produto AKHET foi registado como rascunho inactivo, id 8b8b5fce-fc7d-4b8e-883a-5304c90983aa, com as 100 unidades por tamanho. A Caiiro mantém as 95 unidades existentes.
+Ainda é necessário testar uma compra no ambiente Stripe de teste, os webhooks assinados e a entrega de emails. A migração scripts/migrations/2026-10-11-merch-inventory.sql foi testada num PostgreSQL descartável e aplicada à base de dados remota. O produto AKHET, id 8b8b5fce-fc7d-4b8e-883a-5304c90983aa, foi activado após a publicação dos seus ficheiros. A Caiiro mantém as 95 unidades existentes.
 
 Projecto Vercel: prj_0b6xpNnxvP3J2fSkfr6i1NNMlMWC, equipa atchutchis-projects. A ferramenta Vercel está ligada ao projecto correcto. vercel.json fixa a instalação com npm ci para usar o package-lock.json actualizado.
+
+Publicação de produção dpl_HqcvfJzdWjjkYpb28Nbzh43zAmht, https://dacosta-music-cvatko243-atchutchis-projects.vercel.app, criada a partir do commit c88fabf. Preparada sem mudar o domínio, verificada e promovida em 11 de Outubro de 2026. Publicação anterior dpl_GVrYjV1obTD37Jc7xnT3CzSavSCa preservada como referência de recuperação. A migração de base de dados é aditiva e não remove produtos ou encomendas existentes.
 
 Antes do lançamento, configurar as chaves da nova conta no ambiente correspondente, STRIPE_WEBHOOK_SECRET, ORDER_NOTIFICATION_EMAIL e NEXT_PUBLIC_SITE_URL. Chaves secretas devem ser introduzidas em ficheiros ignorados ou nas variáveis da Vercel. Não devem ser colocadas na documentação, no Git ou em mensagens.
 
