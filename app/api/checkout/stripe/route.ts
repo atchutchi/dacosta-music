@@ -70,6 +70,7 @@ export async function POST(request: NextRequest) {
     })
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'], line_items: lineItems, mode: 'payment',
+      adaptive_pricing: { enabled: false },
       expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
       success_url: `${siteUrl}/shop/order/${order.id}?success=true`, cancel_url: `${siteUrl}/shop/checkout?cancelled=true`,
       customer_email: customer.email, billing_address_collection: 'auto',
