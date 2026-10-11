@@ -4,6 +4,15 @@ async (page) => {
   const caiiro = 'Caiiro London 2025 Limited Edition Oversized T-Shirt'
   const errors = [], failures = []
   const check = (ok, message) => { if (!ok) failures.push(message) }
+  const settleProduct = async name => {
+    await page.getByRole('heading',{name,exact:true}).scrollIntoViewIfNeeded()
+    await page.waitForFunction(productName => {
+      let el = Array.from(document.querySelectorAll('h3')).find(e=>e.textContent === productName)
+      if(!el)return false
+      while(el){if(Number(getComputedStyle(el).opacity)<0.99)return false;el=el.parentElement}
+      return Array.from(document.querySelectorAll('main img')).every(img=>img.complete && img.naturalWidth>0)
+    }, name)
+  }
   page.on('pageerror', error => errors.push(error.message))
   let pixelRequests = 0, paymentRequests = 0
   await page.route('https://connect.facebook.net/**', route => { pixelRequests++; return route.fulfill({contentType:'application/javascript',body:''}) })
@@ -18,6 +27,8 @@ async (page) => {
   await page.getByRole('button',{name:'Reject marketing cookies',exact:true}).click()
   check(pixelRequests === 0,'Pixel loaded before consent')
   check(await page.getByText('VAT included',{exact:true}).isVisible(),'VAT missing from shop')
+  await settleProduct(caiiro)
+  await page.evaluate(()=>window.scrollTo(0,0))
   await page.screenshot({path:'output/public-shop-desktop.png',fullPage:true})
   await page.goto(`${base}/shop/product/akhet-ade-2026-limited-edition-oversized-t-shirt`)
   await page.getByRole('heading',{name:akhet,exact:true}).waitFor()
@@ -44,6 +55,9 @@ async (page) => {
   await page.setViewportSize({width:390,height:844})
   await page.getByRole('heading',{name:akhet,exact:true}).waitFor()
   check(await page.evaluate(()=>document.documentElement.scrollWidth <= window.innerWidth),'Mobile shop overflow')
+  await settleProduct(caiiro)
+  await settleProduct(akhet)
+  await page.evaluate(()=>window.scrollTo(0,0))
   await page.screenshot({path:'output/public-shop-mobile.png',fullPage:true})
   await page.setViewportSize({width:1440,height:1080})
   await page.getByRole('button',{name:'Cookie settings',exact:true}).click()
