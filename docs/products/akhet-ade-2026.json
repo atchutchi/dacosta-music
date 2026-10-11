@@ -1,0 +1,14 @@
+{
+  "name": "AKHET ADE 2026 Limited Edition Oversized T-Shirt",
+  "slug": "akhet-ade-2026-limited-edition-oversized-t-shirt",
+  "price": 25,
+  "category": "Apparel",
+  "description": "The AKHET ADE 2026 Limited Edition Oversized T-Shirt marks AKHET's debut showcase at Elementstraat Warehouse, Amsterdam, on 23 October 2026. Designed for those on the floor, this piece pairs premium construction with the strict visual identity of the brand.\n\nCrafted from 100% heavyweight cotton, the oversized black silhouette delivers a structured, minimal fit built to last. High-definition screen printing on the back highlights exclusive artwork created specifically for the ADE release, balanced by clean, understated branding across the chest.\n\nProduced as a strict limited run for ADE. Available exclusively online and on site at the warehouse.",
+  "sizes": ["XS", "S", "M", "L", "XL"],
+  "colors": ["Black"],
+  "stock_quantity": 100,
+  "stock_by_size": {"XS": 10, "S": 10, "M": 30, "L": 30, "XL": 20},
+  "image_urls": ["/images/merch/akhet-ade-2026-front.webp", "/images/merch/akhet-ade-2026-back.webp"],
+  "featured": true,
+  "active": false
+}

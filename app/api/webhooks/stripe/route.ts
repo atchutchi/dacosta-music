@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createServiceClient } from '@/lib/supabase/service';
-import { buildInternalEmailHeaders } from '@/lib/internal-api-auth';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-10-29.clover',
-});
-
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+import { sendOrderConfirmation } from '@/lib/send-order-confirmation';
+import { getStripeClient } from '@/lib/stripe';
 
 export async function POST(request: NextRequest) {
+  if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
+    return NextResponse.json({ error: 'Webhook is not configured' }, { status: 503 });
+  }
+  const stripe = getStripeClient();
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   try {
     const body = await request.text();
     const signature = request.headers.get('stripe-signature');
@@ -33,6 +33,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const configuredLiveMode = /^(sk|rk)_live_/.test(process.env.STRIPE_SECRET_KEY!);
+    if (event.livemode !== configuredLiveMode || (process.env.VERCEL_ENV === 'production' && !event.livemode)) {
+      return NextResponse.json({ error: 'Stripe environment mismatch' }, { status: 400 });
+    }
+
     const supabase = createServiceClient();
 
     // Handle the event
@@ -40,57 +45,15 @@ export async function POST(request: NextRequest) {
       case 'checkout.session.completed':
         const session = event.data.object as Stripe.Checkout.Session;
         
-        if (session.metadata?.order_id) {
-          // Update order status to paid
-          await supabase
-            .from('orders')
-            .update({
-              status: 'paid',
-              payment_status: 'paid',
-              payment_intent_id: session.payment_intent as string
-            })
-            .eq('id', session.metadata.order_id);
-
-          // Deduct stock for order items
-          const { data: orderItems } = await supabase
-            .from('order_items')
-            .select('*')
-            .eq('order_id', session.metadata.order_id);
-
-          if (orderItems) {
-            for (const item of orderItems) {
-              if (item.product_id) {
-                // Get current stock
-                const { data: product } = await supabase
-                  .from('products')
-                  .select('stock_quantity')
-                  .eq('id', item.product_id)
-                  .single();
-
-                if (product) {
-                  const newStock = product.stock_quantity - item.quantity;
-                  
-                  // Update stock
-                  await supabase
-                    .from('products')
-                    .update({ stock_quantity: newStock })
-                    .eq('id', item.product_id);
-
-                  // Record in stock history
-                  await supabase
-                    .from('stock_history')
-                    .insert({
-                      product_id: item.product_id,
-                      change_type: 'sale',
-                      quantity_change: -item.quantity,
-                      quantity_after: newStock,
-                      reference_id: session.metadata.order_id,
-                      notes: `Sold via order ${session.metadata.order_number}`
-                    });
-                }
-              }
-            }
+        if (session.metadata?.order_id && session.payment_status === 'paid') {
+          if (session.amount_total === null || !session.currency || typeof session.payment_intent !== 'string') {
+            throw new Error('Incomplete Stripe payment data');
           }
+          const { data: changed, error: confirmationError } = await supabase.rpc('complete_stripe_order', {
+            p_order_id: session.metadata.order_id, p_session_id: session.id,
+            p_payment_intent: session.payment_intent, p_amount_total: session.amount_total, p_currency: session.currency,
+          });
+          if (confirmationError) throw confirmationError;
 
           console.log(`Order ${session.metadata.order_id} marked as paid`);
           
@@ -107,6 +70,7 @@ export async function POST(request: NextRequest) {
               .single();
 
             if (orderDetails) {
+              if (orderDetails.notification_sent_at) break;
               // Preparar dados para o email
               const emailData = {
                 orderNumber: orderDetails.order_number,
@@ -116,9 +80,9 @@ export async function POST(request: NextRequest) {
                   name: item.product_name,
                   quantity: item.quantity,
                   price: item.unit_price,
-                  size: item.size,
-                  color: item.color,
-                  image: item.product_image_url
+                  size: item.size || undefined,
+                  color: item.color || undefined,
+                  image: item.product_image_url || undefined
                 })),
                 subtotal: orderDetails.subtotal,
                 shipping: orderDetails.shipping_cost,
@@ -126,44 +90,23 @@ export async function POST(request: NextRequest) {
                 shippingAddress: {
                   name: orderDetails.shipping_name,
                   addressLine1: orderDetails.shipping_address_line1,
-                  addressLine2: orderDetails.shipping_address_line2,
+                  addressLine2: orderDetails.shipping_address_line2 || undefined,
                   city: orderDetails.shipping_city,
-                  state: orderDetails.shipping_state,
+                  state: orderDetails.shipping_state || undefined,
                   country: orderDetails.shipping_country,
                   postalCode: orderDetails.shipping_postal_code
                 }
               };
 
-              // Enviar emails de forma assíncrona
-              console.log('📧 Preparando envio de emails para:', orderDetails.shipping_email);
-              
-              try {
-                const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dacosta-music.com"
-                const emailHeaders = buildInternalEmailHeaders()
-                if (!emailHeaders) {
-                  console.error("INTERNAL_API_SECRET not set; cannot call send-order-confirmation")
-                } else {
-                  const emailResponse = await fetch(`${baseUrl}/api/emails/send-order-confirmation`, {
-                    method: "POST",
-                    headers: emailHeaders,
-                    body: JSON.stringify(emailData),
-                  })
-
-                  const emailResult = await emailResponse.json()
-
-                  if (emailResponse.ok) {
-                    console.log("✅ Emails enviados com sucesso:", emailResult)
-                  } else {
-                    console.error("❌ Erro ao enviar emails:", emailResult)
-                  }
-                }
-              } catch (fetchError) {
-                console.error('❌ Erro no fetch de emails:', fetchError);
-              }
-            }
+              await sendOrderConfirmation(emailData);
+              const { error: notificationError } = await supabase.from('orders')
+                .update({ notification_sent_at: new Date().toISOString() }).eq('id', session.metadata.order_id);
+              if (notificationError) throw notificationError;
+            } else throw new Error('Unable to load paid order for notification');
           } catch (emailError) {
             console.error('❌ Error preparing confirmation email:', emailError);
-            // Não falhar o webhook se o email falhar
+            // Repetir sem descontar stock novamente. O Resend evita duplicados durante 24 horas.
+            throw emailError;
           }
         }
         break;
@@ -172,13 +115,10 @@ export async function POST(request: NextRequest) {
         const expiredSession = event.data.object as Stripe.Checkout.Session;
         
         if (expiredSession.metadata?.order_id) {
-          await supabase
-            .from('orders')
-            .update({
-              status: 'cancelled',
-              payment_status: 'failed'
-            })
-            .eq('id', expiredSession.metadata.order_id);
+          const { error: cancellationError } = await supabase.rpc('cancel_stripe_order', {
+            p_order_id: expiredSession.metadata.order_id, p_session_id: expiredSession.id,
+          });
+          if (cancellationError) throw cancellationError;
 
           console.log(`Order ${expiredSession.metadata.order_id} cancelled - session expired`);
         }
@@ -187,24 +127,8 @@ export async function POST(request: NextRequest) {
       case 'payment_intent.payment_failed':
         const failedPayment = event.data.object as Stripe.PaymentIntent;
         
-        // Find order by payment intent
-        const { data: failedOrder } = await supabase
-          .from('orders')
-          .select('id')
-          .eq('payment_intent_id', failedPayment.id)
-          .single();
-
-        if (failedOrder) {
-          await supabase
-            .from('orders')
-            .update({
-              status: 'cancelled',
-              payment_status: 'failed'
-            })
-            .eq('id', failedOrder.id);
-
-          console.log(`Order ${failedOrder.id} payment failed`);
-        }
+        // Uma tentativa recusada pode ser repetida na mesma sessão. Só a expiração liberta a reserva.
+        console.log(`Stripe payment attempt failed: ${failedPayment.id}`);
         break;
 
       default:

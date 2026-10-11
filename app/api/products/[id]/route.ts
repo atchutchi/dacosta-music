@@ -95,6 +95,7 @@ export async function PUT(
     if (body.sizes !== undefined) updateData.sizes = body.sizes;
     if (body.colors !== undefined) updateData.colors = body.colors;
     if (body.stock_quantity !== undefined) updateData.stock_quantity = body.stock_quantity;
+    if (body.stock_by_size !== undefined) updateData.stock_by_size = body.stock_by_size;
     if (body.low_stock_threshold !== undefined) updateData.low_stock_threshold = body.low_stock_threshold;
     if (body.image_urls !== undefined) updateData.image_urls = body.image_urls;
     if (body.featured !== undefined) updateData.featured = body.featured;

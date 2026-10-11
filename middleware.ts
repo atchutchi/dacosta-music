@@ -92,20 +92,8 @@ export async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set("x-nonce", nonce)
 
-  const response = NextResponse.next({
-    request: { headers: requestHeaders },
-  })
-
-  applySecurityHeadersBase(response)
-
-  if (protocol === "https:" || process.env.NODE_ENV === "production") {
-    response.headers.set(
-      "Strict-Transport-Security",
-      "max-age=31536000; includeSubDomains; preload"
-    )
-  }
-
   const scriptSrc = [
+    ...(process.env.NODE_ENV === 'development' ? ["'unsafe-eval'"] : []),
     `'nonce-${nonce}'`,
     "'strict-dynamic'",
     "https://www.youtube.com",
@@ -114,10 +102,12 @@ export async function middleware(request: NextRequest) {
     "https://open.spotify.com",
     "https://www.google.com",
     "https://www.gstatic.com",
+    "https://connect.facebook.net",
   ].join(" ")
 
   const connectSrc = [
     "'self'",
+    ...(process.env.NODE_ENV === 'development' ? ["ws:"] : []),
     SUPABASE_HOST,
     SUPABASE_WSS,
     "https://*.stripe.com",
@@ -125,6 +115,8 @@ export async function middleware(request: NextRequest) {
     "https://www.google.com",
     "https://open.spotify.com",
     "https://*.spotify.com",
+    "https://connect.facebook.net",
+    "https://www.facebook.com",
   ].join(" ")
 
   const csp = [
@@ -144,6 +136,13 @@ export async function middleware(request: NextRequest) {
     "manifest-src 'self'",
   ].join("; ")
 
+  // O Next.js lê a política no pedido para aplicar o mesmo nonce aos scripts internos.
+  requestHeaders.set('Content-Security-Policy', csp)
+  const response = NextResponse.next({ request: { headers: requestHeaders } })
+  applySecurityHeadersBase(response)
+  if (protocol === "https:" || process.env.NODE_ENV === "production") {
+    response.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload")
+  }
   response.headers.set("Content-Security-Policy", csp)
 
   const url = request.nextUrl.pathname
@@ -155,7 +154,7 @@ export async function middleware(request: NextRequest) {
   } else if (url.includes("/_next/image/")) {
     response.headers.set("Cache-Control", "public, max-age=86400, stale-while-revalidate=604800")
   } else {
-    response.headers.set("Cache-Control", "public, max-age=3600, stale-while-revalidate=86400")
+    response.headers.set("Cache-Control", "private, no-store")
   }
 
   if (url === "/") {
@@ -171,7 +170,8 @@ export async function middleware(request: NextRequest) {
     response.headers.set("Link", resourceHints.join(", "))
   }
 
-  response.headers.set("Vary", "Accept-Encoding")
+  const existingVary = response.headers.get('Vary')
+  response.headers.set("Vary", existingVary ? `${existingVary}, Accept-Encoding` : "Accept-Encoding")
 
   return response
 }

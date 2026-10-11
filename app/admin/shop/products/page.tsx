@@ -37,6 +37,7 @@ export default function AdminProductsPage() {
     sizes: [] as string[],
     colors: [] as string[],
     stock_quantity: "",
+    stock_by_size: null as Record<string, number> | null,
     low_stock_threshold: "5",
     image_urls: [] as string[],
     featured: false,
@@ -99,6 +100,7 @@ export default function AdminProductsPage() {
         sizes: product.sizes || [],
         colors: product.colors || [],
         stock_quantity: product.stock_quantity.toString(),
+        stock_by_size: product.stock_by_size || null,
         low_stock_threshold: product.low_stock_threshold.toString(),
         image_urls: product.image_urls || [],
         featured: product.featured,
@@ -116,6 +118,7 @@ export default function AdminProductsPage() {
         sizes: [],
         colors: [],
         stock_quantity: "",
+        stock_by_size: null,
         low_stock_threshold: "5",
         image_urls: [],
         featured: false,
@@ -213,7 +216,7 @@ export default function AdminProductsPage() {
       const payload = {
         ...formData,
         price: parseFloat(formData.price),
-        stock_quantity: parseInt(formData.stock_quantity),
+        stock_quantity: formData.stock_by_size ? Object.values(formData.stock_by_size).reduce((sum, value) => sum + value, 0) : parseInt(formData.stock_quantity),
         low_stock_threshold: parseInt(formData.low_stock_threshold),
         image_urls: imageUrls,
         artist_id: formData.artist_id && formData.artist_id !== 'none' ? formData.artist_id : null
@@ -287,6 +290,7 @@ export default function AdminProductsPage() {
   }
 
   const toggleSize = (size: string) => {
+    if (formData.stock_by_size) return
     setFormData({
       ...formData,
       sizes: formData.sizes.includes(size)
@@ -511,6 +515,7 @@ export default function AdminProductsPage() {
                       type="button"
                       size="sm"
                       variant={formData.sizes.includes(size) ? "default" : "outline"}
+                      disabled={formData.stock_by_size !== null}
                       onClick={() => toggleSize(size)}
                     >
                       {size}
@@ -543,6 +548,7 @@ export default function AdminProductsPage() {
                     id="stock"
                     type="number"
                     value={formData.stock_quantity}
+                    disabled={formData.stock_by_size !== null}
                     onChange={(e) => setFormData({ ...formData, stock_quantity: e.target.value })}
                     className="bg-gray-900 border-white/20"
                     required
@@ -615,6 +621,24 @@ export default function AdminProductsPage() {
                     </Button>
                   </div>
                 </div>
+                {formData.stock_by_size && (
+                  <div className="space-y-3">
+                    <Label>Available stock by size</Label>
+                    <p className="text-sm text-white/60">Update the available quantities after sales at the event. The total is calculated from these sizes.</p>
+                    <div className="grid grid-cols-3 gap-3">
+                      {Object.keys(formData.stock_by_size).map(size => (
+                        <div key={size}>
+                          <Label htmlFor={`stock-${size}`}>{size}</Label>
+                          <Input id={`stock-${size}`} type="number" min="0" step="1" value={formData.stock_by_size?.[size] ?? 0}
+                            onChange={event => {
+                              const stock = { ...formData.stock_by_size, [size]: Math.max(0, Number(event.target.value)) }
+                              setFormData({ ...formData, stock_by_size: stock, stock_quantity: Object.values(stock).reduce((sum, value) => sum + value, 0).toString() })
+                            }} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 {formData.image_urls.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
                     {formData.image_urls.map((url, index) => (

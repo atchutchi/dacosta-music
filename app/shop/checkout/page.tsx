@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { motion } from "framer-motion"
 import type { Product, CartItem as CartItemType } from "@/lib/database.types"
 import { withCsrfHeaders } from "@/lib/fetch-with-csrf"
+import { calculateShipping as shippingPrice, SHIPPING_COUNTRIES } from "@/lib/checkout-pricing"
 
 // Lista completa de indicativos telefônicos
 const COUNTRY_CODES = [
@@ -127,6 +128,7 @@ export default function CheckoutPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [shippingMethod, setShippingMethod] = useState<'ctt' | 'dhl'>('ctt')
   const [userChoice, setUserChoice] = useState<'guest' | 'login' | null>(null)
   
   // Form data
@@ -201,55 +203,9 @@ export default function CheckoutPage() {
     }, 0)
   }
 
-  // Calculate shipping based on country and shipping method
-  const calculateShippingByCountry = (country: string, method: string): number => {
-    // If no country selected, return 0
-    if (!country) return 0
+  const calculateShippingByCountry = (country: string, _method: string) => shippingPrice(country, calculateSubtotal())
 
-    const countryUpper = country.toUpperCase()
-    
-    // Portugal Continental
-    if (countryUpper === 'PT' || countryUpper === 'PORTUGAL') {
-      return 5.50
-    }
-    
-    // EU Countries (excluding Portugal and UK)
-    const euCountries = [
-      'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 
-      'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'RO', 'SK', 'SI', 'ES', 'SE'
-    ]
-    if (euCountries.includes(countryUpper)) {
-      return 12.50
-    }
-    
-    // United Kingdom
-    if (countryUpper === 'GB' || countryUpper === 'UK' || countryUpper === 'UNITED KINGDOM') {
-      // Basic service: €10-15, using average €12.50
-      return 12.50
-    }
-    
-    // Africa (South Africa, etc.)
-    const africaCountries = ['ZA', 'SOUTH AFRICA', 'EG', 'EGYPT', 'KE', 'KENYA', 'NG', 'NIGERIA']
-    if (africaCountries.includes(countryUpper)) {
-      // Realistic cost: €30-40+, using €35 as average
-      return 35.00
-    }
-    
-    // Rest of World (Non-EU)
-    return 25.50
-  }
-
-  const calculateShipping = () => {
-    const subtotal = calculateSubtotal()
-    
-    // Free shipping for orders over €100 in Portugal
-    if (subtotal > 100 && (formData.country.toUpperCase() === 'PT' || formData.country.toUpperCase() === 'PORTUGAL')) {
-      return 0
-    }
-    
-    // Calculate shipping based on country only
-    return calculateShippingByCountry(formData.country, 'manual')
-  }
+  const calculateShipping = () => shippingPrice(formData.country, calculateSubtotal())
 
   const calculateTotal = () => {
     return calculateSubtotal() + calculateShipping()
@@ -303,7 +259,7 @@ export default function CheckoutPage() {
           country: formData.country,
           postalCode: formData.postalCode
         },
-        shippingMethod: 'manual',
+        shippingMethod,
         paymentMethod: formData.paymentMethod,
         subtotal: calculateSubtotal(),
         shippingCost: calculateShipping(),
@@ -326,7 +282,7 @@ export default function CheckoutPage() {
       if (data.url) {
         window.location.href = data.url
       } else {
-        throw new Error('Failed to create checkout session')
+        throw new Error(data.error || 'Failed to create checkout session')
       }
     } catch (error: any) {
       console.error('Payment error:', error)
@@ -613,13 +569,16 @@ export default function CheckoutPage() {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <Label htmlFor="country">Country *</Label>
-                          <Input
+                          <select
                             id="country"
                             value={formData.country}
                             onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                             className="bg-gray-900 border-white/20"
                             required
-                          />
+                          >
+                            <option value="">Select country</option>
+                            {SHIPPING_COUNTRIES.map(country => <option key={country.code} value={country.code}>{country.name}</option>)}
+                          </select>
                         </div>
                         
                         <div>
@@ -638,7 +597,7 @@ export default function CheckoutPage() {
                       
                       <div className="p-4 bg-white/5 rounded-lg">
                         <div className="flex justify-between items-center mb-2">
-                          <Label className="text-base">Standard Shipping</Label>
+                          <Label className="text-base">Shipping with {shippingMethod === 'ctt' ? 'CTT' : 'DHL'}</Label>
                           <span className="font-semibold">
                             {formData.country && calculateSubtotal() > 100 && (formData.country.toUpperCase() === 'PT' || formData.country.toUpperCase() === 'PORTUGAL') 
                               ? 'FREE' 
@@ -647,6 +606,10 @@ export default function CheckoutPage() {
                                 : 'Select country first'}
                           </span>
                         </div>
+                        <RadioGroup value={shippingMethod} onValueChange={value => setShippingMethod(value as 'ctt' | 'dhl')} className="my-4 flex gap-6">
+                          <div className="flex items-center gap-2"><RadioGroupItem id="shipping-ctt" value="ctt" /><Label htmlFor="shipping-ctt">CTT</Label></div>
+                          <div className="flex items-center gap-2"><RadioGroupItem id="shipping-dhl" value="dhl" /><Label htmlFor="shipping-dhl">DHL</Label></div>
+                        </RadioGroup>
                         <p className="text-sm text-white/60">
                           Shipping cost calculated based on delivery country
                         </p>
@@ -776,7 +739,7 @@ export default function CheckoutPage() {
                   <div className="flex justify-between text-sm">
                     <span className="text-white/70">Shipping</span>
                     <span>
-                      {calculateShipping() === 0 ? (
+                      {!formData.country ? 'Calculated at checkout' : calculateShipping() === 0 ? (
                         <span className="text-green-400">FREE</span>
                       ) : (
                         `€${calculateShipping().toFixed(2)}`

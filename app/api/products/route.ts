@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
     const featured = searchParams.get('featured');
     const activeParam = searchParams.get('active');
     const search = searchParams.get('search');
+    const slug = searchParams.get('slug');
     const ids = searchParams.get('ids'); // Para buscar múltiplos IDs (cart/checkout)
     
     // Paginação
@@ -67,6 +68,7 @@ export async function GET(request: NextRequest) {
     if (category) {
       query = query.eq('category', category);
     }
+    if (slug) query = query.eq('slug', slug);
     
     if (artistId) {
       query = query.eq('artist_id', artistId);
@@ -173,6 +175,7 @@ export async function POST(request: NextRequest) {
         sizes: body.sizes ?? null,
         colors: body.colors ?? null,
         stock_quantity: body.stock_quantity ?? 0,
+        ...(body.stock_by_size !== undefined ? { stock_by_size: body.stock_by_size } : {}),
         low_stock_threshold: body.low_stock_threshold ?? 5,
         image_urls: body.image_urls ?? null,
         featured: body.featured ?? false,

@@ -41,7 +41,6 @@ const nextConfig = {
   turbopack: {},
   
   env: {
-    CSRF_SECRET: process.env.CSRF_SECRET,
     NEXT_PUBLIC_BIT_APP_ID_CAIRO: process.env.NEXT_PUBLIC_BIT_APP_ID_CAIRO,
   },
 }

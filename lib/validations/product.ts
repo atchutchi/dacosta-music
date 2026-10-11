@@ -12,6 +12,7 @@ export const productCreateSchema = z.object({
   sizes: z.array(z.string()).nullable().optional(),
   colors: z.array(z.string()).nullable().optional(),
   stock_quantity: z.coerce.number().int().min(0).optional(),
+  stock_by_size: z.record(z.string().min(1).max(10), z.number().int().min(0)).nullable().optional(),
   low_stock_threshold: z.coerce.number().int().min(0).optional(),
   image_urls: z.array(z.string().max(2000)).nullable().optional(),
   featured: z.boolean().optional(),

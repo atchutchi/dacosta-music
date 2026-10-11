@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { useToast } from '@/components/ui/use-toast'
 import { motion } from 'framer-motion'
 import type { Product } from '@/lib/database.types'
+import { availableStock, findProductBySlug } from '@/lib/product-selection'
 
 export default function ProductDetailPage() {
   const params = useParams()
@@ -28,17 +29,20 @@ export default function ProductDetailPage() {
   }, [slug])
 
   const fetchProduct = async () => {
+    setIsLoading(true)
+    setProduct(null)
     try {
-      const response = await fetch(`/api/products?search=${slug}`)
+      const response = await fetch(`/api/products?slug=${encodeURIComponent(slug)}`)
       const data = await response.json()
       
       if (data.products && data.products.length > 0) {
-        const foundProduct = data.products.find((p: Product) => p.slug === slug) || data.products[0]
+        const foundProduct = findProductBySlug(data.products, slug)
+        if (!foundProduct) return
         setProduct(foundProduct)
         
         // Set default selections
         if (foundProduct.sizes && foundProduct.sizes.length > 0) {
-          setSelectedSize(foundProduct.sizes[0])
+          setSelectedSize(foundProduct.sizes.find(size => availableStock(foundProduct, size) > 0) ?? foundProduct.sizes[0])
         }
         if (foundProduct.colors && foundProduct.colors.length > 0) {
           setSelectedColor(foundProduct.colors[0])
@@ -58,6 +62,13 @@ export default function ProductDetailPage() {
 
   const addToCart = () => {
     if (!product) return
+    const savedItems = JSON.parse(localStorage.getItem('dacosta-cart') || '[]')
+    const alreadyInCart = savedItems.filter((item: any) => item.productId === product.id && (!product.stock_by_size || item.size === selectedSize))
+      .reduce((total: number, item: any) => total + item.quantity, 0)
+    if (quantity < 1 || quantity + alreadyInCart > availableStock(product, selectedSize)) {
+      toast({ title: 'Stock limit reached', description: 'Please reduce the quantity for this size.', variant: 'destructive' })
+      return false
+    }
 
     const cartItem = {
       id: product.id,
@@ -90,6 +101,7 @@ export default function ProductDetailPage() {
       title: "Added to cart",
       description: `${product.name} added to your cart`,
     })
+    return true
   }
 
   const nextImage = () => {
@@ -127,6 +139,8 @@ export default function ProductDetailPage() {
     )
   }
 
+  const selectedStock = availableStock(product, selectedSize)
+
   return (
     <div className="min-h-screen pt-24 pb-20">
       <div className="container mx-auto px-4">
@@ -155,12 +169,14 @@ export default function ProductDetailPage() {
                 {product.image_urls && product.image_urls.length > 1 && (
                   <>
                     <button
+                      aria-label="Previous product image"
                       onClick={prevImage}
                       className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full"
                     >
                       <ChevronLeft className="h-6 w-6" />
                     </button>
                     <button
+                      aria-label="Next product image"
                       onClick={nextImage}
                       className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full"
                     >
@@ -201,6 +217,7 @@ export default function ProductDetailPage() {
                 <span className="text-3xl font-bold">€{product.price.toFixed(2)}</span>
                 <span className="text-sm text-white/60">{product.category}</span>
               </div>
+              {product.slug === 'akhet-ade-2026-limited-edition-oversized-t-shirt' && <p className="mt-2 text-sm text-white/70">VAT included</p>}
             </div>
 
             {product.description && (
@@ -218,7 +235,8 @@ export default function ProductDetailPage() {
                   {product.sizes.map((size) => (
                     <button
                       key={size}
-                      onClick={() => setSelectedSize(size)}
+                      onClick={() => { setSelectedSize(size); setQuantity(1) }}
+                      disabled={availableStock(product, size) === 0}
                       className={`px-4 py-2 rounded-md border transition-all ${
                         selectedSize === size
                           ? 'bg-white text-black border-white'
@@ -266,26 +284,26 @@ export default function ProductDetailPage() {
                 </button>
                 <span className="text-xl font-semibold w-12 text-center">{quantity}</span>
                 <button
-                  onClick={() => setQuantity(Math.min(product.stock_quantity, quantity + 1))}
+                  onClick={() => setQuantity(Math.min(selectedStock, quantity + 1))}
                   className="px-4 py-2 border border-white/20 rounded-md hover:bg-white/10"
-                  disabled={quantity >= product.stock_quantity}
+                  disabled={quantity >= selectedStock}
                 >
                   +
                 </button>
                 <span className="text-sm text-white/60">
-                  {product.stock_quantity} available
+                  {selectedStock} available
                 </span>
               </div>
             </div>
 
             {/* Stock Info */}
-            {product.stock_quantity < product.low_stock_threshold && product.stock_quantity > 0 && (
+            {selectedStock < product.low_stock_threshold && selectedStock > 0 && (
               <div className="bg-yellow-500/10 border border-yellow-500/50 text-yellow-300 px-4 py-2 rounded-md text-sm">
-                Only {product.stock_quantity} left in stock!
+                Only {selectedStock} left in stock!
               </div>
             )}
 
-            {product.stock_quantity === 0 && (
+            {selectedStock === 0 && (
               <div className="bg-red-500/10 border border-red-500/50 text-red-300 px-4 py-2 rounded-md text-sm">
                 Out of stock
               </div>
@@ -296,10 +314,10 @@ export default function ProductDetailPage() {
               <Button
                 className="w-full bg-white text-black hover:bg-white/90 text-lg py-6"
                 onClick={addToCart}
-                disabled={product.stock_quantity === 0}
+                disabled={selectedStock === 0}
               >
                 <ShoppingBag className="mr-2 h-5 w-5" />
-                {product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
+                {selectedStock === 0 ? 'Out of Stock' : 'Add to Cart'}
               </Button>
 
               <div className="flex gap-2">
@@ -307,10 +325,9 @@ export default function ProductDetailPage() {
                   variant="outline"
                   className="flex-1 border-white/20"
                   onClick={() => {
-                    addToCart()
-                    router.push('/shop/cart')
+                    if (addToCart()) router.push('/shop/cart')
                   }}
-                  disabled={product.stock_quantity === 0}
+                  disabled={selectedStock === 0}
                 >
                   Buy Now
                 </Button>
@@ -319,9 +336,9 @@ export default function ProductDetailPage() {
 
             {/* Additional Info */}
             <div className="border-t border-white/10 pt-6 space-y-2 text-sm text-white/60">
-              <p>✓ Free shipping on orders over €100</p>
+              <p>✓ Free shipping on orders over €100 in Portugal</p>
               <p>✓ Secure payment with Stripe</p>
-              <p>✓ Ships worldwide</p>
+              <p>✓ Shipping with CTT or DHL to supported destinations</p>
             </div>
           </div>
         </div>
