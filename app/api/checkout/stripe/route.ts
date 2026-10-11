@@ -3,12 +3,10 @@ import { createServiceClient } from '@/lib/supabase/service'
 import { checkoutBodySchema } from '@/lib/validations/order'
 import { quoteCheckout } from '@/lib/checkout-pricing'
 import { getStripeClient } from '@/lib/stripe'
+import { stripeCheckoutAvailable } from '@/lib/stripe-checkout-availability'
 
 export async function POST(request: NextRequest) {
-  if (!process.env.STRIPE_SECRET_KEY || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    return NextResponse.json({ error: 'Checkout is temporarily unavailable' }, { status: 503 })
-  }
-  if (process.env.VERCEL_ENV === 'production' && !/^(sk|rk)_live_/.test(process.env.STRIPE_SECRET_KEY)) {
+  if (!stripeCheckoutAvailable(process.env.STRIPE_SECRET_KEY, process.env.VERCEL_ENV) || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
     return NextResponse.json({ error: 'Checkout is temporarily unavailable' }, { status: 503 })
   }
   const stripe = getStripeClient()

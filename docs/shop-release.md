@@ -20,7 +20,7 @@ Adicionada também a Caiiro London 2025 Limited Edition Oversized T-Shirt, com p
 
 A loja pública www.dacosta-music.com/shop, o endpoint público com limite de 100 produtos e a consulta à base de dados com permissões de serviço foram verificados em 11 de Outubro de 2026. Apenas a Caiiro London aparece no catálogo remoto, com 95 unidades totais e tamanhos S, M, L e XL. O titular afirma que todos os artigos da loja devem constar na Stripe. Está pendente identificar eventuais outros modelos ausentes do catálogo consultado.
 
-A autorização da ferramenta oficial Stripe CLI está pendente de confirmação do titular. A conta de produção exige primeiro a verificação do email. Identidade, conta bancária de recebimento e aceitação de termos devem ser concluídas pelo titular directamente na Stripe. Não foram utilizados dados de cartão.
+A autorização da ferramenta oficial Stripe CLI está pendente de confirmação do titular. O email foi verificado. A conta de produção acct_1UPIsMKjA5qPbVh5 está na activação, com o tipo de empresa ainda por confirmar. Identidade, dados fiscais, conta bancária de recebimento e aceitação de termos devem ser concluídos pelo titular directamente na Stripe. Não foram utilizados dados de cartão.
 
 O checkout do site usa preços do catálogo local, recalculados no servidor. A reserva de stock ocorre antes de abrir a sessão de pagamento. A sessão expira após 30 minutos. A confirmação de pagamento valida a sessão, o montante e a moeda. Eventos repetidos não descontam stock novamente. O serviço de email usa identificadores de idempotência e uma marca de confirmação enviada.
 
@@ -28,13 +28,13 @@ O checkout do site usa preços do catálogo local, recalculados no servidor. A r
 
 Testes de regras de preços, inventário PostgreSQL, emails com transporte simulado, consentimento Meta e configuração de segurança. Compilação de produção e TypeScript verificados localmente. O roteiro scripts/qa-shop-browser.js usa produtos e resposta de checkout simulados no browser. Não cria encomendas, pagamentos nem emails na base de dados de produção.
 
-Ainda é necessário testar uma compra no ambiente Stripe de teste, os webhooks assinados e a entrega de emails. A migração scripts/migrations/2026-10-11-merch-inventory.sql foi testada num PostgreSQL descartável e ainda não foi aplicada à base de dados remota. O produto AKHET está preparado como rascunho inactivo para registo no catálogo remoto.
+Ainda é necessário testar uma compra no ambiente Stripe de teste, os webhooks assinados e a entrega de emails. A migração scripts/migrations/2026-10-11-merch-inventory.sql foi testada num PostgreSQL descartável e aplicada à base de dados remota. O produto AKHET foi registado como rascunho inactivo, id 8b8b5fce-fc7d-4b8e-883a-5304c90983aa, com as 100 unidades por tamanho. A Caiiro mantém as 95 unidades existentes.
 
 Projecto Vercel: prj_0b6xpNnxvP3J2fSkfr6i1NNMlMWC, equipa atchutchis-projects. A ferramenta Vercel está ligada ao projecto correcto. vercel.json fixa a instalação com npm ci para usar o package-lock.json actualizado.
 
 Antes do lançamento, configurar as chaves da nova conta no ambiente correspondente, STRIPE_WEBHOOK_SECRET, ORDER_NOTIFICATION_EMAIL e NEXT_PUBLIC_SITE_URL. Chaves secretas devem ser introduzidas em ficheiros ignorados ou nas variáveis da Vercel. Não devem ser colocadas na documentação, no Git ou em mensagens.
 
-O webhook deve subscrever checkout.session.completed, checkout.session.expired e payment_intent.payment_failed em /api/webhooks/stripe. O endpoint de produção rejeita eventos de teste. A publicação deve manter o produto inactivo até validar a conta de produção e a ligação de pagamento.
+O webhook deve subscrever checkout.session.completed, checkout.session.expired e payment_intent.payment_failed em /api/webhooks/stripe. O endpoint de produção rejeita eventos de teste. O catálogo pode ser publicado antes da activação Stripe, com aviso e botão de pagamento desactivado. A configuração actual usa uma chave de teste da conta antiga acct_1T4FJUJHAEjy8Yxk. O site rejeita essa chave em produção para impedir que um pagamento simulado seja apresentado como venda real.
 
 O titular ainda não confirmou se as 100 unidades são partilhadas entre o site e o evento. O painel preparado permite actualizar quantidades por tamanho após vendas presenciais. Essa rotina precisa de ser definida antes das vendas simultâneas no evento.
 

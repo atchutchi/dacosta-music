@@ -128,8 +128,16 @@ export default function CheckoutPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [paymentsAvailable, setPaymentsAvailable] = useState<boolean | null>(null)
   const [shippingMethod, setShippingMethod] = useState<'ctt' | 'dhl'>('ctt')
   const [userChoice, setUserChoice] = useState<'guest' | 'login' | null>(null)
+
+  useEffect(() => {
+    fetch('/api/checkout/status', {cache:'no-store'})
+      .then(response => response.ok ? response.json() : {available:false})
+      .then(data => setPaymentsAvailable(data.available === true))
+      .catch(() => setPaymentsAvailable(false))
+  }, [])
   
   // Form data
   const [formData, setFormData] = useState({
@@ -235,6 +243,7 @@ export default function CheckoutPage() {
   }
 
   const handlePayment = async () => {
+    if (!paymentsAvailable) return
     setIsSubmitting(true)
     
     try {
@@ -315,6 +324,13 @@ export default function CheckoutPage() {
           </Link>
           <h1 className="text-3xl md:text-4xl font-bold mt-2">Checkout</h1>
         </div>
+
+        {paymentsAvailable === false && (
+          <div role="status" className="mb-8 rounded-lg border border-white/20 bg-white/5 p-5">
+            <p className="font-semibold">Online payments will be available soon</p>
+            <p className="mt-2 text-sm text-white/70">You can keep the items in your cart and return to complete your purchase once payments are available.</p>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Checkout Form */}
@@ -683,7 +699,7 @@ export default function CheckoutPage() {
                       </Button>
                       <Button
                         onClick={handlePayment}
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || paymentsAvailable !== true}
                         className="flex-1 bg-white text-black hover:bg-white/90"
                       >
                         {isSubmitting ? 'Processing...' : 'Place Order'}

@@ -29,8 +29,9 @@ function applySecurityHeadersBase(response: NextResponse) {
 
 function isPublicApiGet(request: NextRequest): boolean {
   if (request.method.toUpperCase() !== "GET") return false
+  if (request.cookies.getAll().some(cookie => cookie.name.startsWith('sb-'))) return false
   const path = request.nextUrl.pathname
-  if (path === "/api/products") return true
+  if (path === "/api/products") return !['all','false'].includes(request.nextUrl.searchParams.get('active') ?? '')
   if (path.startsWith("/api/products/")) return true
   if (path === "/api/events") return true
   if (path.startsWith("/api/events/")) return true

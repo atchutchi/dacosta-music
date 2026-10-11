@@ -13,6 +13,7 @@ async (page) => {
   const check = (value, message) => { if (!value) failures.push(message) }
   page.on('pageerror', error => errors.push(error.message))
   let pixelRequests = 0, checkoutPayload
+  await page.route('**/api/checkout/status', route => route.fulfill({json:{available:true}}))
   await page.route('**/api/products*', route => {
     const slug = new URL(route.request().url()).searchParams.get('slug')
     const products = !slug || slug === product.slug ? [product] : []
