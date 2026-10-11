@@ -16,6 +16,10 @@ Conta de teste: acct_1UPIsc3ZXz9VpYde, Área restrita de Bergh Lopes da Costa Ld
 
 Produto criado no catálogo de teste: prod_VQ9J4Lx4qswBiG. Preço avulso de 25 EUR: price_1UPJ1M3ZXz9VpYdePwvtXmOB. Referência do preço: akhet_ade_2026_eur. A Stripe limita a descrição do catálogo a 500 caracteres. A descrição completa fornecida permanece no ficheiro docs/products/akhet-ade-2026.json.
 
+Adicionada também a Caiiro London 2025 Limited Edition Oversized T-Shirt, com preço avulso de 40 EUR, imagem existente e referência caiiro_london_2025_eur. Produto de teste prod_VQ9ZZ0hfWKU5cV e preço price_1UPJFz3ZXz9VpYdevZS8aM85. O catálogo Stripe de teste tem os dois modelos conhecidos.
+
+A loja pública www.dacosta-music.com/shop, o endpoint público com limite de 100 produtos e a consulta à base de dados com permissões de serviço foram verificados em 11 de Outubro de 2026. Apenas a Caiiro London aparece no catálogo remoto, com 95 unidades totais e tamanhos S, M, L e XL. O titular afirma que todos os artigos da loja devem constar na Stripe. Está pendente identificar eventuais outros modelos ausentes do catálogo consultado.
+
 A autorização da ferramenta oficial Stripe CLI está pendente de confirmação do titular. A conta de produção exige primeiro a verificação do email. Identidade, conta bancária de recebimento e aceitação de termos devem ser concluídas pelo titular directamente na Stripe. Não foram utilizados dados de cartão.
 
 O checkout do site usa preços do catálogo local, recalculados no servidor. A reserva de stock ocorre antes de abrir a sessão de pagamento. A sessão expira após 30 minutos. A confirmação de pagamento valida a sessão, o montante e a moeda. Eventos repetidos não descontam stock novamente. O serviço de email usa identificadores de idempotência e uma marca de confirmação enviada.
