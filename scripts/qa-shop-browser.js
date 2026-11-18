@@ -61,16 +61,15 @@ async (page) => {
   await page.locator('#city').fill('Test city')
   await page.locator('#postalCode').fill('1000-001')
   await page.locator('#country').selectOption('PT')
-  check((await page.getByText('€5.50',{exact:true}).count()) > 0,'Portugal postage incorrect')
-  await page.getByRole('radio',{name:'DHL',exact:true}).check()
-  check(await page.getByText('Shipping with DHL',{exact:true}).isVisible(),'DHL selection missing')
+  check((await page.getByText('€20.95',{exact:true}).count()) > 0,'Portugal postage incorrect')
+  check(await page.getByText('Tracked shipping',{exact:true}).isVisible(),'Tracked shipping missing')
   await page.locator('#country').selectOption('NL')
-  check((await page.getByText('€12.50',{exact:true}).count()) > 0,'Netherlands postage incorrect')
+  check((await page.getByText('€11.95',{exact:true}).count()) > 0,'Netherlands postage incorrect')
   await page.locator('#country').selectOption('PT')
   await page.getByRole('button',{name:'Continue to Payment',exact:true}).click()
   await page.getByRole('button',{name:'Place Order',exact:true}).click()
   await page.getByText('QA: no payment or order was created',{exact:true}).waitFor()
-  check(checkoutPayload.shippingMethod === 'dhl' && checkoutPayload.total === 30.5,'Checkout payload incorrect')
+  check(checkoutPayload.shippingMethod === 'standard' && checkoutPayload.total === 45.95,'Checkout payload incorrect')
   await page.getByRole('button',{name:'Cookie settings',exact:true}).click()
   const pixelResponse = page.waitForResponse('https://connect.facebook.net/en_US/fbevents.js')
   await page.getByRole('button',{name:'Accept marketing cookies',exact:true}).click()
@@ -86,5 +85,5 @@ async (page) => {
   check(await page.getByRole('heading',{name:'Product Not Found',exact:true}).isVisible(),'Invalid slug showed another product')
   check(errors.length === 0,`Browser errors: ${errors.join(', ')}`)
   if (failures.length) throw new Error(failures.join('; '))
-  return {passed:true, pixelRequests, scenarios:['VAT','images','mobile','stock by size','cart limit','CTT/DHL shipping','checkout error','Pixel consent','exact product slug'], checkout:'intercepted, no external order/payment/email'}
+  return {passed:true, pixelRequests, scenarios:['VAT','images','mobile','stock by size','cart limit','tracked shipping','checkout error','Pixel consent','exact product slug'], checkout:'intercepted, no external order/payment/email'}
 }

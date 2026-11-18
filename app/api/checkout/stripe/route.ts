@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import { checkoutBodySchema } from '@/lib/validations/order'
-import { quoteCheckout } from '@/lib/checkout-pricing'
+import { quoteCheckout, checkoutTotalsMatch } from '@/lib/checkout-pricing'
 import { getStripeClient } from '@/lib/stripe'
 import { stripeCheckoutAvailable } from '@/lib/stripe-checkout-availability'
 
@@ -21,8 +21,11 @@ export async function POST(request: NextRequest) {
     const { data: products, error: productsError } = await supabase.from('products').select('*').in('id', items.map(item => item.productId))
     if (productsError) throw new Error('Unable to load product prices')
     let quote
-    try { quote = quoteCheckout(items, products ?? [], shipping.country, shippingMethod) }
+    try { quote = quoteCheckout(items, products ?? [], shipping.country, shippingMethod, shipping.postalCode) }
     catch (error) { return NextResponse.json({ error: (error as Error).message }, { status: 400 }) }
+    if (!checkoutTotalsMatch(quote,parsed.data)) {
+      return NextResponse.json({error:'The order total has changed. Please review the updated prices and shipping before paying.'},{status:409})
+    }
 
     const { data: customerData, error: customerError } = await supabase.from('customers')
       .insert({ email: customer.email, name: customer.name, phone: customer.phone || null, user_id: null }).select().single()
@@ -34,7 +37,7 @@ export async function POST(request: NextRequest) {
       subtotal: quote.subtotal, shipping_cost: quote.shippingCost, tax: 0, total: quote.total, currency: quote.currency,
       shipping_name: shipping.name, shipping_email: shipping.email, shipping_phone: shipping.phone || null,
       shipping_address_line1: shipping.addressLine1, shipping_address_line2: shipping.addressLine2 || null,
-      shipping_city: shipping.city, shipping_state: shipping.state || null, shipping_country: shipping.country,
+      shipping_city: shipping.city, shipping_state: shipping.state || null, shipping_country: quote.shipping.countryCode,
       shipping_postal_code: shipping.postalCode, payment_method: 'stripe', payment_status: 'pending', shipping_method: shippingMethod,
     }).select().single()
     if (orderError || !order) throw new Error('Unable to create order')
@@ -65,7 +68,7 @@ export async function POST(request: NextRequest) {
     })
     if (quote.shippingCost > 0) lineItems.push({
       price_data: { currency: 'eur', unit_amount: Math.round(quote.shippingCost * 100), product_data: {
-        name: 'Shipping', images: [], description: shippingMethod === 'dhl' ? 'DHL' : shippingMethod === 'ctt' ? 'CTT' : 'Standard Shipping',
+        name: 'Shipping', images: [], description: `Tracked shipping from Amsterdam · ${quote.shipping.zoneName} · ${quote.shipping.weightBand}`,
       } }, quantity: 1,
     })
     const session = await stripe.checkout.sessions.create({
@@ -74,7 +77,8 @@ export async function POST(request: NextRequest) {
       expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
       success_url: `${siteUrl}/shop/order/${order.id}?success=true`, cancel_url: `${siteUrl}/shop/checkout?cancelled=true`,
       customer_email: customer.email, billing_address_collection: 'auto',
-      metadata: { order_id: order.id, order_number: orderNumber },
+      metadata: { order_id: order.id, order_number: orderNumber, shipping_zone:quote.shipping.zoneId,
+        shipping_weight_grams:String(quote.shipping.weightGrams),shipping_rate_version:'2026-11-18' },
       payment_intent_data: { metadata: { order_id: order.id, order_number: orderNumber } },
       // O endereço já foi recolhido no site. Uma segunda recolha pode divergir dos portes.
     }, { idempotencyKey: `checkout-${order.id}` })

@@ -8,14 +8,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/components/ui/use-toast"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { motion } from "framer-motion"
 import type { Product, CartItem as CartItemType } from "@/lib/database.types"
 import { withCsrfHeaders } from "@/lib/fetch-with-csrf"
-import { calculateShipping as shippingPrice, SHIPPING_COUNTRIES } from "@/lib/checkout-pricing"
+import { quoteCheckout, SHIPPING_COUNTRIES, type CheckoutQuote } from "@/lib/checkout-pricing"
+import { getShippingDestination, ShippingQuoteRequiredError } from "@/lib/shipping-rates"
 
 // Lista completa de indicativos telefônicos
 const COUNTRY_CODES = [
@@ -129,7 +129,7 @@ export default function CheckoutPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [paymentsAvailable, setPaymentsAvailable] = useState<boolean | null>(null)
-  const [shippingMethod, setShippingMethod] = useState<'ctt' | 'dhl'>('ctt')
+  const shippingMethod = 'standard'
   const [userChoice, setUserChoice] = useState<'guest' | 'login' | null>(null)
 
   useEffect(() => {
@@ -211,13 +211,19 @@ export default function CheckoutPage() {
     }, 0)
   }
 
-  const calculateShippingByCountry = (country: string, _method: string) => shippingPrice(country, calculateSubtotal())
-
-  const calculateShipping = () => shippingPrice(formData.country, calculateSubtotal())
-
-  const calculateTotal = () => {
-    return calculateSubtotal() + calculateShipping()
+  let checkoutQuote: CheckoutQuote | null = null
+  let shippingError = ''
+  let needsShippingQuote = false
+  if (formData.country && products.length && cartItems.length) {
+    try {
+      checkoutQuote = quoteCheckout(cartItems, products, formData.country, shippingMethod, formData.postalCode)
+    } catch (error) {
+      shippingError = error instanceof Error ? error.message : 'Unable to calculate shipping. Please try again.'
+      needsShippingQuote = error instanceof ShippingQuoteRequiredError
+    }
   }
+  const requiresPostalCode = formData.country ? getShippingDestination(formData.country).requiresPostalCode : false
+  const formatPhone = (code: string, number: string) => number.trim().startsWith('+') ? number.trim() : `${code} ${number}`.trim()
 
   const handleContinueAsGuest = () => {
     setUserChoice('guest')
@@ -239,11 +245,12 @@ export default function CheckoutPage() {
 
   const handleShippingSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    if (!checkoutQuote) return
     setStep('payment')
   }
 
   const handlePayment = async () => {
-    if (!paymentsAvailable) return
+    if (!paymentsAvailable || !checkoutQuote) return
     setIsSubmitting(true)
     
     try {
@@ -255,12 +262,12 @@ export default function CheckoutPage() {
         customer: {
           name: formData.customerName,
           email: formData.customerEmail,
-          phone: `${formData.customerPhoneCode} ${formData.customerPhone}`
+          phone: formatPhone(formData.customerPhoneCode, formData.customerPhone)
         },
         shipping: {
           name: formData.shippingName,
           email: formData.shippingEmail,
-          phone: `${formData.shippingPhoneCode} ${formData.shippingPhone}`,
+          phone: formatPhone(formData.shippingPhoneCode, formData.shippingPhone),
           addressLine1: formData.addressLine1,
           addressLine2: formData.addressLine2,
           city: formData.city,
@@ -270,9 +277,9 @@ export default function CheckoutPage() {
         },
         shippingMethod,
         paymentMethod: formData.paymentMethod,
-        subtotal: calculateSubtotal(),
-        shippingCost: calculateShipping(),
-        total: calculateTotal()
+        subtotal: checkoutQuote.subtotal,
+        shippingCost: checkoutQuote.shippingCost,
+        total: checkoutQuote.total
       }
 
       // Redirect to payment gateway
@@ -287,8 +294,9 @@ export default function CheckoutPage() {
       )
       
       const data = await response.json()
+      if (response.status === 409) await loadCart()
       
-      if (data.url) {
+      if (response.ok && data.url) {
         window.location.href = data.url
       } else {
         throw new Error(data.error || 'Failed to create checkout session')
@@ -338,34 +346,34 @@ export default function CheckoutPage() {
             {/* Progress Steps */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center">
-                <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
+                <div className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-full ${
                   step === 'auth' ? 'bg-white text-black' : 'bg-white/20'
                 }`}>
                   {step !== 'auth' ? <Check className="h-5 w-5" /> : <User className="h-5 w-5" />}
                 </div>
-                <span className="ml-2 text-sm">Account</span>
+                <span className="ml-1 sm:ml-2 text-xs sm:text-sm">Account</span>
               </div>
               
-              <div className="flex-1 h-px bg-white/20 mx-4" />
+              <div className="flex-1 h-px bg-white/20 mx-1 sm:mx-4" />
               
               <div className="flex items-center">
-                <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
+                <div className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-full ${
                   step === 'shipping' ? 'bg-white text-black' : step === 'payment' ? 'bg-white/20' : 'bg-white/10'
                 }`}>
                   {step === 'payment' ? <Check className="h-5 w-5" /> : <Truck className="h-5 w-5" />}
                 </div>
-                <span className="ml-2 text-sm">Shipping</span>
+                <span className="ml-1 sm:ml-2 text-xs sm:text-sm">Shipping</span>
               </div>
               
-              <div className="flex-1 h-px bg-white/20 mx-4" />
+              <div className="flex-1 h-px bg-white/20 mx-1 sm:mx-4" />
               
               <div className="flex items-center">
-                <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
+                <div className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-full ${
                   step === 'payment' ? 'bg-white text-black' : 'bg-white/10'
                 }`}>
                   <CreditCard className="h-5 w-5" />
                 </div>
-                <span className="ml-2 text-sm">Payment</span>
+                <span className="ml-1 sm:ml-2 text-xs sm:text-sm">Payment</span>
               </div>
             </div>
 
@@ -406,6 +414,7 @@ export default function CheckoutPage() {
                     
                     <div>
                       <Label htmlFor="customerPhone">Phone</Label>
+                      <p className="mb-2 text-xs text-white/60">You can enter a full international number starting with +.</p>
                       <div className="flex gap-2">
                         <Select 
                           value={formData.customerPhoneCode} 
@@ -510,6 +519,7 @@ export default function CheckoutPage() {
                       
                       <div>
                         <Label htmlFor="shippingPhone">Phone *</Label>
+                        <p className="mb-2 text-xs text-white/60">You can enter a full international number starting with +.</p>
                         <div className="flex gap-2">
                           <Select 
                             value={formData.shippingPhoneCode} 
@@ -589,7 +599,7 @@ export default function CheckoutPage() {
                             id="country"
                             value={formData.country}
                             onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                            className="bg-gray-900 border-white/20"
+                            className="flex h-10 w-full min-w-0 rounded-md border bg-gray-900 border-white/20 px-3 py-2 text-sm"
                             required
                           >
                             <option value="">Select country</option>
@@ -598,13 +608,13 @@ export default function CheckoutPage() {
                         </div>
                         
                         <div>
-                          <Label htmlFor="postalCode">Postal/Zip Code *</Label>
+                          <Label htmlFor="postalCode">Postal/Zip Code{requiresPostalCode ? ' *' : ' (if applicable)'}</Label>
                           <Input
                             id="postalCode"
                             value={formData.postalCode}
                             onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
                             className="bg-gray-900 border-white/20"
-                            required
+                            required={requiresPostalCode}
                           />
                         </div>
                       </div>
@@ -613,27 +623,15 @@ export default function CheckoutPage() {
                       
                       <div className="p-4 bg-white/5 rounded-lg">
                         <div className="flex justify-between items-center mb-2">
-                          <Label className="text-base">Shipping with {shippingMethod === 'ctt' ? 'CTT' : 'DHL'}</Label>
+                          <Label className="text-base">Tracked shipping</Label>
                           <span className="font-semibold">
-                            {formData.country && calculateSubtotal() > 100 && (formData.country.toUpperCase() === 'PT' || formData.country.toUpperCase() === 'PORTUGAL') 
-                              ? 'FREE' 
-                              : formData.country 
-                                ? `€${calculateShippingByCountry(formData.country, 'manual').toFixed(2)}`
-                                : 'Select country first'}
+                            {checkoutQuote ? `€${checkoutQuote.shippingCost.toFixed(2)}` : formData.country ? 'Quote required' : 'Select country first'}
                           </span>
                         </div>
-                        <RadioGroup value={shippingMethod} onValueChange={value => setShippingMethod(value as 'ctt' | 'dhl')} className="my-4 flex gap-6">
-                          <div className="flex items-center gap-2"><RadioGroupItem id="shipping-ctt" value="ctt" /><Label htmlFor="shipping-ctt">CTT</Label></div>
-                          <div className="flex items-center gap-2"><RadioGroupItem id="shipping-dhl" value="dhl" /><Label htmlFor="shipping-dhl">DHL</Label></div>
-                        </RadioGroup>
-                        <p className="text-sm text-white/60">
-                          Shipping cost calculated based on delivery country
-                        </p>
-                        {formData.country && (
-                          <p className="text-xs text-white/40 mt-2">
-                            Estimated delivery: 5-10 business days
-                          </p>
-                        )}
+                        <p className="mt-2 text-sm text-white/60">Ships from Amsterdam, Netherlands. The country determines the shipping zone automatically.</p>
+                        {checkoutQuote && <p className="mt-2 text-sm" aria-live="polite">Zone: {checkoutQuote.shipping.zoneName} · Parcel: {checkoutQuote.shipping.weightBand}</p>}
+                        {checkoutQuote?.shipping.requiresCustoms && <p className="mt-2 text-xs text-white/60">Import duties, taxes and customs charges are not included in this total and may be payable on arrival.</p>}
+                        <p className="mt-2 text-xs text-white/50">Delivery time varies by destination and customs processing.</p>
                       </div>
                       
                       <div className="flex gap-4">
@@ -645,7 +643,7 @@ export default function CheckoutPage() {
                         >
                           Back
                         </Button>
-                        <Button type="submit" className="flex-1 bg-white text-black hover:bg-white/90">
+                        <Button type="submit" disabled={!checkoutQuote} className="flex-1 bg-white text-black hover:bg-white/90">
                           Continue to Payment
                         </Button>
                       </div>
@@ -699,7 +697,7 @@ export default function CheckoutPage() {
                       </Button>
                       <Button
                         onClick={handlePayment}
-                        disabled={isSubmitting || paymentsAvailable !== true}
+                        disabled={isSubmitting || paymentsAvailable !== true || !checkoutQuote}
                         className="flex-1 bg-white text-black hover:bg-white/90"
                       >
                         {isSubmitting ? 'Processing...' : 'Place Order'}
@@ -749,17 +747,13 @@ export default function CheckoutPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-white/70">Subtotal</span>
-                    <span>€{calculateSubtotal().toFixed(2)}</span>
+                    <span>€{(checkoutQuote?.subtotal ?? calculateSubtotal()).toFixed(2)}</span>
                   </div>
                   
                   <div className="flex justify-between text-sm">
                     <span className="text-white/70">Shipping</span>
                     <span>
-                      {!formData.country ? 'Calculated at checkout' : calculateShipping() === 0 ? (
-                        <span className="text-green-400">FREE</span>
-                      ) : (
-                        `€${calculateShipping().toFixed(2)}`
-                      )}
+                      {!formData.country ? 'Select a delivery country' : checkoutQuote ? `€${checkoutQuote.shippingCost.toFixed(2)}` : 'Quote required'}
                     </span>
                   </div>
                   
@@ -767,9 +761,13 @@ export default function CheckoutPage() {
                   
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span>€{calculateTotal().toFixed(2)}</span>
+                    <span>{checkoutQuote ? `€${checkoutQuote.total.toFixed(2)}` : formData.country ? 'Pending shipping quote' : 'Select a delivery country'}</span>
                   </div>
                 </div>
+                {shippingError && <div className="rounded border border-white/20 p-4 text-sm" role="status" aria-live="polite">
+                  <p>{shippingError}</p>
+                  {needsShippingQuote && <a className="mt-2 inline-block underline" href="mailto:cesar@dacosta-music.com?subject=Shipping%20quote">Request a shipping quote</a>}
+                </div>}
               </CardContent>
             </Card>
           </div>

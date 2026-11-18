@@ -1,34 +1,20 @@
+import { getShippingDetails, PRODUCT_SHIPPING_GRAMS, SHIPPING_PACKAGING_GRAMS, ShippingQuoteRequiredError } from './shipping-rates.ts'
+export { calculateShipping, SHIPPING_COUNTRIES } from './shipping-rates.ts'
+
 type CheckoutItem = { productId: string; quantity: number; size?: string | null; color?: string | null }
 type CheckoutProduct = {
-  id: string; name: string; price: number; active: boolean; stock_quantity: number
+  id: string; name: string; slug?: string; price: number; active: boolean; stock_quantity: number
   sizes: string[] | null; colors: string[] | null
   stock_by_size?: Record<string, number> | null
 }
 
-export const SHIPPING_COUNTRIES = [
-  { code: 'PT', name: 'Portugal' }, { code: 'ES', name: 'Spain' },
-  { code: 'FR', name: 'France' }, { code: 'DE', name: 'Germany' },
-  { code: 'IT', name: 'Italy' }, { code: 'NL', name: 'Netherlands' },
-  { code: 'GB', name: 'United Kingdom' }, { code: 'US', name: 'United States' },
-  { code: 'BR', name: 'Brazil' }, { code: 'ZA', name: 'South Africa' },
-] as const
-
-// Tarifas existentes, confirmadas pelo titular para CTT e DHL.
-export function calculateShipping(country: string, subtotal: number): number {
-  if (!country) return 0
-  if (country === 'PT') return subtotal > 100 ? 0 : 5.5
-  if (['ES', 'FR', 'DE', 'IT', 'NL', 'GB'].includes(country)) return 12.5
-  if (country === 'ZA') return 35
-  return 25.5
-}
-
-export function quoteCheckout(items: CheckoutItem[], products: CheckoutProduct[], country: string, method: string) {
-  if (!SHIPPING_COUNTRIES.some(entry => entry.code === country)) throw new Error('Unsupported shipping country')
-  if (!['manual', 'ctt', 'dhl'].includes(method)) throw new Error('Unsupported shipping method')
+export function quoteCheckout(items: CheckoutItem[], products: CheckoutProduct[], country: string, method: string, postalCode = '') {
+  if (method !== 'standard') throw new Error('Unsupported shipping method. Please refresh the checkout.')
   if (!items.length) throw new Error('Empty checkout')
   const quantities = new Map<string, number>()
   const sizeQuantities = new Map<string, number>()
   let subtotalCents = 0
+  let weightGrams = SHIPPING_PACKAGING_GRAMS
   for (const item of items) {
     const product = products.find(entry => entry.id === item.productId)
     if (!product?.active) throw new Error('Product unavailable')
@@ -46,8 +32,19 @@ export function quoteCheckout(items: CheckoutItem[], products: CheckoutProduct[]
       if (!item.size || sizeQuantity > (product.stock_by_size[item.size] ?? 0)) throw new Error(`Insufficient size stock for ${product.name}`)
     }
     subtotalCents += Math.round(product.price * 100) * item.quantity
+    const unitWeight = product.slug ? PRODUCT_SHIPPING_GRAMS[product.slug] : undefined
+    if (!unitWeight) throw new ShippingQuoteRequiredError('A shipping quote is required for an item in your cart. Please contact us before payment.')
+    weightGrams += unitWeight * item.quantity
   }
   const subtotal = subtotalCents / 100
-  const shippingCost = calculateShipping(country, subtotal)
-  return { subtotal, shippingCost, total: (subtotalCents + Math.round(shippingCost * 100)) / 100, currency: 'EUR' as const }
+  const shipping = getShippingDetails(country, weightGrams, postalCode)
+  const shippingCost = shipping.shippingCost
+  return { subtotal, shippingCost, total: (subtotalCents + Math.round(shippingCost * 100)) / 100, currency: 'EUR' as const, shipping }
+}
+
+export type CheckoutQuote = ReturnType<typeof quoteCheckout>
+
+export function checkoutTotalsMatch(quote: Pick<CheckoutQuote, 'subtotal' | 'shippingCost' | 'total'>, supplied: {subtotal:number;shippingCost:number;total:number}) {
+  return (['subtotal','shippingCost','total'] as const).every(key =>
+    Number.isFinite(supplied[key]) && Math.round(quote[key] * 100) === Math.round(supplied[key] * 100))
 }
