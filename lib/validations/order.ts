@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { getShippingDestination } from '../shipping-rates.ts'
 
 const cartItemSchema = z.object({
   productId: z.string().uuid(),
@@ -21,8 +22,17 @@ const shippingSchema = z.object({
   addressLine2: z.string().max(300).optional().nullable(),
   city: z.string().min(1).max(120),
   state: z.string().max(120).optional().nullable(),
-  country: z.string().min(1).max(120),
-  postalCode: z.string().min(1).max(32),
+  country: z.string().trim().toUpperCase().length(2),
+  postalCode: z.string().max(32).default(''),
+}).superRefine((address, context) => {
+  try {
+    const destination = getShippingDestination(address.country)
+    if (destination.requiresPostalCode && !address.postalCode.trim()) {
+      context.addIssue({code:'custom',path:['postalCode'],message:'Postal code is required for this country'})
+    }
+  } catch {
+    context.addIssue({code:'custom',path:['country'],message:'Unsupported shipping country'})
+  }
 })
 
 export const checkoutBodySchema = z.object({

@@ -1,5 +1,7 @@
 # Loja DaCosta: preparação de lançamento
 
+Nota de 18/11/2026: o registo abaixo descreve o lançamento de Outubro. A nova configuração de portes a partir de Amesterdão substitui a tabela CTT/DHL e os portes gratuitos antigos. Consultar [portes internacionais](shipping-2026-11-18.md) para a tabela e a estimativa provisória aprovadas. O histórico de activação Stripe não é uma consulta actual ao estado da conta.
+
 Estado em 11 de Outubro de 2026. Catálogo e alterações publicados em produção. Pagamentos reais indisponíveis enquanto a nova conta Stripe não estiver activada e ligada.
 
 ## Configuração confirmada pelo titular

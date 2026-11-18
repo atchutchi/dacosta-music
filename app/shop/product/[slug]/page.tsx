@@ -336,9 +336,9 @@ export default function ProductDetailPage() {
 
             {/* Additional Info */}
             <div className="border-t border-white/10 pt-6 space-y-2 text-sm text-white/60">
-              <p>✓ Free shipping on orders over €100 in Portugal</p>
+              <p>✓ Shipping calculated by destination and parcel weight at checkout</p>
               <p>✓ Secure payment with Stripe</p>
-              <p>✓ Shipping with CTT or DHL to supported destinations</p>
+              <p>✓ Tracked shipping from Amsterdam, Netherlands</p>
             </div>
           </div>
         </div>
