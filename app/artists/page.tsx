@@ -1,3 +1,5 @@
+import { pageMetadata } from '@/lib/page-metadata'
+export const metadata = pageMetadata("Artists","/artists","Explore the Da Costa Music artist roster and enquire about worldwide bookings.")
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -16,31 +18,31 @@ export default function ArtistsPage() {
     {
       id: "caiiro",
       name: "Caiiro",
-      image: "/images/Caiiro-VIII.svg",
+      image: "/images/artists/Caiiro-VIII.webp",
       bio: "Renowned for his emotionally charged soundscapes and powerful Afro-Tech sets, Caiiro is one of Africa's most prominent electronic music exports.",
     },
     {
       id: "dacapo",
       name: "Da Capo",
-      image: "/images/da-capo-X.svg",
+      image: "/images/artists/da-capo-X.webp",
       bio: "A visionary in Afro House and Deep Tech, Da Capo's rich, layered productions and refined musical storytelling form the backbone of many B3B sets.",
     },
     {
       id: "enoonapa",
       name: "Enoo Napa",
-      image: "/images/Enoo-Napa0374.svg",
+      image: "/images/artists/Enoo-Napa0374.webp",
       bio: "Delivering cutting-edge Afro-Electronic music with a signature edge, Enoo Napa brings raw energy and futuristic sounds to the collective.",
     },
     {
       id: "djeff",
       name: "DJEFF",
-      image: "/images/Djeff_profile_photo.svg",
+      image: "/images/artists/Djeff_profile_photo.webp",
       bio: "DJEFF is a DJ and producer born in Lisbon to Angolan and Cape Verdean roots, known for blending African heritage with forward-thinking electronic music and house.",
     },
     {
       id: "breyth",
       name: "BREYTH",
-      image: "/images/breyth-photo-main.svg",
+      image: "/images/artists/breyth-photo-main.webp",
       bio: "An established name in the Afro House scene, BREYTH blends charisma and raw energy into every set. Born in Angola, forged in Lisbon — his sound reaches over 27 million streams across all digital platforms.",
     },
   ]
@@ -63,7 +65,7 @@ export default function ArtistsPage() {
                   src={artist.image || "/placeholder.svg"}
                   alt={artist.name}
                   fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 20vw"
                   className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
                   quality={85}
@@ -83,9 +85,9 @@ export default function ArtistsPage() {
                             : "/images/enoo_napa_logotipo.svg"
                   }
                   alt={`${artist.name} logo`}
-                  width={200}
-                  height={64}
-                  className="object-contain max-h-full w-auto"
+                  fill
+                  sizes="(max-width: 640px) 200px, 180px"
+                  className="object-contain object-left"
                   loading="lazy"
                   quality={90}
                 />

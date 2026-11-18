@@ -9,10 +9,14 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { motion } from "framer-motion"
+import { useSearchParams } from 'next/navigation'
+import { getContactContext } from '@/lib/contact-context'
 import emailjs from '@emailjs/browser'
 import { logger } from '@/lib/logger'
 
 export default function ContactSection() {
+  const searchParams = useSearchParams()
+  const contactQuery = searchParams.toString()
   const formRef = useRef<HTMLFormElement>(null)
   const [formData, setFormData] = useState({
     name: "",
@@ -21,6 +25,10 @@ export default function ContactSection() {
     message: "",
     selectedArtists: [] as string[],
   })
+  useEffect(() => {
+    const context = getContactContext(contactQuery)
+    if (context) setFormData(previous=>({...previous,title:context.subject,selectedArtists:context.artists,message:previous.message || context.message}))
+  }, [contactQuery])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
@@ -49,8 +57,11 @@ export default function ContactSection() {
   }
 
   const handleSelectChange = (value: string) => {
-    setFormData((prev) => ({ 
-      ...prev, 
+    // O select nativo oculto do Radix pode emitir '' ao montar dentro do formulário.
+    // Nenhuma opção de assunto tem esse valor. Não apagar o contexto recebido do URL.
+    if (!['booking','collaboration','press','other'].includes(value)) return
+    setFormData((prev) => ({
+      ...prev,
       title: value,
       // Clear selectedArtists if changing away from booking
       selectedArtists: value === "booking" ? prev.selectedArtists : []
@@ -72,7 +83,7 @@ export default function ContactSection() {
       const newSelectedArtists = isSelected
         ? prev.selectedArtists.filter((a) => a !== artist)
         : [...prev.selectedArtists, artist]
-      
+
       return { ...prev, selectedArtists: newSelectedArtists }
     })
 
@@ -125,7 +136,7 @@ export default function ContactSection() {
       setErrors({ form: "An error occurred with the form. Please refresh the page." });
       return;
     }
-    
+
     if (!validateForm()) {
       return;
     }
@@ -133,8 +144,8 @@ export default function ContactSection() {
     setIsSubmitting(true)
 
     // Verificar se as variáveis de ambiente estão definidas
-    if (!process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 
-        !process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 
+    if (!process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID ||
+        !process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID ||
         !process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY) {
       console.error("EmailJS environment variables are not properly set");
       setErrors({
@@ -146,11 +157,11 @@ export default function ContactSection() {
 
     try {
       logger.log("Enviando formulário com EmailJS...");
-      
+
       // Log do conteúdo do formulário
       const formData = new FormData(formRef.current);
       logger.debug("Form data:", Object.fromEntries(formData.entries()));
-      
+
       // Send email directly using EmailJS on the client side
       const result = await emailjs.sendForm(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
@@ -171,7 +182,7 @@ export default function ContactSection() {
       }
     } catch (error: any) {
       logger.error("Error submitting form:", error);
-      
+
       // Verificar especificamente o erro de reCAPTCHA
       if (error.text && error.text.includes("g-recaptcha-response")) {
         logger.error("reCAPTCHA error detected - You need to disable reCAPTCHA in EmailJS dashboard");
@@ -185,8 +196,8 @@ export default function ContactSection() {
         });
       } else {
         setErrors({
-          form: error instanceof Error 
-            ? `Error: ${error.message}` 
+          form: error instanceof Error
+            ? `Error: ${error.message}`
             : "An error occurred while submitting the form. Please try again."
         });
       }
@@ -375,8 +386,8 @@ export default function ContactSection() {
                   <label htmlFor="title" className="block text-sm font-medium mb-2">
                     Subject
                   </label>
-                  <Select onValueChange={handleSelectChange}>
-                    <SelectTrigger className={`bg-white/5 border-white/10 ${errors.title ? "border-red-500" : ""}`}>
+                  <Select value={formData.title} onValueChange={handleSelectChange}>
+                    <SelectTrigger id="title" className={`bg-white/5 border-white/10 ${errors.title ? "border-red-500" : ""}`}>
                       <SelectValue placeholder="Select a subject" />
                     </SelectTrigger>
                     <SelectContent>

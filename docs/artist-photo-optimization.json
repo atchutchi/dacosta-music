@@ -1,0 +1,127 @@
+[
+  {
+    "source": "breyth-photo-main.svg",
+    "output": "public\\images\\artists\\breyth-photo-main.webp",
+    "before": 5872708,
+    "after": 87084,
+    "width": 1142,
+    "height": 1600,
+    "psnr": 43.8
+  },
+  {
+    "source": "breyth-photo-page1.svg",
+    "output": "public\\images\\artists\\breyth-photo-page1.webp",
+    "before": 5294609,
+    "after": 73568,
+    "width": 1142,
+    "height": 1600,
+    "psnr": 43.8
+  },
+  {
+    "source": "breyth-photo-page2.svg",
+    "output": "public\\images\\artists\\breyth-photo-page2.webp",
+    "before": 7547669,
+    "after": 69928,
+    "width": 1142,
+    "height": 1600,
+    "psnr": 43.8
+  },
+  {
+    "source": "breyth-photo-page3.svg",
+    "output": "public\\images\\artists\\breyth-photo-page3.webp",
+    "before": 4517705,
+    "after": 40362,
+    "width": 1142,
+    "height": 1600,
+    "psnr": 44.8
+  },
+  {
+    "source": "breyth-photo-page4.svg",
+    "output": "public\\images\\artists\\breyth-photo-page4.webp",
+    "before": 5842333,
+    "after": 48188,
+    "width": 1142,
+    "height": 1600,
+    "psnr": 42
+  },
+  {
+    "source": "Caiiro-VIII.svg",
+    "output": "public\\images\\artists\\Caiiro-VIII.webp",
+    "before": 5810346,
+    "after": 21606,
+    "width": 1200,
+    "height": 1600,
+    "psnr": 42.5
+  },
+  {
+    "source": "da-capo-X.svg",
+    "output": "public\\images\\artists\\da-capo-X.webp",
+    "before": 26040455,
+    "after": 153846,
+    "width": 1199,
+    "height": 1600,
+    "psnr": 36.9
+  },
+  {
+    "source": "djdjeff_1.svg",
+    "output": "public\\images\\artists\\djdjeff_1.webp",
+    "before": 12232640,
+    "after": 86480,
+    "width": 1142,
+    "height": 1600,
+    "psnr": 44.9
+  },
+  {
+    "source": "djdjeff_2.svg",
+    "output": "public\\images\\artists\\djdjeff_2.webp",
+    "before": 8561688,
+    "after": 87918,
+    "width": 1142,
+    "height": 1600,
+    "psnr": 41.3
+  },
+  {
+    "source": "djdjeff_3.svg",
+    "output": "public\\images\\artists\\djdjeff_3.webp",
+    "before": 13251847,
+    "after": 146858,
+    "width": 1142,
+    "height": 1600,
+    "psnr": 41.1
+  },
+  {
+    "source": "djdjeff_4.svg",
+    "output": "public\\images\\artists\\djdjeff_4.webp",
+    "before": 11815188,
+    "after": 156828,
+    "width": 1143,
+    "height": 1600,
+    "psnr": 43.1
+  },
+  {
+    "source": "Djeff_profile_photo.svg",
+    "output": "public\\images\\artists\\Djeff_profile_photo.webp",
+    "before": 7830961,
+    "after": 74042,
+    "width": 1142,
+    "height": 1600,
+    "psnr": 43
+  },
+  {
+    "source": "Enoo-Napa0374.svg",
+    "output": "public\\images\\artists\\Enoo-Napa0374.webp",
+    "before": 8930423,
+    "after": 42646,
+    "width": 1066,
+    "height": 1600,
+    "psnr": 45.3
+  },
+  {
+    "source": "club-view.webp",
+    "output": "public\\images\\club-view-optimized.webp",
+    "before": 1292978,
+    "after": 107074,
+    "width": 1920,
+    "height": 1280
+  }
+]

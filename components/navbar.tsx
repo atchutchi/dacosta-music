@@ -5,7 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Menu, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import { motion } from "framer-motion"
 
 export default function Navbar() {
@@ -95,16 +95,16 @@ export default function Navbar() {
 
         <div className="flex items-center space-x-4">
           {/* Cart Icon with Counter */}
-          <Link href="/shop/cart" className="relative hidden md:block">
-            <Button variant="ghost" size="icon" className="relative">
+          <Button asChild variant="ghost" size="icon" className="relative hidden md:inline-flex">
+            <Link href="/shop/cart" aria-label={`Shopping cart, ${cartCount} items`}>
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-white text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
-            </Button>
-          </Link>
+            </Link>
+          </Button>
           {/* Mobile Navigation */}
           <Sheet>
             <SheetTrigger asChild className="md:hidden">
@@ -114,12 +114,14 @@ export default function Navbar() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="bg-black border-l border-white/20">
+              <SheetTitle className="sr-only">Site navigation</SheetTitle>
+              <SheetDescription className="sr-only">Browse Da Costa Music pages and your shopping cart.</SheetDescription>
               <div className="flex flex-col h-full pt-8">
                 <nav className="flex flex-col space-y-6">
                   {navLinks.map((link) => (
                     <SheetClose asChild key={link.href}>
-                      <Link 
-                        href={link.href} 
+                      <Link
+                        href={link.href}
                         className="text-xl font-medium hover:text-white/80 transition-colors duration-300"
                       >
                         {link.label}
@@ -127,8 +129,8 @@ export default function Navbar() {
                     </SheetClose>
                   ))}
                   <SheetClose asChild>
-                    <Link 
-                      href="/shop/cart" 
+                    <Link
+                      href="/shop/cart"
                       className="text-xl font-medium hover:text-white/80 transition-colors duration-300 flex items-center"
                     >
                       <ShoppingCart className="h-5 w-5 mr-2" />

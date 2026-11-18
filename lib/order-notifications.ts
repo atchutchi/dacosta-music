@@ -1,4 +1,9 @@
 type EmailPayload = { from: string; to: string[]; subject: string; html: string }
+
+export function paidOrderRecipient(customer:{name:string;email:string}|null) {
+  if (!customer?.email?.trim()) throw new Error('Unable to identify order buyer for notification')
+  return {customerName:customer.name,customerEmail:customer.email}
+}
 type Mailer = (payload: EmailPayload, options: { idempotencyKey: string }) => Promise<{
   data: { id: string } | null; error: { message: string } | null
 }>

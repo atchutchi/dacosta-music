@@ -125,7 +125,7 @@ export default function B3BPage() {
               energetic tribal rhythms and cutting-edge tech sounds.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link href="/#contact">
+              <Link href="/?artist=b3b#contact">
                 <Button className="bg-white text-black hover:bg-white/90">Book B3B Experience</Button>
               </Link>
               <Button variant="outline" className="border-white text-white hover:bg-white/10">
@@ -207,7 +207,7 @@ export default function B3BPage() {
               <div className="bg-white/5 p-6 rounded-lg">
                 <div className="aspect-square overflow-hidden rounded-lg mb-4">
                   <img
-                    src="/images/Caiiro-VIII.svg"
+                    src="/images/artists/Caiiro-VIII.webp"
                     alt="Caiiro"
                     className="w-full h-full object-cover object-top"
                   />
@@ -229,7 +229,7 @@ export default function B3BPage() {
               <div className="bg-white/5 p-6 rounded-lg">
                 <div className="aspect-square overflow-hidden rounded-lg mb-4">
                   <img
-                    src="/images/da-capo-X.svg"
+                    src="/images/artists/da-capo-X.webp"
                     alt="Da Capo"
                     className="w-full h-full object-cover object-top"
                   />
@@ -251,7 +251,7 @@ export default function B3BPage() {
               <div className="bg-white/5 p-6 rounded-lg">
                 <div className="aspect-square overflow-hidden rounded-lg mb-4">
                   <img
-                    src="/images/Enoo-Napa0374.svg"
+                    src="/images/artists/Enoo-Napa0374.webp"
                     alt="Enoo Napa"
                     className="w-full h-full object-cover object-top"
                   />
@@ -273,7 +273,7 @@ export default function B3BPage() {
               <div className="bg-white/5 p-6 rounded-lg">
                 <div className="aspect-square overflow-hidden rounded-lg mb-4">
                   <img
-                    src="/images/Djeff_profile_photo.svg"
+                    src="/images/artists/Djeff_profile_photo.webp"
                     alt="DJEFF"
                     className="w-full h-full object-cover object-top"
                   />
