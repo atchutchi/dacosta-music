@@ -4,14 +4,14 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
-  
+
   // Server external packages
   serverExternalPackages: ['sharp'],
-  
+
   // Enhanced compression
   compress: true,
   poweredByHeader: false,
-  
+
   // Configuração para imagens externas - Otimizada para performance
   images: {
     unoptimized: process.env.NODE_ENV === 'development', // Otimizado em produção no Vercel
@@ -34,13 +34,13 @@ const nextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     contentDispositionType: 'inline',
   },
-  
+
   // Production optimizations
   productionBrowserSourceMaps: false,
-  
+
   // Turbopack configuration (Next.js 16 default bundler)
   turbopack: {},
-  
+
   env: {
     NEXT_PUBLIC_BIT_APP_ID_CAIRO: process.env.NEXT_PUBLIC_BIT_APP_ID_CAIRO,
   },
