@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   const baseUrl = 'https://www.dacosta-music.com'
-  
+
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
@@ -15,13 +15,13 @@ export async function GET() {
       <image:title>Da Costa Music Logo</image:title>
     </image:image>
   </url>
-  
+
   <url>
     <loc>${baseUrl}/artists</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-  
+
   <url>
     <loc>${baseUrl}/artists/caiiro</loc>
     <changefreq>monthly</changefreq>
@@ -31,7 +31,7 @@ export async function GET() {
       <image:title>Caiiro - Electronic Music Artist</image:title>
     </image:image>
   </url>
-  
+
   <url>
     <loc>${baseUrl}/artists/dacapo</loc>
     <changefreq>monthly</changefreq>
@@ -41,7 +41,7 @@ export async function GET() {
       <image:title>Da Capo - Electronic Music Artist</image:title>
     </image:image>
   </url>
-  
+
   <url>
     <loc>${baseUrl}/artists/enoonapa</loc>
     <changefreq>monthly</changefreq>
@@ -51,43 +51,43 @@ export async function GET() {
       <image:title>Enoo Napa - Electronic Music Artist</image:title>
     </image:image>
   </url>
-  
+
   <url>
     <loc>${baseUrl}/b3b</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <url>
     <loc>${baseUrl}/events</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
-  
+
   <url>
     <loc>${baseUrl}/blog</loc>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
-  
+
   <url>
     <loc>${baseUrl}/shop</loc>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
-  
+
   <url>
     <loc>${baseUrl}/services</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
-  
+
   <url>
     <loc>${baseUrl}/privacy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
-  
+
   <url>
     <loc>${baseUrl}/terms</loc>
     <changefreq>yearly</changefreq>
@@ -105,4 +105,4 @@ export async function GET() {
       'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=43200'
     }
   })
-} 
+}

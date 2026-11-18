@@ -122,7 +122,7 @@ const COUNTRY_CODES = [
 export default function CheckoutPage() {
   const router = useRouter()
   const { toast } = useToast()
-  
+
   const [step, setStep] = useState<'auth' | 'shipping' | 'payment'>('auth')
   const [cartItems, setCartItems] = useState<CartItemType[]>([])
   const [products, setProducts] = useState<Product[]>([])
@@ -139,7 +139,7 @@ export default function CheckoutPage() {
       .then(data => setPaymentsAvailable(data.available === true))
       .catch(() => setPaymentsAvailable(false))
   }, [])
-  
+
   // Form data
   const [formData, setFormData] = useState({
     // Customer info
@@ -147,7 +147,7 @@ export default function CheckoutPage() {
     customerEmail: '',
     customerPhone: '',
     customerPhoneCode: '+351',
-    
+
     // Shipping info
     shippingName: '',
     shippingEmail: '',
@@ -159,7 +159,7 @@ export default function CheckoutPage() {
     state: '',
     country: '',
     postalCode: '',
-    
+
     // Payment method (apenas Stripe)
     paymentMethod: 'stripe' as 'stripe'
   })
@@ -196,7 +196,7 @@ export default function CheckoutPage() {
       const productIds = cart.map(item => item.productId)
       const response = await fetch(`/api/products?ids=${productIds.join(',')}`)
       const data = await response.json()
-      
+
       if (data.products) {
         setProducts(data.products)
       }
@@ -260,7 +260,7 @@ export default function CheckoutPage() {
   const handlePayment = async () => {
     if (!paymentsAvailable || !checkoutQuote) return
     setIsSubmitting(true)
-    
+
     try {
       await fetch("/api/csrf", { credentials: "include" })
 
@@ -300,10 +300,10 @@ export default function CheckoutPage() {
           body: JSON.stringify(orderData),
         })
       )
-      
+
       const data = await response.json()
       if (response.status === 409) await loadCart()
-      
+
       if (response.ok && data.url) {
         window.location.href = data.url
       } else {
@@ -361,9 +361,9 @@ export default function CheckoutPage() {
                 </div>
                 <span className="ml-1 sm:ml-2 text-xs sm:text-sm">Account</span>
               </div>
-              
+
               <div className="flex-1 h-px bg-white/20 mx-1 sm:mx-4" />
-              
+
               <div className="flex items-center">
                 <div className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-full ${
                   step === 'shipping' ? 'bg-white text-black' : step === 'payment' ? 'bg-white/20' : 'bg-white/10'
@@ -372,9 +372,9 @@ export default function CheckoutPage() {
                 </div>
                 <span className="ml-1 sm:ml-2 text-xs sm:text-sm">Shipping</span>
               </div>
-              
+
               <div className="flex-1 h-px bg-white/20 mx-1 sm:mx-4" />
-              
+
               <div className="flex items-center">
                 <div className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-full ${
                   step === 'payment' ? 'bg-white text-black' : 'bg-white/10'
@@ -407,7 +407,7 @@ export default function CheckoutPage() {
                         required
                       />
                     </div>
-                    
+
                     <div>
                       <Label htmlFor="customerEmail">Email *</Label>
                       <Input
@@ -419,13 +419,13 @@ export default function CheckoutPage() {
                         required
                       />
                     </div>
-                    
+
                     <div>
                       <Label htmlFor="customerPhone">Phone</Label>
                       <p className="mb-2 text-xs text-white/60">You can enter a full international number starting with +.</p>
                       <div className="flex gap-2">
                         {!formData.customerPhone.trim().startsWith('+') && <Select
-                          value={formData.customerPhoneCode} 
+                          value={formData.customerPhoneCode}
                           onValueChange={(value) => setFormData({ ...formData, customerPhoneCode: value })}
                         >
                           <SelectTrigger aria-label="Customer phone country code" className="bg-gray-900 border-white/20 w-[140px] shrink-0">
@@ -465,7 +465,7 @@ export default function CheckoutPage() {
                       <User className="mr-2 h-4 w-4" />
                       Continue as Guest
                     </Button>
-                    
+
                     <div className="relative">
                       <div className="absolute inset-0 flex items-center">
                         <span className="w-full border-t border-white/20" />
@@ -474,7 +474,7 @@ export default function CheckoutPage() {
                         <span className="bg-black px-2 text-white/60">Or</span>
                       </div>
                     </div>
-                    
+
                     <Button
                       type="button"
                       onClick={handleLogin}
@@ -517,7 +517,7 @@ export default function CheckoutPage() {
                             required
                           />
                         </div>
-                        
+
                         <div>
                           <Label htmlFor="shippingEmail">Email *</Label>
                           <Input
@@ -530,13 +530,13 @@ export default function CheckoutPage() {
                           />
                         </div>
                       </div>}
-                      
+
                       <div>
                         <Label htmlFor="shippingPhone">Phone *</Label>
                         <p className="mb-2 text-xs text-white/60">You can enter a full international number starting with +.</p>
                         <div className="flex gap-2">
                           {!formData.shippingPhone.trim().startsWith('+') && <Select
-                            value={formData.shippingPhoneCode} 
+                            value={formData.shippingPhoneCode}
                             onValueChange={(value) => setFormData({ ...formData, shippingPhoneCode: value })}
                           >
                             <SelectTrigger aria-label="Delivery phone country code" className="bg-gray-900 border-white/20 w-[140px] shrink-0">
@@ -561,7 +561,7 @@ export default function CheckoutPage() {
                           />
                         </div>
                       </div>
-                      
+
                       <div>
                         <Label htmlFor="addressLine1">Address Line 1 *</Label>
                         <Input
@@ -572,7 +572,7 @@ export default function CheckoutPage() {
                           required
                         />
                       </div>
-                      
+
                       <div>
                         <Label htmlFor="addressLine2">Address Line 2</Label>
                         <Input
@@ -582,7 +582,7 @@ export default function CheckoutPage() {
                           className="bg-gray-900 border-white/20"
                         />
                       </div>
-                      
+
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <Label htmlFor="city">City *</Label>
@@ -594,7 +594,7 @@ export default function CheckoutPage() {
                             required
                           />
                         </div>
-                        
+
                         <div>
                           <Label htmlFor="state">State/Province</Label>
                           <Input
@@ -605,7 +605,7 @@ export default function CheckoutPage() {
                           />
                         </div>
                       </div>
-                      
+
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <Label htmlFor="country">Country *</Label>
@@ -620,7 +620,7 @@ export default function CheckoutPage() {
                             {SHIPPING_COUNTRIES.map(country => <option key={country.code} value={country.code}>{country.name}</option>)}
                           </select>
                         </div>
-                        
+
                         <div>
                           <Label htmlFor="postalCode">Postal/Zip Code{requiresPostalCode ? ' *' : ' (if applicable)'}</Label>
                           <Input
@@ -632,9 +632,9 @@ export default function CheckoutPage() {
                           />
                         </div>
                       </div>
-                      
+
                       <Separator className="my-6" />
-                      
+
                       <div className="p-4 bg-white/5 rounded-lg">
                         <div className="flex justify-between items-center mb-2">
                           <Label className="text-base">Tracked shipping</Label>
@@ -647,7 +647,7 @@ export default function CheckoutPage() {
                         {checkoutQuote?.shipping.requiresCustoms && <p className="mt-2 text-xs text-white/60">Import duties, taxes and customs charges are not included in this total and may be payable on arrival.</p>}
                         <p className="mt-2 text-xs text-white/50">Delivery time varies by destination and customs processing.</p>
                       </div>
-                      
+
                       <div className="flex gap-4">
                         <Button
                           type="button"
@@ -699,7 +699,7 @@ export default function CheckoutPage() {
                         Your payment information is encrypted and secure. We use Stripe for payment processing.
                       </p>
                     </div>
-                    
+
                     <div className="flex gap-4 mt-6">
                       <Button
                         type="button"
@@ -734,7 +734,7 @@ export default function CheckoutPage() {
                   {cartItems.map((item) => {
                     const product = products.find(p => p.id === item.productId)
                     if (!product) return null
-                    
+
                     return (
                       <div key={`${item.productId}:${item.size ?? ''}:${item.color ?? ''}`} className="flex gap-4">
                         <img
@@ -755,24 +755,24 @@ export default function CheckoutPage() {
                     )
                   })}
                 </div>
-                
+
                 <Separator />
-                
+
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-white/70">Subtotal</span>
                     <span>€{(checkoutQuote?.subtotal ?? calculateSubtotal()).toFixed(2)}</span>
                   </div>
-                  
+
                   <div className="flex justify-between text-sm">
                     <span className="text-white/70">Shipping</span>
                     <span>
                       {!formData.country ? 'Select a delivery country' : checkoutQuote ? `€${checkoutQuote.shippingCost.toFixed(2)}` : 'Quote required'}
                     </span>
                   </div>
-                  
+
                   <Separator />
-                  
+
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total</span>
                     <span>{checkoutQuote ? `€${checkoutQuote.total.toFixed(2)}` : formData.country ? 'Pending shipping quote' : 'Select a delivery country'}</span>

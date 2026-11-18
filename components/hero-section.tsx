@@ -66,8 +66,8 @@ export default function HeroSection() {
               </Button>
             </Link>
             <Link href="/#contact" prefetch={true}>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="border-white text-white hover:bg-white/10 min-w-[150px] shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 backdrop-blur-sm"
               >
                 Contact Us

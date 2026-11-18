@@ -10,7 +10,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { CsrfBootstrap } from "@/components/csrf-bootstrap"
 import MarketingConsent from "@/components/marketing-consent"
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ["latin"],
   display: 'swap',
   preload: true,
@@ -81,27 +81,27 @@ export default async function RootLayout({
     <html lang="en" className="dark" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         {/* Critical resource hints - ordered by priority */}
-        
+
         {/* DNS prefetch for external domains */}
         <link rel="dns-prefetch" href="//www.youtube.com" />
         <link rel="dns-prefetch" href="//widget.bandsintown.com" />
         <link rel="dns-prefetch" href="//open.spotify.com" />
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
-        
+
         {/* Preconnect to important origins */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        
+
         {/* PWA and mobile optimization */}
         <link rel="manifest" href="/manifest.json" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Da Costa Music" />
-        
+
         {/* Performance hints */}
         <meta httpEquiv="x-dns-prefetch-control" content="on" />
-        
+
         {/* Service Worker Registration - Optimized */}
         <script
           nonce={nonce}
@@ -133,7 +133,7 @@ export default async function RootLayout({
             `,
           }}
         />
-        
+
         {/* Critical CSS inlining hint */}
       </head>
       <body className={`${inter.className} ${inter.variable} min-h-screen bg-black text-white antialiased`}>

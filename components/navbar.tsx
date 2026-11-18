@@ -120,8 +120,8 @@ export default function Navbar() {
                 <nav className="flex flex-col space-y-6">
                   {navLinks.map((link) => (
                     <SheetClose asChild key={link.href}>
-                      <Link 
-                        href={link.href} 
+                      <Link
+                        href={link.href}
                         className="text-xl font-medium hover:text-white/80 transition-colors duration-300"
                       >
                         {link.label}
@@ -129,8 +129,8 @@ export default function Navbar() {
                     </SheetClose>
                   ))}
                   <SheetClose asChild>
-                    <Link 
-                      href="/shop/cart" 
+                    <Link
+                      href="/shop/cart"
                       className="text-xl font-medium hover:text-white/80 transition-colors duration-300 flex items-center"
                     >
                       <ShoppingCart className="h-5 w-5 mr-2" />

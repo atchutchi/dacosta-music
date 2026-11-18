@@ -16,7 +16,7 @@ export default function ProductDetailPage() {
   const router = useRouter()
   const { toast } = useToast()
   const slug = params.slug as string
-  
+
   const [product, setProduct] = useState<Product | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [selectedImage, setSelectedImage] = useState(0)
@@ -34,12 +34,12 @@ export default function ProductDetailPage() {
     try {
       const response = await fetch(`/api/products?slug=${encodeURIComponent(slug)}`)
       const data = await response.json()
-      
+
       if (data.products && data.products.length > 0) {
         const foundProduct = findProductBySlug(data.products, slug)
         if (!foundProduct) return
         setProduct(foundProduct)
-        
+
         // Set default selections
         if (foundProduct.sizes && foundProduct.sizes.length > 0) {
           setSelectedSize(foundProduct.sizes.find(size => availableStock(foundProduct, size) > 0) ?? foundProduct.sizes[0])
@@ -80,11 +80,11 @@ export default function ProductDetailPage() {
 
     const savedCart = localStorage.getItem('dacosta-cart')
     const cart = savedCart ? JSON.parse(savedCart) : []
-    
+
     // Check if item already exists with same size/color
-    const existingIndex = cart.findIndex((item: any) => 
-      item.productId === product.id && 
-      item.size === selectedSize && 
+    const existingIndex = cart.findIndex((item: any) =>
+      item.productId === product.id &&
+      item.size === selectedSize &&
       item.color === selectedColor
     )
 
@@ -165,7 +165,7 @@ export default function ProductDetailPage() {
                   className="w-full h-full object-contain cursor-zoom-in"
                   onClick={() => window.open(product.image_urls?.[selectedImage], '_blank')}
                 />
-                
+
                 {product.image_urls && product.image_urls.length > 1 && (
                   <>
                     <button

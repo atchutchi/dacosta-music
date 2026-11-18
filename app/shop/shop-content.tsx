@@ -26,7 +26,7 @@ export default function ShopPage() {
   const [cart, setCart] = useState<{ id: string; quantity: number }[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  
+
   // Estado para cada produto: size, color, quantity
   const [productSelections, setProductSelections] = useState<{
     [productId: string]: {
@@ -47,19 +47,19 @@ export default function ShopPage() {
           sortBy: sortBy === 'featured' ? 'featured' : sortBy === 'newest' ? 'created_at' : 'price',
           sortOrder: sortBy === 'price-low' ? 'asc' : 'desc'
         })
-        
+
         if (activeCategory !== 'all') {
           params.append('category', activeCategory)
         }
-        
+
         const response = await fetch(`/api/products?${params}`)
         const data = await response.json()
-        
+
         if (data.products) {
           const list = data.products as Product[]
           setProducts(list)
           setFilteredProducts(list)
-          
+
           // Inicializar seleções para cada produto
           const initialSelections: any = {}
           list.forEach((product: Product) => {
@@ -70,22 +70,22 @@ export default function ShopPage() {
             }
           })
           setProductSelections(initialSelections)
-          
+
           // Extrair categorias únicas
           const uniqueCategories: string[] = [
             ...new Set(list.map((p) => p.category)),
           ]
           setCategories(uniqueCategories)
-          
+
           // Calcular preço máximo
           const prices = list.map((p) => p.price)
           const max = Math.max(...prices, 200)
           setMaxPrice(Math.ceil(max / 10) * 10) // Arredondar para cima
-          
+
           if (priceRange[1] === 200 && max > 200) {
             setPriceRange([0, max])
           }
-          
+
           setTotalPages(data.pagination.pages)
         }
       } catch (error) {
@@ -107,20 +107,20 @@ export default function ShopPage() {
   // Filtrar produtos por preço
   useEffect(() => {
     let result = [...products]
-    
+
     // Filtrar por preço
     result = result.filter((product) => product.price >= priceRange[0] && product.price <= priceRange[1])
-    
+
     setFilteredProducts(result)
   }, [priceRange, products])
 
   const addToCart = (productId: string) => {
     const product = products.find(p => p.id === productId)
     if (!product) return
-    
+
     const selection = productSelections[productId]
     if (!selection) return
-    
+
     const cartItem = {
       id: productId,
       productId: productId,
@@ -137,11 +137,11 @@ export default function ShopPage() {
       toast({ title: 'Stock limit reached', description: 'Please reduce the quantity for this size.', variant: 'destructive' })
       return
     }
-    
+
     // Verificar se item já existe com mesma size/color
-    const existingIndex = cart.findIndex((item: any) => 
-      item.productId === productId && 
-      item.size === selection.size && 
+    const existingIndex = cart.findIndex((item: any) =>
+      item.productId === productId &&
+      item.size === selection.size &&
       item.color === selection.color
     )
 
@@ -152,10 +152,10 @@ export default function ShopPage() {
     }
 
     localStorage.setItem('dacosta-cart', JSON.stringify(cart))
-    
+
     // Disparar evento para atualizar navbar
     window.dispatchEvent(new Event("storage"))
-    
+
     // Reset quantity to 1 after adding
     setProductSelections({
       ...productSelections,
@@ -164,13 +164,13 @@ export default function ShopPage() {
         quantity: 1
       }
     })
-    
+
     toast({
       title: "Adicionado ao carrinho",
       description: `${product.name} foi adicionado ao seu carrinho`,
     })
   }
-  
+
   const updateProductSelection = (productId: string, field: 'size' | 'color' | 'quantity', value: any) => {
     setProductSelections({
       ...productSelections,
@@ -181,17 +181,17 @@ export default function ShopPage() {
       }
     })
   }
-  
+
   const incrementQuantity = (productId: string) => {
     const product = products.find(p => p.id === productId)
     if (!product) return
-    
+
     const currentQty = productSelections[productId]?.quantity || 1
     if (currentQty < availableStock(product, productSelections[productId]?.size)) {
       updateProductSelection(productId, 'quantity', currentQty + 1)
     }
   }
-  
+
   const decrementQuantity = (productId: string) => {
     const currentQty = productSelections[productId]?.quantity || 1
     if (currentQty > 1) {
@@ -419,15 +419,15 @@ export default function ShopPage() {
                           <Link href={`/shop/product/${product.slug}`}>
                             <h3 className="text-lg font-bold mb-3 hover:text-white/80 transition-colors cursor-pointer">{product.name}</h3>
                           </Link>
-                          
+
                           {/* Size and Color Selection - Compact Row */}
                           {((product.sizes && product.sizes.length > 0) || (product.colors && product.colors.length > 0)) && (
                             <div className="grid grid-cols-2 gap-2 mb-3">
                               {product.sizes && product.sizes.length > 0 && (
                                 <div>
                                   <label htmlFor={`size-${product.id}`} className="text-xs text-white/60 mb-1 block">Size</label>
-                                  <Select 
-                                    value={productSelections[product.id]?.size || product.sizes[0]} 
+                                  <Select
+                                    value={productSelections[product.id]?.size || product.sizes[0]}
                                     onValueChange={(value) => updateProductSelection(product.id, 'size', value)}
                                   >
                                     <SelectTrigger id={`size-${product.id}`} className="bg-gray-900 border-white/20 h-8 text-xs">
@@ -441,12 +441,12 @@ export default function ShopPage() {
                                   </Select>
                                 </div>
                               )}
-                              
+
                               {product.colors && product.colors.length > 0 && (
                                 <div>
                                   <label htmlFor={`color-${product.id}`} className="text-xs text-white/60 mb-1 block">Color</label>
-                                  <Select 
-                                    value={productSelections[product.id]?.color || product.colors[0]} 
+                                  <Select
+                                    value={productSelections[product.id]?.color || product.colors[0]}
                                     onValueChange={(value) => updateProductSelection(product.id, 'color', value)}
                                   >
                                     <SelectTrigger id={`color-${product.id}`} className="bg-gray-900 border-white/20 h-8 text-xs">
@@ -462,7 +462,7 @@ export default function ShopPage() {
                               )}
                             </div>
                           )}
-                          
+
                           {/* Quantity Selection - Compact */}
                           <div className="flex items-center justify-between mb-3">
                             <span className="text-xs text-white/60">Qty:</span>
@@ -494,7 +494,7 @@ export default function ShopPage() {
                               </Button>
                             </div>
                           </div>
-                          
+
                           <Button
                             className="w-full bg-white text-black hover:bg-white/90"
                             onClick={() => addToCart(product.id)}

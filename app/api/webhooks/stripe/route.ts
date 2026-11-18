@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       case 'checkout.session.completed':
         const session = event.data.object as Stripe.Checkout.Session;
-        
+
         if (session.metadata?.order_id && session.payment_status === 'paid') {
           if (session.amount_total === null || !session.currency || typeof session.payment_intent !== 'string') {
             throw new Error('Incomplete Stripe payment data');
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
           if (confirmationError) throw confirmationError;
 
           console.log(`Order ${session.metadata.order_id} marked as paid`);
-          
+
           // Enviar emails de confirmação
           try {
             // Buscar detalhes completos do pedido
@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
 
       case 'checkout.session.expired':
         const expiredSession = event.data.object as Stripe.Checkout.Session;
-        
+
         if (expiredSession.metadata?.order_id) {
           const { error: cancellationError } = await supabase.rpc('cancel_stripe_order', {
             p_order_id: expiredSession.metadata.order_id, p_session_id: expiredSession.id,
@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
 
       case 'payment_intent.payment_failed':
         const failedPayment = event.data.object as Stripe.PaymentIntent;
-        
+
         // Uma tentativa recusada pode ser repetida na mesma sessão. Só a expiração liberta a reserva.
         console.log(`Stripe payment attempt failed: ${failedPayment.id}`);
         break;

@@ -23,10 +23,10 @@ export default function PrivacyPage() {
             </Button>
           </Link>
         </div>
-        
+
         <h1 className="text-3xl md:text-4xl font-bold mb-4 text-center">Privacy Policy</h1>
         <p className="text-white/60 mb-12 text-center">Last updated: {currentDate}</p>
-        
+
         <div className="space-y-8 text-white/80">
           <section>
             <h2 className="text-xl font-semibold mb-3">1. Introduction</h2>
@@ -34,7 +34,7 @@ export default function PrivacyPage() {
               This Privacy Policy explains how we collect, use, and protect your personal data when you use the Da Costa Music website. By using our site, you agree to the terms of this policy.
             </p>
           </section>
-          
+
           <section>
             <h2 className="text-xl font-semibold mb-3">2. Information We Collect</h2>
             <p>
@@ -47,7 +47,7 @@ export default function PrivacyPage() {
               <li>Usage and browsing data (e.g., IP address, browser type)</li>
             </ul>
           </section>
-          
+
           <section>
             <h2 className="text-xl font-semibold mb-3">3. How We Use Your Information</h2>
             <p>
@@ -60,14 +60,14 @@ export default function PrivacyPage() {
               <li>Comply with legal obligations</li>
             </ul>
           </section>
-          
+
           <section>
             <h2 className="text-xl font-semibold mb-3">4. Sharing of Information</h2>
             <p>
               We do not share your personal information with third parties unless required by law or with your explicit consent.
             </p>
           </section>
-          
+
           <section>
             <h2 className="text-xl font-semibold mb-3">5. Your Rights</h2>
             <p>
@@ -81,7 +81,7 @@ export default function PrivacyPage() {
               <li>Port your data to another service</li>
             </ul>
           </section>
-          
+
           <section>
             <h2 className="text-xl font-semibold mb-3">6. Data Security</h2>
             <p>
@@ -98,28 +98,28 @@ export default function PrivacyPage() {
               You can reject marketing cookies or withdraw your consent through Cookie settings in the website footer. Rejecting marketing cookies does not prevent you from using the shop.
             </p>
           </section>
-          
+
           <section>
             <h2 className="text-xl font-semibold mb-3">7. Data Retention</h2>
             <p>
               We retain your personal data only as long as necessary to fulfill the purposes outlined in this policy unless a longer retention period is required by law.
             </p>
           </section>
-          
+
           <section>
             <h2 className="text-xl font-semibold mb-3">8. International Data Transfers</h2>
             <p>
               If we transfer your data outside the European Economic Area (EEA), we ensure appropriate safeguards are in place as required by the GDPR.
             </p>
           </section>
-          
+
           <section>
             <h2 className="text-xl font-semibold mb-3">9. Changes to This Policy</h2>
             <p>
               We may update this Privacy Policy periodically. We recommend reviewing this page regularly to stay informed about any changes.
             </p>
           </section>
-          
+
           <section>
             <h2 className="text-xl font-semibold mb-3">10. Contact</h2>
             <p>
