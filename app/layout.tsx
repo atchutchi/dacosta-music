@@ -21,6 +21,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.dacosta-music.com"),
   title: "Da Costa Music - Artist Management, Global Bookings & Creative Branding",
   description: "A creative agency and talent management company representing a new era of Electronic music.",
   generator: 'Next.js',
@@ -45,22 +46,20 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://dacostamusic.com',
+    url: 'https://www.dacosta-music.com',
     title: 'Da Costa Music - Artist Management, Global Bookings & Creative Branding',
     description: 'A creative agency and talent management company representing a new era of African electronic music.',
     siteName: 'Da Costa Music',
     images: [{
-      url: 'https://dacostamusic.com/og-image.jpg',
-      width: 1200,
-      height: 630,
+      url: 'https://www.dacosta-music.com/images/club-view-optimized.webp',
       alt: 'Da Costa Music'
     }]
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Da Costa Music',
-    description: 'AArtist Management, Global Bookings & Creative Branding',
-    images: ['https://dacostamusic.com/twitter-image.jpg'],
+    description: 'Artist Management, Global Bookings & Creative Branding',
+    images: ['https://www.dacosta-music.com/images/club-view-optimized.webp'],
   },
 }
 
@@ -79,10 +78,9 @@ export default async function RootLayout({
   const nonce = (await headers()).get("x-nonce") ?? ""
 
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         {/* Critical resource hints - ordered by priority */}
-        <link rel="preload" href="/images/whiteICON.png" as="image" type="image/webp" />
         
         {/* DNS prefetch for external domains */}
         <link rel="dns-prefetch" href="//www.youtube.com" />

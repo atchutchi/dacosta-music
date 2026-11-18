@@ -9,10 +9,14 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { motion } from "framer-motion"
+import { useSearchParams } from 'next/navigation'
+import { getContactContext } from '@/lib/contact-context'
 import emailjs from '@emailjs/browser'
 import { logger } from '@/lib/logger'
 
 export default function ContactSection() {
+  const searchParams = useSearchParams()
+  const contactQuery = searchParams.toString()
   const formRef = useRef<HTMLFormElement>(null)
   const [formData, setFormData] = useState({
     name: "",
@@ -21,6 +25,10 @@ export default function ContactSection() {
     message: "",
     selectedArtists: [] as string[],
   })
+  useEffect(() => {
+    const context = getContactContext(contactQuery)
+    if (context) setFormData(previous=>({...previous,title:context.subject,selectedArtists:context.artists,message:previous.message || context.message}))
+  }, [contactQuery])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
@@ -49,6 +57,9 @@ export default function ContactSection() {
   }
 
   const handleSelectChange = (value: string) => {
+    // O select nativo oculto do Radix pode emitir '' ao montar dentro do formulário.
+    // Nenhuma opção de assunto tem esse valor. Não apagar o contexto recebido do URL.
+    if (!['booking','collaboration','press','other'].includes(value)) return
     setFormData((prev) => ({ 
       ...prev, 
       title: value,
@@ -375,8 +386,8 @@ export default function ContactSection() {
                   <label htmlFor="title" className="block text-sm font-medium mb-2">
                     Subject
                   </label>
-                  <Select onValueChange={handleSelectChange}>
-                    <SelectTrigger className={`bg-white/5 border-white/10 ${errors.title ? "border-red-500" : ""}`}>
+                  <Select value={formData.title} onValueChange={handleSelectChange}>
+                    <SelectTrigger id="title" className={`bg-white/5 border-white/10 ${errors.title ? "border-red-500" : ""}`}>
                       <SelectValue placeholder="Select a subject" />
                     </SelectTrigger>
                     <SelectContent>

@@ -14,10 +14,11 @@ export default function HeroSection() {
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
+      <h1 className="sr-only">Da Costa Music: artist management and worldwide bookings</h1>
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
-          src="/images/club-view.webp"
+          src="/images/club-view-optimized.webp"
           alt="Da Costa Music Background"
           fill
           priority

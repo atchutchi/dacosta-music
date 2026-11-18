@@ -1,10 +1,12 @@
+import { pageMetadata } from '@/lib/page-metadata'
+export const metadata = pageMetadata("Privacy Policy","/privacy","How Da Costa Music handles personal data, shopping and marketing cookie choices.")
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
 export default function PrivacyPage() {
-  const currentDate = new Date().toLocaleDateString('en-US', {
+  const currentDate = new Date('2026-10-11T00:00:00Z').toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'

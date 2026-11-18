@@ -33,7 +33,7 @@ export default function RosterSection() {
       id: "caiiro",
       name: "Caiiro",
       logo: "/images/caiiro-logo-branco.webp",
-      image: "/images/Caiiro-VIII.svg",
+      image: "/images/artists/Caiiro-VIII.webp",
       bio: "Renowned for his emotionally charged soundscapes and powerful Afro-Tech sets, Caiiro is one of Africa’s most prominent electronic music exports. With a global fan base and standout performances across Europe, the Americas, and beyond, Caiiro continues to shape the narrative of modern African dance music.",
       socials: {
         instagram: "https://www.instagram.com/caiirosa/",
@@ -47,7 +47,7 @@ export default function RosterSection() {
       id: "dacapo",
       name: "Da Capo",
       logo: "/images/logo-branco-da-capo.webp",
-      image: "/images/da-capo-X.svg",
+      image: "/images/artists/da-capo-X.webp",
       bio: "A visionary in Afro House and Deep Tech, Da Capo is known for his rich, layered productions and genre-defining DJ sets. A true craftsman of sound, his artistry bridges underground energy with refined musical storytelling—earning him global recognition and a dedicated audience.",
       socials: {
         instagram: "https://instagram.com/dacapo",
@@ -59,7 +59,7 @@ export default function RosterSection() {
       id: "enoonapa",
       name: "Enoo Napa",
       logo: "/images/enoo_napa_logotipo.svg",
-      image: "/images/Enoo-Napa0374.svg",
+      image: "/images/artists/Enoo-Napa0374.webp",
       bio: "Enoo Napa delivers cutting-edge Afro-Electronic music with a signature edge. Fusing raw energy with intricate production, his work is celebrated in clubs and festivals around the world. Bold, futuristic, and uniquely African—Enoo’s sound commands attention and respect.",
       socials: {
         instagram: "https://instagram.com/enoonapa",
@@ -71,7 +71,7 @@ export default function RosterSection() {
       id: "djeff",
       name: "DJEFF",
       logo: "/images/logo_djeff.svg",
-      image: "/images/Djeff_profile_photo.svg",
+      image: "/images/artists/Djeff_profile_photo.webp",
       bio: "DJEFF is a DJ and producer born in Lisbon to Angolan and Cape Verdean roots, known for blending African heritage with forward-thinking electronic music and house. Founder of Kazukuta Records, Angola's first electronic-focused label.",
       socials: {
         instagram: "https://instagram.com/officialdjeff/",
@@ -85,7 +85,7 @@ export default function RosterSection() {
       id: "breyth",
       name: "BREYTH",
       logo: "/images/logo_breyth_white.svg",
-      image: "/images/breyth-photo-main.svg",
+      image: "/images/artists/breyth-photo-main.webp",
       bio: "An established name in the Afro House scene, BREYTH blends charisma and raw energy into every set. Born in Angola, forged in Lisbon — his sound reaches over 27 million streams across all digital platforms.",
       socials: {
         instagram: "https://www.instagram.com/breyth_/",
@@ -173,7 +173,7 @@ export default function RosterSection() {
                       src={artist.image || "/placeholder.svg"}
                       alt={artist.name}
                       fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 20vw"
                       className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                       loading="lazy"
                       quality={85}
@@ -183,9 +183,9 @@ export default function RosterSection() {
                     <Image
                       src={artist.logo || "/placeholder.svg"}
                       alt={`${artist.name} logo`}
-                      width={200}
-                      height={48}
-                      className="object-contain max-h-full w-auto"
+                      fill
+                      sizes="(max-width: 640px) 200px, 180px"
+                      className="object-contain object-left"
                       loading="lazy"
                       quality={90}
                     />

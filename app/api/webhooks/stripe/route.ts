@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { createServiceClient } from '@/lib/supabase/service';
 import { sendOrderConfirmation } from '@/lib/send-order-confirmation';
 import { getStripeClient } from '@/lib/stripe';
+import { paidOrderRecipient } from '@/lib/order-notifications';
 
 export async function POST(request: NextRequest) {
   if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
@@ -71,11 +72,13 @@ export async function POST(request: NextRequest) {
 
             if (orderDetails) {
               if (orderDetails.notification_sent_at) break;
+              const {data:buyer,error:buyerError}=await supabase.from('customers')
+                .select('name,email').eq('id',orderDetails.customer_id).single();
+              if(buyerError)throw buyerError;
               // Preparar dados para o email
               const emailData = {
                 orderNumber: orderDetails.order_number,
-                customerName: orderDetails.shipping_name,
-                customerEmail: orderDetails.shipping_email,
+                ...paidOrderRecipient(buyer),
                 items: orderDetails.order_items.map((item: any) => ({
                   name: item.product_name,
                   quantity: item.quantity,
